@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /thank-you.html
+Disallow: /en/thank-you.html
+
+Sitemap: https://sacraglyph.com/sitemap.xml
+Sitemap: https://sacraglyph.com/sitemap-images.xml
