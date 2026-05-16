@@ -1284,3 +1284,51 @@ body{touch-action:pan-y;}
     width:min(100%,330px) !important;
   }
 }
+
+
+/* --- v14: price order emphasis + mobile readability + autofill visibility --- */
+.pricePaymentNote strong,
+.priceNoteBig strong{
+  color:var(--text) !important;
+  font-weight:800 !important;
+}
+#prices .sectionHead .pricePaymentNote{
+  order:1 !important;
+  margin:16px auto 18px !important;
+  max-width:38ch !important;
+  font-weight:700 !important;
+  color:rgba(241,236,229,.92) !important;
+}
+#prices .sectionHead .priceIntro{
+  order:2 !important;
+  margin:0 auto !important;
+  max-width:36ch !important;
+}
+#prices .sectionHead{
+  display:flex !important;
+  flex-direction:column !important;
+}
+@media (max-width:640px){
+  #prices .sectionHead .pricePaymentNote,
+  #prices .sectionHead .priceIntro{
+    max-width:82vw !important;
+    text-align:center !important;
+  }
+  #prices .sectionHead .pricePaymentNote{
+    font-size:17px !important;
+    line-height:1.55 !important;
+  }
+  #prices .sectionHead .priceIntro{
+    font-size:17px !important;
+    line-height:1.55 !important;
+  }
+}
+/* Chrome autofill: make saved contact data readable on the dark form, because apparently that needs a spell. */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--text) !important;
+  caret-color:var(--text) !important;
+  -webkit-box-shadow:0 0 0 1000px #111 inset !important;
+  transition:background-color 9999s ease-in-out 0s !important;
+}

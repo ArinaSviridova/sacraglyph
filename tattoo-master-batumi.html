@@ -639,13 +639,13 @@ src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
         <div class="container">
           <div class="sectionHead">
             <h2 class="h2">Цены</h2>
+            <p class="muted pricePaymentNote">
+              Почасовая оплата: первый час <strong>300 лари</strong>, каждый следующий <strong>250 лари</strong>.
+              Full Day (5+ часов) - <strong>1200 лари</strong>.
+            </p>
             <p class="muted priceIntro">
               Примеры работ: фото + время + стоимость. Итог зависит от зоны и
               сложности.
-            </p>
-            <p class="muted pricePaymentNote">
-              Почасовая оплата: первый час 300 лари, каждый следующий 250 лари.
-              Full Day (5+ часов) - 1200 лари.
             </p>
           </div>
           <div class="priceGallery">
@@ -981,8 +981,8 @@ src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
             </article>
           </div>
           <div class="priceFootNote muted priceNoteBig">
-            Почасовая оплата: первый час 300 лари, каждый следующий 250 лари.
-            Full Day (5+ часов) - 1200 лари.
+            Почасовая оплата: первый час <strong>300 лари</strong>, каждый следующий <strong>250 лари</strong>.
+            Full Day (5+ часов) - <strong>1200 лари</strong>.
           </div>
         </div>
       </section>
@@ -1064,6 +1064,7 @@ src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
           <div class="card contactFormCard">
             <form
               autocomplete="on"
+              method="post"
               class="contactForm"
               data-fail="Ошибка. Попробуй ещё раз позже."
               data-sending="Отправляю..."
@@ -1089,7 +1090,7 @@ src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
               <label class="field" for="name"
                 ><span class="fieldLabel">Имя</span
                 ><input
-                  autocomplete="name"
+                  autocomplete="section-contact name"
                   class="input"
                   id="name"
                   name="name"
@@ -1099,7 +1100,7 @@ src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
               <label class="field" for="phone"
                 ><span class="fieldLabel">Телефон</span
                 ><input
-                  autocomplete="tel"
+                  autocomplete="section-contact tel"
                   class="input"
                   id="phone"
                   inputmode="tel"
@@ -1110,7 +1111,7 @@ src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
               <label class="field" for="email"
                 ><span class="fieldLabel">Email</span
                 ><input
-                  autocomplete="email"
+                  autocomplete="section-contact email"
                   class="input"
                   id="email"
                   inputmode="email"
