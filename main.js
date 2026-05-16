@@ -670,7 +670,7 @@
 
   function initInstagramConversion() {
     const instaBtn = document.querySelector(
-      'a[href*="instagram.com/«Bazooka»tats"]',
+      'a[href*="instagram.com/bazookatats"]',
     );
     if (!instaBtn) return;
 
@@ -683,6 +683,21 @@
     });
   }
 
+
+  function initMetaContactEvents() {
+    const contactLinks = document.querySelectorAll(
+      'a[href*="wa.me"], a[href*="whatsapp"], a[href*="t.me"], a[href*="telegram"], a[href*="instagram.com"]',
+    );
+
+    contactLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (typeof fbq === "function") {
+          fbq("track", "Contact");
+        }
+      });
+    });
+  }
+
   function init() {
     renderWorksGallery();
     initMobile();
@@ -692,6 +707,7 @@
     initScrollSpy();
     initContactForm();
     initInstagramConversion();
+    initMetaContactEvents();
 
     if ("requestIdleCallback" in window) {
       window.requestIdleCallback(() => initLightbox(), { timeout: 1200 });
