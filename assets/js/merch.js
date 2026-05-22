@@ -74,7 +74,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black1")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-2",
@@ -90,7 +90,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black2")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-3",
@@ -106,7 +106,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black3")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-4",
@@ -122,7 +122,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black4")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-5",
@@ -138,7 +138,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black5")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-6",
@@ -154,7 +154,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black6")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-7",
@@ -170,7 +170,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black7")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-8",
@@ -186,7 +186,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black8")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-9",
@@ -202,7 +202,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black9")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-10",
@@ -218,7 +218,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black10")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "black-11",
@@ -234,7 +234,7 @@
             "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Black11")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
       ],
     },
@@ -261,7 +261,7 @@
             "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Custom1"), createImageSet("CustomBack1")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "custom-2",
@@ -277,7 +277,7 @@
             "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Custom2"), createImageSet("CustomBack2")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "custom-3",
@@ -293,7 +293,7 @@
             "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Custom3"), createImageSet("CustomBack3")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "custom-4",
@@ -309,7 +309,7 @@
             "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Custom4"), createImageSet("CustomBack4")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
       ],
     },
@@ -336,7 +336,7 @@
             "Hoodie from the Hoodie collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Hoodie1"), createImageSet("HoodieBack1")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "hoodie-2",
@@ -356,7 +356,7 @@
             createImageSet("HoodieBack2-1"),
           ],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
       ],
     },
@@ -382,7 +382,7 @@
             "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Yugen1")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "yugen-2",
@@ -402,7 +402,7 @@
             createImageSet("Yugen13"),
           ],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "yugen-3",
@@ -418,7 +418,7 @@
             "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Yugen3")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "yugen-4",
@@ -434,7 +434,7 @@
             "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Yugen4")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "yugen-5",
@@ -450,7 +450,7 @@
             "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Yugen5"), createImageSet("Yugen14")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "yugen-6",
@@ -466,7 +466,7 @@
             "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Yugen6")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "yugen-7",
@@ -482,7 +482,7 @@
             "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Yugen7")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "yugen-8",
@@ -498,7 +498,7 @@
             "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Yugen8")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "yugen-10",
@@ -514,7 +514,7 @@
             "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Yugen10"), createImageSet("Yugen9")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
         {
           id: "yugen-11",
@@ -530,7 +530,7 @@
             "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
           images: [createImageSet("Yugen11")],
           instagram: "https://www.instagram.com/yugenmagaz/",
-          telegram: 'https://t.me/«Bazooka»tattoo',
+          telegram: 'https://t.me/bazookatattoo',
         },
       ],
     },

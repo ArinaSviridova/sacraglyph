@@ -1332,3 +1332,127 @@ body{touch-action:pan-y;}
   -webkit-box-shadow:0 0 0 1000px #111 inset !important;
   transition:background-color 9999s ease-in-out 0s !important;
 }
+
+
+/* --- v15: requested copy layout and price/care readability --- */
+#reviews .sectionHead .muted a{
+  color:var(--text) !important;
+  text-decoration:underline !important;
+  text-underline-offset:4px !important;
+}
+#prices .sectionHead{
+  margin-bottom:30px !important;
+}
+#prices .sectionHead .pricePaymentNote{
+  order:1 !important;
+  max-width:min(760px,88vw) !important;
+  font-size:clamp(18px,2.2vw,25px) !important;
+  line-height:1.55 !important;
+  font-weight:600 !important;
+  letter-spacing:.01em !important;
+  margin:18px auto 14px !important;
+}
+#prices .sectionHead .pricePaymentNote strong{
+  font-weight:950 !important;
+  color:#fff !important;
+  text-shadow:0 0 12px rgba(255,255,255,.13) !important;
+}
+#prices .sectionHead .pricePaymentNote span{
+  font-size:.82em !important;
+  font-weight:650 !important;
+  color:rgba(241,236,229,.74) !important;
+}
+#prices .sectionHead .priceIntro{
+  order:2 !important;
+  max-width:48ch !important;
+  margin:0 auto !important;
+}
+.priceFootNote{display:none !important;}
+#booking-info .reviews .reviewText{line-height:1.75 !important;}
+#faq .reviewText{line-height:1.72 !important;}
+.page-care .careHero .p,
+.page-care .careHero .muted{
+  margin-top:28px !important;
+}
+.page-care .careHero .h1{
+  margin-bottom:18px !important;
+}
+.careList li{line-height:1.7 !important;}
+@media (max-width:640px){
+  #prices .sectionHead .pricePaymentNote{
+    max-width:88vw !important;
+    font-size:18px !important;
+    line-height:1.65 !important;
+  }
+  #prices .sectionHead .priceIntro{
+    max-width:84vw !important;
+  }
+}
+
+
+/* --- v16: merch availability CTA + more air in tattoo-care hero --- */
+.merchStockBtn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  min-height:46px !important;
+  margin-top:10px !important;
+  padding:12px 14px !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  color:rgba(241,236,229,.92) !important;
+  background:rgba(255,255,255,.035) !important;
+  text-decoration:none !important;
+  text-align:center !important;
+  font-size:13px !important;
+  line-height:1.25 !important;
+  letter-spacing:.06em !important;
+  text-transform:uppercase !important;
+  transition:background .2s ease,border-color .2s ease,transform .2s ease !important;
+}
+.merchStockBtn:hover{
+  background:rgba(255,255,255,.08) !important;
+  border-color:rgba(255,255,255,.32) !important;
+  transform:translateY(-1px) !important;
+}
+.merchBody{padding-bottom:0 !important;}
+.merchMeta{display:none !important;}
+.page-care .careHero .p,
+.page-care .careHero .muted{
+  margin-top:clamp(46px,5vw,78px) !important;
+}
+.page-care .careHero .h1{
+  margin-bottom:clamp(28px,3vw,52px) !important;
+}
+@media (max-width:640px){
+  .merchStockBtn{font-size:11px !important;min-height:42px !important;padding:10px 10px !important;}
+  .page-care .careHero .p,
+  .page-care .careHero .muted{margin-top:38px !important;}
+}
+
+
+/* --- v17: requested Telegram labels, spacing and pricing split --- */
+.careTeaser .h2{
+  margin-bottom:28px !important;
+}
+.careTeaser .muted{
+  margin-top:0 !important;
+}
+.page-care .careIntroText .h1{
+  margin-bottom:34px !important;
+}
+.page-care .careIntroText .p{
+  margin-top:0 !important;
+}
+#prices .sectionHead .pricePaymentNote .priceLine{
+  display:block !important;
+  margin-top:10px !important;
+}
+#prices .sectionHead .pricePaymentNote > br{
+  display:none !important;
+}
+@media (max-width:640px){
+  .careTeaser .h2{margin-bottom:32px !important;}
+  .page-care .careIntroText .h1{margin-bottom:36px !important;}
+  #prices .sectionHead .pricePaymentNote .priceLine{margin-top:12px !important;}
+}

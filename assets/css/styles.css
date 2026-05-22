@@ -910,382 +910,6 @@ body::after{opacity:.16}
 }
 
 
-/* --- v7 small adjustments requested by user --- */
-
-@media (min-width: 961px){
-  .heroText{
-    width:min(680px,50vw) !important;
-    padding:10vh 0 9vh max(76px,7.2vw) !important;
-  }
-  .heroText .p{max-width:45ch !important;}
-  .heroMedia img{object-position:74% center !important;}
-}
-
-/* contacts: compact icons with small labels, no giant handles */
-#contacts .contactsGrid{
-  display:grid !important;
-  grid-template-columns:repeat(4,minmax(150px,1fr)) !important;
-  gap:0 !important;
-  max-width:980px !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-}
-#contacts .contactTile{
-  min-height:132px !important;
-  padding:18px 14px !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  justify-content:center !important;
-  text-align:center !important;
-  gap:9px !important;
-  border-right:1px solid rgba(255,255,255,.10) !important;
-  border-bottom:none !important;
-  background:rgba(255,255,255,.015) !important;
-}
-#contacts .contactTile:last-child{border-right:none !important;}
-#contacts .contactTile:hover{background:rgba(255,255,255,.05) !important;transform:translateY(-2px);}
-#contacts .contactTile::after{display:none !important;}
-#contacts .contactTile::before{
-  content:"" !important;
-  width:28px !important;
-  height:28px !important;
-  border:0 !important;
-  border-radius:0 !important;
-  display:block !important;
-  background-size:contain !important;
-  background-position:center !important;
-  background-repeat:no-repeat !important;
-  opacity:.94;
-  margin:0 auto 2px !important;
-}
-#contacts .contactTitle{
-  display:block !important;
-  margin:0 !important;
-  font-size:12px !important;
-  line-height:1.2 !important;
-  letter-spacing:.18em !important;
-  text-transform:uppercase !important;
-  color:rgba(241,236,229,.64) !important;
-}
-#contacts .contactMeta{
-  display:block !important;
-  max-width:15ch !important;
-  margin:0 !important;
-  font-size:12px !important;
-  line-height:1.35 !important;
-  color:rgba(241,236,229,.88) !important;
-}
-#contacts .contactTile:nth-child(1)::before{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f1ece5' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3.2' y='3.2' width='17.6' height='17.6' rx='5.2'/%3E%3Ccircle cx='12' cy='12' r='4.05'/%3E%3Ccircle cx='17.25' cy='6.75' r='1.05' fill='%23f1ece5' stroke='none'/%3E%3C/svg%3E") !important;
-}
-#contacts .contactTile:nth-child(2)::before{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f1ece5' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 11.45c0 4.35-3.6 7.88-8.03 7.88-1.4 0-2.71-.35-3.84-.97L4 19.7l1.4-3.95a7.73 7.73 0 0 1-1.46-4.3c0-4.35 3.6-7.88 8.03-7.88 4.42 0 8.03 3.53 8.03 7.88Z'/%3E%3Cpath d='M9.2 8.65c.16-.38.34-.41.67-.41h.58c.18 0 .35.02.52.39l.74 1.64c.12.27.1.47-.07.67l-.45.53c-.14.15-.16.3-.05.5.47.82 1.28 1.58 2.28 2.04.22.1.39.08.54-.08l.64-.69c.18-.18.38-.2.61-.1l1.67.76c.24.11.36.28.35.51-.03.63-.4 1.28-.95 1.56-.72.36-2.04.12-3.61-.8-1.72-1.01-3.17-2.75-3.78-4.25-.28-.7-.27-1.3-.04-1.77Z'/%3E%3C/svg%3E") !important;
-}
-#contacts .contactTile:nth-child(3)::before{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f1ece5' stroke-width='1.55' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 4 3.8 11.15l6.55 2.35L21 4Z'/%3E%3Cpath d='m10.35 13.5.05 6.7 3.5-4.38 4.45 3.2L21 4'/%3E%3C/svg%3E") !important;
-}
-#contacts .contactTile:nth-child(4)::before{
-  width:38px !important;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 40'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23f1ece5' font-size='16' font-family='Arial, sans-serif' font-weight='700'%3EINK%3C/text%3E%3C/svg%3E") !important;
-}
-@media (max-width:960px){
-  #contacts .contactsGrid{grid-template-columns:repeat(2,minmax(130px,1fr)) !important;max-width:none !important;}
-  #contacts .contactTile{min-height:104px !important;padding:16px 10px !important;}
-}
-@media (max-width:560px){
-  #contacts .contactsGrid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
-  #contacts .contactTitle,#contacts .contactMeta{font-size:11px !important;}
-}
-
-
-/* --- v8 mobile stability and contact labels visibility --- */
-html,body{max-width:100%;overflow-x:hidden !important;}
-body{position:relative;}
-.header,.container,.section,.heroGrid,.heroMedia,.heroText,.contactsGrid,.contactTile,.mobileNav{max-width:100%;}
-img,picture,video,canvas,svg{max-width:100%;height:auto;}
-
-/* safer header on small screens */
-.brand{min-width:0;overflow:hidden;text-overflow:ellipsis;}
-@media (max-width:960px){
-  .headerRow{grid-template-columns:minmax(0,1fr) auto auto !important;gap:12px !important;}
-  .brand{font-size:clamp(18px,6vw,28px) !important;letter-spacing:-.04em !important;}
-  .headerActions{gap:12px !important;}
-  .headerActions::before{height:28px !important;}
-  .langBtn{min-width:32px !important;font-size:14px !important;}
-  .burger{width:44px !important;height:44px !important;flex:0 0 44px;}
-  .mobileNav{width:min(100% - 24px, 100%) !important;}
-
-  /* stop sideways drag from hero and decorative layers */
-  #about.section,#about .container,.heroGrid,.heroMedia,.heroText{overflow-x:hidden !important;}
-  .heroGrid::before,.heroGrid::after,.heroText::after{max-width:100%;}
-  .heroMedia img{object-position:62% center !important;transform:none !important;}
-  .heroText{padding:30px 14px 42px !important;width:100% !important;margin:0 !important;}
-  .heroText .kicker{font-size:11px !important;letter-spacing:.26em !important;gap:12px !important;}
-  .heroText>.h1,.heroText>h1{font-size:clamp(52px,15vw,82px) !important;max-width:7ch !important;}
-  .heroText>.h2,.heroText>h2{font-size:clamp(28px,10vw,46px) !important;max-width:10ch !important;}
-  .heroText .p{max-width:none !important;font-size:17px !important;line-height:1.62 !important;}
-
-  /* contacts: labels clearly visible under icons */
-  #contacts .contactsGrid{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    max-width:none !important;
-  }
-  #contacts .contactTile{
-    min-height:126px !important;
-    padding:14px 8px !important;
-    gap:8px !important;
-    justify-content:center !important;
-  }
-  #contacts .contactTile::before{
-    width:26px !important;
-    height:26px !important;
-    margin-bottom:4px !important;
-  }
-  #contacts .contactTitle,
-  #contacts .contactMeta{
-    display:block !important;
-    opacity:1 !important;
-    visibility:visible !important;
-    position:static !important;
-    text-align:center !important;
-    text-shadow:0 1px 10px rgba(0,0,0,.6);
-  }
-  #contacts .contactTitle{
-    font-size:11px !important;
-    line-height:1.2 !important;
-    letter-spacing:.16em !important;
-  }
-  #contacts .contactMeta{
-    font-size:11px !important;
-    line-height:1.35 !important;
-    max-width:12ch !important;
-  }
-}
-@media (max-width:560px){
-  :root{--container:min(100% - 18px,1160px) !important;}
-  .section{padding:58px 0 !important;}
-  .brand{font-size:clamp(16px,7vw,24px) !important;}
-  .heroMedia{min-height:44vh !important;}
-  .heroText{padding:24px 10px 36px !important;}
-  #contacts .contactTile{min-height:116px !important;padding:12px 6px !important;}
-  #contacts .contactTitle{font-size:10px !important;letter-spacing:.12em !important;}
-  #contacts .contactMeta{font-size:10px !important;max-width:11ch !important;}
-}
-
-/* --- v9: mobile overflow kill and visible contact labels --- */
-html,body,main,.header,.section,.container,.card,.heroGrid,.heroMedia,.heroText{
-  overflow-x:clip !important;
-}
-body{touch-action:pan-y;}
-@media (max-width: 960px){
-  :root{--container:calc(100% - 24px) !important;}
-  .container{width:var(--container) !important;max-width:var(--container) !important;}
-  .header{overflow:hidden !important;}
-  .headerRow{min-height:72px !important;grid-template-columns:minmax(0,1fr) auto auto !important;gap:10px !important;}
-  .nav{display:none !important;}
-  .mobileNav{width:calc(100% - 24px) !important;max-width:calc(100% - 24px) !important;margin-left:auto !important;margin-right:auto !important;}
-  .brand{max-width:100% !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;}
-  #about.section,#about .container,.heroGrid{min-height:auto !important;}
-  .heroGrid{display:grid !important;grid-template-columns:1fr !important;}
-  .heroMedia{position:relative !important;inset:auto !important;order:1 !important;min-height:44vh !important;width:100% !important;border:none !important;}
-  .heroMedia img{width:100% !important;height:100% !important;object-fit:cover !important;object-position:62% center !important;transform:none !important;}
-  .heroGrid::before,.heroGrid::after,.heroText::after{display:none !important;}
-  .heroText{order:2 !important;width:100% !important;max-width:100% !important;min-height:auto !important;margin:0 !important;padding:22px 14px 34px !important;}
-  .heroText>.h1,.heroText>h1{font-size:clamp(46px,14vw,72px) !important;max-width:6.5ch !important;line-height:.94 !important;}
-  .heroText>.h2,.heroText>h2{font-size:clamp(26px,9vw,40px) !important;max-width:9ch !important;line-height:1.02 !important;}
-  .heroText .p{font-size:16px !important;line-height:1.58 !important;max-width:none !important;}
-  .bullets li{font-size:15px !important;}
-
-  #contacts .contactsGrid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;max-width:none !important;}
-  #contacts .contactTile{min-height:120px !important;padding:12px 8px !important;display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important;gap:6px !important;}
-  #contacts .contactTile > div{display:block !important;position:static !important;opacity:1 !important;visibility:visible !important;}
-  #contacts .contactTitle{
-    font-size:10px !important;
-    line-height:1.2 !important;
-    letter-spacing:.14em !important;
-    text-transform:uppercase !important;
-    color:rgba(241,236,229,.66) !important;
-    margin:0 !important;
-  }
-  #contacts .contactMeta{
-    font-size:10px !important;
-    line-height:1.35 !important;
-    color:#f1ece5 !important;
-    max-width:12ch !important;
-    text-align:center !important;
-    margin:0 !important;
-  }
-  #contacts .contactTile::before{width:24px !important;height:24px !important;margin:0 0 4px !important;}
-}
-@media (max-width: 560px){
-  html,body{width:100% !important;max-width:100% !important;overflow-x:hidden !important;}
-  :root{--container:calc(100% - 18px) !important;}
-  .container{width:var(--container) !important;max-width:var(--container) !important;}
-  .headerRow{min-height:68px !important;}
-  .brand{font-size:clamp(16px,6.4vw,24px) !important;}
-  .langBtn{font-size:13px !important;min-width:28px !important;}
-  .burger{width:42px !important;height:42px !important;flex:0 0 42px !important;}
-  .heroMedia{min-height:40vh !important;}
-  .heroText{padding:20px 10px 28px !important;}
-  #contacts .contactTile{min-height:110px !important;padding:10px 6px !important;}
-}
-
-/* --- v10 requested polish --- */
-/* Care memo teaser */
-.careTeaser .h2{margin:10px 0 18px !important;}
-.careTeaser .muted{margin-top:0 !important; max-width:26ch;}
-.careTeaser .ctaRow{justify-content:center;}
-@media (min-width: 961px){
-  .careTeaser{align-items:center !important;}
-  .careTeaser .h2{margin-bottom:16px !important;}
-  .careTeaser .muted{margin-top:0 !important;}
-}
-@media (max-width: 960px){
-  .careTeaser{
-    grid-template-columns:1fr !important;
-    gap:20px !important;
-    text-align:center !important;
-  }
-  .careTeaser > div:first-child{
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-  }
-  .careTeaser .kicker,
-  .careTeaser .h2,
-  .careTeaser .muted{
-    text-align:center !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
-  }
-  .careTeaser .h2{max-width:9ch !important; margin-bottom:14px !important;}
-  .careTeaser .muted{max-width:20ch !important;}
-  .careTeaser .ctaRow{width:100% !important; justify-content:center !important;}
-}
-
-/* Merch modal controls larger */
-.merchModalClose,
-.merchViewerNav{
-  min-width:64px !important;
-  min-height:64px !important;
-  width:64px !important;
-  height:64px !important;
-  font-size:42px !important;
-  line-height:1 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-}
-.merchModalClose{top:14px !important; right:14px !important; z-index:5 !important;}
-.merchViewerNav.prev{left:14px !important;}
-.merchViewerNav.next{right:14px !important;}
-@media (max-width: 960px){
-  .merchModalDialog{width:calc(100% - 12px) !important; margin:6px auto !important;}
-  .merchModalClose,
-  .merchViewerNav{
-    min-width:56px !important;
-    min-height:56px !important;
-    width:56px !important;
-    height:56px !important;
-    font-size:38px !important;
-  }
-  .merchModalClose{top:8px !important; right:8px !important;}
-  .merchViewerNav.prev{left:8px !important;}
-  .merchViewerNav.next{right:8px !important;}
-}
-
-/* Reviews web: center photos */
-@media (min-width: 961px){
-  .reviewCard .avatar{display:block !important; margin:18px auto 0 !important;}
-  .reviewCard .h3{text-align:center !important;}
-}
-
-/* Prices: center heading block and move conditions up */
-#prices .sectionHead{
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  text-align:center !important;
-  gap:10px !important;
-  margin-bottom:26px !important;
-}
-#prices .sectionHead .h2{margin-bottom:0 !important;}
-#prices .sectionHead .priceIntro,
-#prices .sectionHead .pricePaymentNote{
-  max-width:28ch !important;
-  text-align:center !important;
-  margin-left:auto !important;
-  margin-right:auto !important;
-}
-#prices .sectionHead .pricePaymentNote{order:2 !important; margin-top:2px !important;}
-#prices .sectionHead .priceIntro{order:1 !important;}
-#prices.section{padding-bottom:34px !important;}
-
-/* Remove spare space below works and prices */
-#works.section{padding-bottom:26px !important;}
-#works .worksMore{margin-top:10px !important; margin-bottom:0 !important;}
-
-/* Mobile specific tighter spacing */
-@media (max-width: 960px){
-  #works.section{padding-bottom:18px !important;}
-  #prices.section{padding-top:44px !important; padding-bottom:20px !important;}
-  #prices .sectionHead{margin-bottom:18px !important;}
-  #prices .sectionHead .priceIntro,
-  #prices .sectionHead .pricePaymentNote{max-width:18ch !important;}
-  .priceGallery{margin-top:8px !important;}
-}
-
-
-/* --- v11: care teaser mobile text width + Meta Pixel added to all HTML heads --- */
-.careTeaser .h2{
-  max-width:12ch !important;
-}
-.careTeaser .muted{
-  max-width:38ch !important;
-}
-.careTeaser .btn{
-  margin-top:6px;
-}
-@media (min-width: 961px){
-  .careTeaser .h2{
-    margin-bottom:26px !important;
-  }
-  .careTeaser .muted{
-    margin-top:0 !important;
-    max-width:42ch !important;
-  }
-}
-@media (max-width: 720px){
-  .careTeaser{
-    padding:64px 18px 70px !important;
-  }
-  .careTeaser > div:first-child{
-    width:100% !important;
-    max-width:100% !important;
-  }
-  .careTeaser .h2{
-    max-width:11.5ch !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
-    font-size:clamp(54px,15vw,72px) !important;
-    line-height:1.02 !important;
-  }
-  .careTeaser .muted{
-    max-width:31ch !important;
-    margin-left:auto !important;
-    margin-right:auto !important;
-    line-height:1.65 !important;
-    text-align:center !important;
-  }
-  .careTeaser .ctaRow{
-    margin-top:26px !important;
-  }
-  .careTeaser .btn{
-    width:min(100%,330px) !important;
-  }
-}
-
-
 /* --- v14: price order emphasis + mobile readability + autofill visibility --- */
 .pricePaymentNote strong,
 .priceNoteBig strong{
@@ -1331,4 +955,101 @@ body{touch-action:pan-y;}
   caret-color:var(--text) !important;
   -webkit-box-shadow:0 0 0 1000px #111 inset !important;
   transition:background-color 9999s ease-in-out 0s !important;
+}
+
+
+/* --- v15: requested copy layout and price/care readability --- */
+#reviews .sectionHead .muted a{
+  color:var(--text) !important;
+  text-decoration:underline !important;
+  text-underline-offset:4px !important;
+}
+#prices .sectionHead{
+  margin-bottom:30px !important;
+}
+#prices .sectionHead .pricePaymentNote{
+  order:1 !important;
+  max-width:min(760px,88vw) !important;
+  font-size:clamp(18px,2.2vw,25px) !important;
+  line-height:1.55 !important;
+  font-weight:600 !important;
+  letter-spacing:.01em !important;
+  margin:18px auto 14px !important;
+}
+#prices .sectionHead .pricePaymentNote strong{
+  font-weight:950 !important;
+  color:#fff !important;
+  text-shadow:0 0 12px rgba(255,255,255,.13) !important;
+}
+#prices .sectionHead .pricePaymentNote span{
+  font-size:.82em !important;
+  font-weight:650 !important;
+  color:rgba(241,236,229,.74) !important;
+}
+#prices .sectionHead .priceIntro{
+  order:2 !important;
+  max-width:48ch !important;
+  margin:0 auto !important;
+}
+.priceFootNote{display:none !important;}
+#booking-info .reviews .reviewText{line-height:1.75 !important;}
+#faq .reviewText{line-height:1.72 !important;}
+.page-care .careHero .p,
+.page-care .careHero .muted{
+  margin-top:28px !important;
+}
+.page-care .careHero .h1{
+  margin-bottom:18px !important;
+}
+.careList li{line-height:1.7 !important;}
+@media (max-width:640px){
+  #prices .sectionHead .pricePaymentNote{
+    max-width:88vw !important;
+    font-size:18px !important;
+    line-height:1.65 !important;
+  }
+  #prices .sectionHead .priceIntro{
+    max-width:84vw !important;
+  }
+}
+
+
+/* --- v16: merch availability CTA + more air in tattoo-care hero --- */
+.merchStockBtn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  min-height:46px !important;
+  margin-top:10px !important;
+  padding:12px 14px !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  color:rgba(241,236,229,.92) !important;
+  background:rgba(255,255,255,.035) !important;
+  text-decoration:none !important;
+  text-align:center !important;
+  font-size:13px !important;
+  line-height:1.25 !important;
+  letter-spacing:.06em !important;
+  text-transform:uppercase !important;
+  transition:background .2s ease,border-color .2s ease,transform .2s ease !important;
+}
+.merchStockBtn:hover{
+  background:rgba(255,255,255,.08) !important;
+  border-color:rgba(255,255,255,.32) !important;
+  transform:translateY(-1px) !important;
+}
+.merchBody{padding-bottom:0 !important;}
+.merchMeta{display:none !important;}
+.page-care .careHero .p,
+.page-care .careHero .muted{
+  margin-top:clamp(46px,5vw,78px) !important;
+}
+.page-care .careHero .h1{
+  margin-bottom:clamp(28px,3vw,52px) !important;
+}
+@media (max-width:640px){
+  .merchStockBtn{font-size:11px !important;min-height:42px !important;padding:10px 10px !important;}
+  .page-care .careHero .p,
+  .page-care .careHero .muted{margin-top:38px !important;}
 }

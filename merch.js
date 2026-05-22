@@ -52,6 +52,11 @@
     `;
   }
 
+
+  function buildTelegramMessageUrl(item) {
+    return 'https://t.me/bazookatattoo';
+  }
+
   const merchCollections = [
     {
       id: "black",
@@ -605,9 +610,15 @@
                 </div>
                 <div class="merchBody">
                   <div class="merchTitle">${escapeHtml(t(item.titleRu, item.titleEn))}</div>
-                  <div class="merchMeta">${escapeHtml(t(item.priceRu, item.priceEn))}</div>
                 </div>
               </button>
+              <a
+                class="merchStockBtn"
+                href="${escapeHtml(buildTelegramMessageUrl(item))}"
+                target="_blank"
+                rel="noopener">
+                ${escapeHtml(t("Уточнить наличие в Telegram @bazookatattoo", "Check availability via Telegram @bazookatattoo"))}
+              </a>
             </article>
           `,
             )
@@ -659,7 +670,10 @@
     if (titleEl)
       titleEl.textContent = t(currentItem.titleRu, currentItem.titleEn);
     if (priceEl)
-      priceEl.textContent = t(currentItem.priceRu, currentItem.priceEn);
+      priceEl.textContent = t(
+        "Уточнить наличие в Telegram @bazookatattoo",
+        "Check availability via Telegram @bazookatattoo",
+      );
     if (descriptionEl)
       descriptionEl.textContent = t(
         currentItem.descriptionRu,
@@ -667,7 +681,10 @@
       );
 
     if (instagramBtn) instagramBtn.href = currentItem.instagram;
-    if (telegramBtn) telegramBtn.href = currentItem.telegram;
+    if (telegramBtn) {
+      telegramBtn.href = buildTelegramMessageUrl(currentItem);
+      telegramBtn.textContent = t("Уточнить наличие в Telegram @bazookatattoo", "Check availability in Telegram @bazookatattoo");
+    }
   }
 
   function openModalByIds(collectionId, itemId) {
