@@ -568,6 +568,7 @@
 
       const normalizedEmail = (email || "").trim().toLowerCase();
       const normalizedPhone = (phone || "").replace(/[^\d+]/g, "");
+      const leadEventId = "lead_" + Date.now();
 
       if (!normalizedEmail) {
         alert(isEn ? "Please enter your email." : "Пожалуйста, введи email.");
@@ -617,6 +618,7 @@
             clientID,
             page: location.href,
             lang: document.documentElement.lang || "",
+            event_id: leadEventId,
           }),
         });
 
@@ -654,11 +656,9 @@
         form.reset();
         if (submitBtn) submitBtn.disabled = false;
 
-        const leadEventId = 'lead_' + Date.now();
-
-window.location.href = isEn
-  ? `/en/thank-you.html?event_id=${encodeURIComponent(leadEventId)}`
-  : `/thank-you.html?event_id=${encodeURIComponent(leadEventId)}`;
+        window.location.href = isEn
+          ? `/en/thank-you.html?event_id=${encodeURIComponent(leadEventId)}`
+          : `/thank-you.html?event_id=${encodeURIComponent(leadEventId)}`;
       } catch (error) {
         setStatus(
           form.dataset.fail ||
@@ -674,7 +674,7 @@ window.location.href = isEn
 
   function initInstagramConversion() {
     const instaBtn = document.querySelector(
-      'a[href*="instagram.com/«Bazooka»tats"]',
+      'a[href*="instagram.com/bazookatats"]',
     );
     if (!instaBtn) return;
 
@@ -687,6 +687,22 @@ window.location.href = isEn
     });
   }
 
+  function initMetaContactTracking() {
+    const contactLinks = document.querySelectorAll(
+      'a[href*="wa.me"], a[href*="whatsapp"], a[href*="t.me"], a[href*="telegram"], a[href*="instagram.com"]',
+    );
+
+    if (!contactLinks.length) return;
+
+    contactLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (typeof fbq === "function") {
+          fbq("track", "Contact");
+        }
+      });
+    });
+  }
+
   function init() {
     renderWorksGallery();
     initMobile();
@@ -696,6 +712,7 @@ window.location.href = isEn
     initScrollSpy();
     initContactForm();
     initInstagramConversion();
+    initMetaContactTracking();
 
     if ("requestIdleCallback" in window) {
       window.requestIdleCallback(() => initLightbox(), { timeout: 1200 });
