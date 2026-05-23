@@ -654,7 +654,11 @@
         form.reset();
         if (submitBtn) submitBtn.disabled = false;
 
-        window.location.href = isEn ? "/en/thank-you.html" : "/thank-you.html";
+        const leadEventId = 'lead_' + Date.now();
+
+window.location.href = isEn
+  ? `/en/thank-you.html?event_id=${encodeURIComponent(leadEventId)}`
+  : `/thank-you.html?event_id=${encodeURIComponent(leadEventId)}`;
       } catch (error) {
         setStatus(
           form.dataset.fail ||

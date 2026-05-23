@@ -591,6 +591,8 @@
       );
       if (submitBtn) submitBtn.disabled = true;
 
+      const leadEventId = "lead_" + Date.now();
+
       try {
         if (typeof gtag === "function") {
           const userData = {
@@ -617,6 +619,7 @@
             clientID,
             page: location.href,
             lang: document.documentElement.lang || "",
+            event_id: leadEventId,
           }),
         });
 
@@ -654,7 +657,9 @@
         form.reset();
         if (submitBtn) submitBtn.disabled = false;
 
-        window.location.href = isEn ? "/en/thank-you.html" : "/thank-you.html";
+        window.location.href = isEn
+          ? `/en/thank-you.html?event_id=${encodeURIComponent(leadEventId)}`
+          : `/thank-you.html?event_id=${encodeURIComponent(leadEventId)}`;
       } catch (error) {
         setStatus(
           form.dataset.fail ||
@@ -665,6 +670,23 @@
         );
         if (submitBtn) submitBtn.disabled = false;
       }
+    });
+  }
+
+
+  function initMetaContactTracking() {
+    const contactLinks = document.querySelectorAll(
+      'a[href*="wa.me"], a[href*="whatsapp"], a[href*="t.me"], a[href*="telegram"], a[href*="instagram.com"]',
+    );
+
+    if (!contactLinks.length) return;
+
+    contactLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (typeof fbq === "function") {
+          fbq("track", "Contact");
+        }
+      });
     });
   }
 
@@ -683,21 +705,6 @@
     });
   }
 
-
-  function initMetaContactEvents() {
-    const contactLinks = document.querySelectorAll(
-      'a[href*="wa.me"], a[href*="whatsapp"], a[href*="t.me"], a[href*="telegram"], a[href*="instagram.com"]',
-    );
-
-    contactLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        if (typeof fbq === "function") {
-          fbq("track", "Contact");
-        }
-      });
-    });
-  }
-
   function init() {
     renderWorksGallery();
     initMobile();
@@ -706,8 +713,8 @@
     initInitialHash();
     initScrollSpy();
     initContactForm();
+    initMetaContactTracking();
     initInstagramConversion();
-    initMetaContactEvents();
 
     if ("requestIdleCallback" in window) {
       window.requestIdleCallback(() => initLightbox(), { timeout: 1200 });

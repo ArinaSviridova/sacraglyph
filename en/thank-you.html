@@ -103,9 +103,14 @@ src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
     <script>
-      if (typeof fbq === "function") {
-        fbq("track", "Lead");
-      }
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const eventId = params.get("event_id") || ("lead_" + Date.now());
+
+        if (typeof fbq === "function") {
+          fbq("track", "Lead", {}, { eventID: eventId });
+        }
+      })();
     </script>
 
   </head>
