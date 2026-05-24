@@ -653,6 +653,10 @@
           });
         }
 
+        if (typeof fbq === "function") {
+          fbq("track", "Lead", {}, { eventID: leadEventId });
+        }
+
         form.reset();
         if (submitBtn) submitBtn.disabled = false;
 
