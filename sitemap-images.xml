@@ -5,9 +5,7 @@
 
   <url>
     <loc>https://sacraglyph.com/</loc>
-
     <image:image><image:loc>https://sacraglyph.com/assets/img/hero/hero-1280.webp</image:loc></image:image>
-
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-1-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-2-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-3-1600.webp</image:loc></image:image>
@@ -38,14 +36,12 @@
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-30-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-31-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-32-1600.webp</image:loc></image:image>
-
     <image:image><image:loc>https://sacraglyph.com/assets/img/prices/1-price-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/prices/2-price-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/prices/3-price-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/prices/4-price-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/prices/5-price-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/prices/6-price-1600.webp</image:loc></image:image>
-
     <image:image><image:loc>https://sacraglyph.com/assets/img/reviews/review-1-160.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/reviews/review-2-160.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/reviews/review-3-160.webp</image:loc></image:image>
@@ -53,50 +49,41 @@
 
   <url>
     <loc>https://sacraglyph.com/en/</loc>
-
     <image:image><image:loc>https://sacraglyph.com/assets/img/hero/hero-1280.webp</image:loc></image:image>
-
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-1-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-2-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-3-1600.webp</image:loc></image:image>
     <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-4-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-6-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-7-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-8-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-10-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-11-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-12-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-13-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-14-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-15-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-16-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-17-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-18-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-19-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-20-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-21-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-22-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-23-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-24-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-25-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-26-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-27-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-28-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-29-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-30-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-31-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/works/work-32-1600.webp</image:loc></image:image>
+  </url>
 
-    <image:image><image:loc>https://sacraglyph.com/assets/img/prices/1-price-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/prices/2-price-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/prices/3-price-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/prices/4-price-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/prices/5-price-1600.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/prices/6-price-1600.webp</image:loc></image:image>
+  <url>
+    <loc>https://sacraglyph.com/merch.html</loc>
+    <image:image><image:loc>https://sacraglyph.com/assets/img/hero/hero-1280.webp</image:loc></image:image>
+  </url>
 
-    <image:image><image:loc>https://sacraglyph.com/assets/img/reviews/review-1-160.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/reviews/review-2-160.webp</image:loc></image:image>
-    <image:image><image:loc>https://sacraglyph.com/assets/img/reviews/review-3-160.webp</image:loc></image:image>
+  <url>
+    <loc>https://sacraglyph.com/en/merch.html</loc>
+    <image:image><image:loc>https://sacraglyph.com/assets/img/hero/hero-1280.webp</image:loc></image:image>
+  </url>
+
+  <url>
+    <loc>https://sacraglyph.com/tattoo-master-batumi.html</loc>
+    <image:image><image:loc>https://sacraglyph.com/assets/img/hero/hero-1280.webp</image:loc></image:image>
+  </url>
+
+  <url>
+    <loc>https://sacraglyph.com/en/tattoo-artist-batumi.html</loc>
+    <image:image><image:loc>https://sacraglyph.com/assets/img/hero/hero-1280.webp</image:loc></image:image>
+  </url>
+
+  <url>
+    <loc>https://sacraglyph.com/tattoo-care.html</loc>
+    <image:image><image:loc>https://sacraglyph.com/assets/img/hero/hero-1280.webp</image:loc></image:image>
+  </url>
+
+  <url>
+    <loc>https://sacraglyph.com/en/tattoo-care.html</loc>
+    <image:image><image:loc>https://sacraglyph.com/assets/img/hero/hero-1280.webp</image:loc></image:image>
   </url>
 
 </urlset>
