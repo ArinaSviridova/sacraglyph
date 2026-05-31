@@ -48,6 +48,10 @@ export async function handler(event) {
     const clientID = (data.clientID || "").trim();
     const page = (data.page || "").trim();
     const lang = (data.lang || "").trim();
+    const fbp = (data.fbp || "").trim();
+    const fbc = (data.fbc || "").trim();
+    const externalId = (data.external_id || "").trim();
+    const referer = (data.referer || "").trim();
     const eventId = (data.event_id || "").trim() || `lead_${Date.now()}`;
 
     if (website) {
@@ -104,6 +108,10 @@ export async function handler(event) {
             clientID,
             page,
             lang,
+            fbp,
+            fbc,
+            external_id: externalId,
+            referer,
             event_id: eventId,
           }),
         })
@@ -113,6 +121,9 @@ export async function handler(event) {
     const normalizedPhone = normalizePhone(phone);
     const userAgent =
       event.headers["user-agent"] || event.headers["User-Agent"] || "";
+    const forwardedFor =
+      event.headers["x-forwarded-for"] || event.headers["X-Forwarded-For"] || "";
+    const clientIp = forwardedFor.split(",")[0].trim();
 
     if (normalizedEmail) {
       userData.em = [sha256(normalizedEmail)];
@@ -124,6 +135,22 @@ export async function handler(event) {
 
     if (userAgent) {
       userData.client_user_agent = userAgent;
+    }
+
+    if (clientIp) {
+      userData.client_ip_address = clientIp;
+    }
+
+    if (fbp) {
+      userData.fbp = fbp;
+    }
+
+    if (fbc) {
+      userData.fbc = fbc;
+    }
+
+    if (externalId) {
+      userData.external_id = [sha256(externalId)];
     }
 
     const metaPromise =
@@ -142,6 +169,11 @@ export async function handler(event) {
                     action_source: "website",
                     event_source_url: page || "https://sacraglyph.com/",
                     user_data: userData,
+                    custom_data: {
+                      content_name: "tattoo_booking",
+                      page: page || "",
+                      lang: lang || "",
+                    },
                   },
                 ],
               }),

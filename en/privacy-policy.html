@@ -103,25 +103,7 @@
           alt=""
         /></div
     ></noscript>
-
-    <!-- Meta Pixel Code --> 
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1472821194302234');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
-  </head>
+</head>
   <body>
     <header class="header">
       <div class="container headerRow">
@@ -137,12 +119,25 @@ src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
         >
         <nav class="nav">
           <a href="/en/">Home</a><a href="/en/#works">Works</a
-          ><a href="/en/#prices">Pricing</a><a href="/en/#contacts">Contact</a>
+          ><a href="/en/#prices">Pricing</a><a href="/en/#contacts">Contact</a><a href="/en/tattoo-care.html">Aftercare</a>
         </nav>
         <div class="headerActions">
           <a class="langBtn" href="/privacy-policy.html" hreflang="ru">RU</a>
+          <button class="burger" type="button" data-burger aria-label="Menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
         </div>
       </div>
+      <nav class="mobileNav" data-mobile aria-label="Mobile navigation">
+        <a href="/en/">Home</a>
+        <a href="/en/#works">Works</a>
+        <a href="/en/#prices">Pricing</a>
+        <a href="/en/#contacts">Contact</a>
+        <a href="/en/tattoo-care.html">Aftercare</a>
+        <a class="langBtn" href="/privacy-policy.html" hreflang="ru">RU</a>
+      </nav>
     </header>
     <main>
       <section
@@ -212,7 +207,33 @@ src="https://www.facebook.com/tr?id=1472821194302234&ev=PageView&noscript=1"
           ><a href="/en/privacy-policy.html">Privacy Policy</a>
         </div>
       </div>
-    </footer>
+    
+<div class="contactWidget" data-contact-widget hidden>
+  <button class="contactWidgetFab" type="button" data-contact-open aria-controls="contactWidgetPanel" aria-expanded="false">
+    <span class="contactWidgetFabText">Booking form</span>
+    <span class="contactWidgetFabDot" aria-hidden="true"></span>
+  </button>
+  <aside class="contactWidgetPanel" id="contactWidgetPanel" aria-label="Booking form" aria-hidden="true">
+    <button class="contactWidgetClose" type="button" data-contact-close aria-label="Close form">×</button>
+    <div class="contactWidgetIntro">
+      <p class="contactWidgetKicker">Booking</p>
+      <h2 class="contactWidgetTitle">Fill in the contact form - I will get back to you</h2>
+      <p class="contactWidgetText">Leave your email, phone, WhatsApp or Telegram. Browser autofill is enabled, because occasionally civilisation produces something useful.</p>
+    </div>
+    <form autocomplete="on" class="contactForm contactWidgetForm" data-fail="Error. Please try again later." data-sending="Sending..." data-success="Sent. I will contact you soon." id="contactForm" method="POST" name="contact" action="/.netlify/functions/contact">
+      <input name="form-name" type="hidden" value="contact" />
+      <input name="clientID" type="hidden" autocomplete="off" />
+      <input aria-hidden="true" autocomplete="off" name="website" tabindex="-1" type="text" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" />
+      <label class="field"><span class="fieldLabel">Name</span><input class="input" name="name" type="text" autocomplete="name" autocapitalize="words" inputmode="text" placeholder="How should I call you" /></label>
+      <label class="field"><span class="fieldLabel">Email *</span><input class="input" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@email.com" required /></label>
+      <label class="field"><span class="fieldLabel">Phone / WhatsApp / Telegram</span><input class="input" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+995..." /></label>
+      <p class="policyText">By submitting this form, you agree to data processing for reply purposes.</p>
+      <div class="formActions"><button class="btn primary" type="submit">Send request</button><p aria-live="polite" class="formStatus" id="contactFormStatus"></p></div>
+    </form>
+  </aside>
+</div>
+
+</footer>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>

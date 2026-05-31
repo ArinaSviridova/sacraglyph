@@ -1783,3 +1783,17 @@ img, picture, video, canvas, svg {
     padding: 12px !important;
   }
 }
+
+/* ===== FIX 2026-05-31: static hero and fixed navigation ===== */
+html{scroll-padding-top:106px}
+body{padding-top:86px}
+.header{position:fixed!important;top:0;left:0;right:0;width:100%;z-index:9999}
+#about.section{background-image:none!important}
+.heroMedia{opacity:1!important;background:#030406}
+.heroMedia img{animation:none!important}
+@media (max-width:720px){
+  html{scroll-padding-top:96px}
+  body{padding-top:76px}
+  .headerRow{min-height:76px}
+  .mobileNav{max-height:calc(100vh - 86px);overflow:auto}
+}
