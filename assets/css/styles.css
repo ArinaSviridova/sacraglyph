@@ -1784,16 +1784,248 @@ img, picture, video, canvas, svg {
   }
 }
 
-/* ===== FIX 2026-05-31: static hero and fixed navigation ===== */
-html{scroll-padding-top:106px}
-body{padding-top:86px}
-.header{position:fixed!important;top:0;left:0;right:0;width:100%;z-index:9999}
-#about.section{background-image:none!important}
-.heroMedia{opacity:1!important;background:#030406}
-.heroMedia img{animation:none!important}
+
+/* ===== FINAL CLIENT FIX: original contact form + fixed static layout ===== */
+html,
+body {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  touch-action: pan-y !important;
+  overscroll-behavior-x: none !important;
+  -webkit-text-size-adjust: 100% !important;
+}
+
+body {
+  padding-top: 86px !important;
+}
+
+.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 9999 !important;
+  transform: none !important;
+  will-change: auto !important;
+}
+
+#contact-form {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#contact-form .container {
+  display: grid !important;
+}
+
+.contactWidget,
+[data-contact-widget],
+.contactWidgetPanel,
+.contactWidgetFab {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#contacts .contactsGrid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(110px, 1fr)) !important;
+  gap: 0 !important;
+  max-width: 860px !important;
+  width: 100% !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  overflow: hidden !important;
+}
+
+#contacts .contactTile {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  place-items: center !important;
+  gap: 10px !important;
+  min-height: 132px !important;
+  padding: 22px 12px !important;
+  text-align: center !important;
+  border-right: 1px solid rgba(255,255,255,.10) !important;
+  border-bottom: 0 !important;
+  background: rgba(255,255,255,.015) !important;
+  transform: none !important;
+}
+
+#contacts .contactTile:last-child {
+  border-right: 0 !important;
+}
+
+#contacts .contactTile::before {
+  position: static !important;
+  display: block !important;
+  margin: 0 auto 6px !important;
+  width: 40px !important;
+  height: 40px !important;
+  opacity: .96 !important;
+  transform: none !important;
+}
+
+#contacts .contactTile::after {
+  display: none !important;
+}
+
+#contacts .contactTitle,
+#contacts .contactMeta {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  max-width: 100% !important;
+  text-align: center !important;
+}
+
+#contacts .contactTitle {
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+  letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+  color: rgba(241,236,229,.88) !important;
+}
+
+#contacts .contactMeta {
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+  color: rgba(241,236,229,.58) !important;
+}
+
+.heroMedia img,
+#about .heroMedia img {
+  transform: none !important;
+  scale: 1 !important;
+  max-width: 100% !important;
+}
+
+.heroGrid,
+.heroMedia,
+.section,
+.container,
+.mobileNav {
+  max-width: 100% !important;
+}
+
+@media (max-width: 900px) {
+  body {
+    padding-top: 68px !important;
+  }
+
+  .headerRow {
+    min-height: 68px !important;
+  }
+
+  .mobileNav {
+    position: fixed !important;
+    top: 68px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-height: calc(100dvh - 86px) !important;
+    overflow-y: auto !important;
+    z-index: 9998 !important;
+  }
+
+  #contacts .contactsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    max-width: none !important;
+  }
+
+  #contacts .contactTile {
+    min-height: 112px !important;
+    padding: 16px 10px !important;
+    border-bottom: 1px solid rgba(255,255,255,.10) !important;
+  }
+
+  #contacts .contactTile:nth-child(2n) {
+    border-right: 0 !important;
+  }
+
+  #contacts .contactTitle {
+    font-size: 11px !important;
+    letter-spacing: .12em !important;
+  }
+
+  #contacts .contactMeta {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  :root {
+    --container: calc(100% - 28px) !important;
+  }
+
+  body {
+    min-width: 0 !important;
+  }
+
+  .heroGrid,
+  .section,
+  .container,
+  .contactForm,
+  .input,
+  .btn {
+    max-width: 100% !important;
+  }
+}
+
+
+/* --- works horizontal scroll hint --- */
+#works .container{position:relative;}
+.galleryScrollHint{
+  position:absolute;
+  z-index:8;
+  right:clamp(16px,3vw,44px);
+  top:50%;
+  width:54px;
+  height:54px;
+  border:1px solid rgba(241,236,229,.42);
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(3,4,6,.72);
+  color:var(--text);
+  font-size:30px;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 18px 50px rgba(0,0,0,.38);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  transform:translateY(-50%);
+  transition:opacity .22s ease, transform .22s ease, border-color .22s ease, background .22s ease;
+}
+.galleryScrollHint:hover{
+  border-color:rgba(241,236,229,.72);
+  background:rgba(20,20,22,.88);
+  transform:translateY(-50%) translateX(3px);
+}
+.galleryScrollHint.is-hidden{
+  opacity:0;
+  pointer-events:none;
+}
+#works.has-horizontal-gallery .gallery{
+  padding-right:72px !important;
+  -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 calc(100% - 92px),transparent 100%);
+  mask-image:linear-gradient(90deg,#000 0%,#000 calc(100% - 92px),transparent 100%);
+}
 @media (max-width:720px){
-  html{scroll-padding-top:96px}
-  body{padding-top:76px}
-  .headerRow{min-height:76px}
-  .mobileNav{max-height:calc(100vh - 86px);overflow:auto}
+  .galleryScrollHint{
+    right:18px;
+    top:auto;
+    bottom:86px;
+    width:48px;
+    height:48px;
+    font-size:27px;
+    transform:none;
+  }
+  .galleryScrollHint:hover{transform:translateX(2px);}
+  #works.has-horizontal-gallery .gallery{padding-right:64px !important;}
 }

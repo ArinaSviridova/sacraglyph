@@ -3,7 +3,7 @@
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" name="viewport" />
     <meta content="89c37603ba4dd84f1fad88d057c767f3" name="p:domain_verify" />
     <title>
       Тату Батуми | Тату мастер Nikita Bazooka Tattoo - lettering, blackwork,
@@ -272,7 +272,7 @@
           >
           <a href="#faq">FAQ</a>
           <a
-            href="#contact-widget" data-contact-open
+            href="#contact-form"
             onclick="
               ym(108392582, 'reachGoal', 'booking_button_click');
               return true;
@@ -324,7 +324,7 @@
         >
         <a href="#faq">FAQ</a>
         <a
-          href="#contact-widget" data-contact-open
+          href="#contact-form"
           onclick="
             ym(108392582, 'reachGoal', 'booking_button_click');
             return true;
@@ -1282,30 +1282,6 @@
         </div>
       </div>
     
-<div class="contactWidget" data-contact-widget hidden>
-  <button class="contactWidgetFab" type="button" data-contact-open aria-controls="contactWidgetPanel" aria-expanded="false">
-    <span class="contactWidgetFabText">Форма записи</span>
-    <span class="contactWidgetFabDot" aria-hidden="true"></span>
-  </button>
-  <aside class="contactWidgetPanel" id="contactWidgetPanel" aria-label="Форма записи" aria-hidden="true">
-    <button class="contactWidgetClose" type="button" data-contact-close aria-label="Закрыть форму">×</button>
-    <div class="contactWidgetIntro">
-      <p class="contactWidgetKicker">Запись</p>
-      <h2 class="contactWidgetTitle">Заполни контактную форму - я свяжусь с тобой</h2>
-      <p class="contactWidgetText">Можно указать email, телефон, WhatsApp или Telegram. Браузер сам подставит сохранённые данные, потому что иногда технологии всё-таки работают, а не просто мигают.</p>
-    </div>
-    <form autocomplete="on" class="contactForm contactWidgetForm" data-fail="Ошибка. Попробуй ещё раз позже." data-sending="Отправляю..." data-success="Отправлено. Я скоро свяжусь с тобой." id="contactForm" method="POST" name="contact" action="/.netlify/functions/contact">
-      <input name="form-name" type="hidden" value="contact" />
-      <input name="clientID" type="hidden" autocomplete="off" />
-      <input aria-hidden="true" autocomplete="off" name="website" tabindex="-1" type="text" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" />
-      <label class="field"><span class="fieldLabel">Имя</span><input class="input" name="name" type="text" autocomplete="name" autocapitalize="words" inputmode="text" placeholder="Как к тебе обращаться" /></label>
-      <label class="field"><span class="fieldLabel">Email *</span><input class="input" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@email.com" required /></label>
-      <label class="field"><span class="fieldLabel">Телефон / WhatsApp / Telegram</span><input class="input" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+995..." /></label>
-      <p class="policyText">Отправляя форму, ты соглашаешься на обработку данных для связи по заявке.</p>
-      <div class="formActions"><button class="btn primary" type="submit">Отправить заявку</button><p aria-live="polite" class="formStatus" id="contactFormStatus"></p></div>
-    </form>
-  </aside>
-</div>
 
 </footer>
     <script>

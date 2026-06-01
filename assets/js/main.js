@@ -228,6 +228,44 @@
       .join("");
   }
 
+
+
+  function initWorksScrollHint() {
+    const gallery = document.getElementById("worksGallery");
+    const worksSection = document.getElementById("works");
+    if (!gallery || !worksSection) return;
+
+    const container = gallery.closest(".container") || worksSection;
+    if (container.querySelector("[data-gallery-scroll-next]")) return;
+
+    const lang = (document.documentElement.lang || "ru").toLowerCase();
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "galleryScrollHint";
+    button.setAttribute("data-gallery-scroll-next", "");
+    button.setAttribute(
+      "aria-label",
+      lang === "en" ? "Scroll works sideways" : "Листать работы в бок",
+    );
+    button.innerHTML = '<span aria-hidden="true">→</span>';
+    container.appendChild(button);
+
+    const update = () => {
+      const canScroll = gallery.scrollWidth > gallery.clientWidth + 8;
+      const atEnd = gallery.scrollLeft + gallery.clientWidth >= gallery.scrollWidth - 24;
+      button.classList.toggle("is-hidden", !canScroll || atEnd);
+      worksSection.classList.toggle("has-horizontal-gallery", canScroll);
+    };
+
+    button.addEventListener("click", () => {
+      gallery.scrollBy({ left: Math.max(260, gallery.clientWidth * 0.72), behavior: "smooth" });
+    });
+
+    gallery.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    requestAnimationFrame(update);
+  }
+
   function headerOffset() {
     return (el.header ? el.header.offsetHeight : 0) + 20;
   }
@@ -709,6 +747,7 @@
 
   function init() {
     renderWorksGallery();
+    initWorksScrollHint();
     initMobile();
     initAnchors();
     initLazyBackgrounds();
@@ -732,4 +771,71 @@
   } else {
     init();
   }
+})();
+
+/* Final contact widget behaviour */
+(function () {
+  function ready(fn) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", fn, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  ready(function () {
+    const widget = document.querySelector("[data-contact-widget]");
+    if (!widget) return;
+
+    widget.hidden = false;
+
+    const panel = widget.querySelector(".contactWidgetPanel");
+    const openButtons = document.querySelectorAll("[data-contact-open]");
+    const closeButtons = widget.querySelectorAll("[data-contact-close]");
+    const fab = widget.querySelector(".contactWidgetFab");
+    let wasClosedByUser = false;
+    let autoShown = false;
+
+    function openWidget(source) {
+      widget.classList.add("is-open");
+      if (panel) panel.setAttribute("aria-hidden", "false");
+      if (fab) fab.setAttribute("aria-expanded", "true");
+      if (source === "auto") autoShown = true;
+    }
+
+    function closeWidget() {
+      widget.classList.remove("is-open");
+      if (panel) panel.setAttribute("aria-hidden", "true");
+      if (fab) fab.setAttribute("aria-expanded", "false");
+      wasClosedByUser = true;
+    }
+
+    openButtons.forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        openWidget("click");
+      });
+    });
+
+    closeButtons.forEach((button) => {
+      button.addEventListener("click", closeWidget);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && widget.classList.contains("is-open")) {
+        closeWidget();
+      }
+    });
+
+    window.addEventListener("scroll", () => {
+      if (wasClosedByUser || autoShown || widget.classList.contains("is-open")) return;
+      const isMobile = window.matchMedia("(max-width: 780px)").matches;
+      if (!isMobile) return;
+      const scrollBottom = window.scrollY + window.innerHeight;
+      const trigger = Math.max(document.documentElement.scrollHeight - 460, window.innerHeight);
+      if (scrollBottom >= trigger) {
+        openWidget("auto");
+      }
+    }, { passive: true });
+  });
 })();
