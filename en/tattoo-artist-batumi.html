@@ -1067,6 +1067,9 @@
             <form
               autocomplete="on"
               class="contactForm"
+              data-lpignore="false"
+              data-1p-ignore="false"
+              data-form-type="contact"
               data-fail="Error. Please try again later."
               data-sending="Sending..."
               data-success="Sent. I will contact you soon."
@@ -1091,6 +1094,7 @@
                 <input
                   class="input"
                   name="name"
+                  id="contact-name"
                   type="text"
                   autocomplete="name"
                   autocapitalize="words"
@@ -1104,6 +1108,7 @@
                 <input
                   class="input"
                   name="email"
+                  id="contact-email"
                   type="email"
                   autocomplete="email"
                   inputmode="email"
@@ -1117,6 +1122,7 @@
                 <input
                   class="input"
                   name="phone"
+                  id="contact-phone"
                   type="tel"
                   autocomplete="tel"
                   inputmode="tel"
