@@ -262,7 +262,6 @@
             >Форма</a
           >
           <a href="#contacts">Контакты</a>
-          <a href="#care-memo-link">Памятка</a>
           <a href="/tattoo-master-batumi.html">Батуми</a>
           <a href="/merch.html">Мерч</a>
         </nav>
@@ -314,7 +313,6 @@
           >Форма</a
         >
         <a href="#contacts">Контакты</a>
-        <a href="#care-memo-link">Памятка</a>
         <a href="/tattoo-master-batumi.html">Батуми</a>
         <a href="/merch.html">Мерч</a>
         <a
@@ -372,42 +370,51 @@
               <h1 class="h1">Тату в Тбилиси</h1>
               <h2 class="h2">Никита Bazooka Tattoo</h2>
 
-              <p class="p">
-                Я работаю с татуировкой как с формой визуального письма.
-                Основные направления моей работы - леттеринг, каллиграфия и
-                абстрактная графика. В них меня интересует жест линии, ритм
-                знака и энергия, которая возникает между пустотой и формой.
-              </p>
-              <p class="p">
-                Sacraglyph - это название моего визуального языка. Через него я
-                исследую символ, орнамент и структуру письма, превращая их в
-                композиции, которые живут на теле так же естественно, как на
-                бумаге или холсте.
-              </p>
-              <p class="p">
-                Для меня важна не только сама татуировка, но и то, как она
-                взаимодействует с телом. Я работаю с направлением линий,
-                масштабом и пластикой формы, чтобы татуировка выглядела цельно и
-                сохраняла выразительность со временем.
-              </p>
-              <p class="p">
-                Каждая работа создаётся индивидуально. Я внимательно отношусь к
-                идее, ищу точную композицию и форму, которая будет честно
-                отражать характер человека.
-              </p>
-              <p class="p">
-                Если тебе близка эта эстетика - напиши мне, и мы обсудим будущую
-                работу.
-              </p>
-              <ul class="bullets">
-                <li>Авторский стиль</li>
-                <li>Чистая техника и аккуратная работа</li>
-                <li>Продуманная композиция</li>
-              </ul>
+              <div class="mobileTextReveal">
+                <input class="mobileTextRevealToggle" type="checkbox" id="hero-text-toggle-index" hidden />
+                <div class="mobileTextRevealBody">
+                  <p class="p">
+                  Я работаю с татуировкой как с формой визуального письма.
+                  Основные направления моей работы - леттеринг, каллиграфия и
+                  абстрактная графика. В них меня интересует жест линии, ритм
+                  знака и энергия, которая возникает между пустотой и формой.
+                </p>
+                <p class="p">
+                  Sacraglyph - это название моего визуального языка. Через него я
+                  исследую символ, орнамент и структуру письма, превращая их в
+                  композиции, которые живут на теле так же естественно, как на
+                  бумаге или холсте.
+                </p>
+                <p class="p">
+                  Для меня важна не только сама татуировка, но и то, как она
+                  взаимодействует с телом. Я работаю с направлением линий,
+                  масштабом и пластикой формы, чтобы татуировка выглядела цельно и
+                  сохраняла выразительность со временем.
+                </p>
+                <p class="p">
+                  Каждая работа создаётся индивидуально. Я внимательно отношусь к
+                  идее, ищу точную композицию и форму, которая будет честно
+                  отражать характер человека.
+                </p>
+                <p class="p">
+                  Если тебе близка эта эстетика - напиши мне, и мы обсудим будущую
+                  работу.
+                </p>
+                <ul class="bullets">
+                  <li>Авторский стиль</li>
+                  <li>Чистая техника и аккуратная работа</li>
+                  <li>Продуманная композиция</li>
+                </ul>
+                </div>
+                <label class="mobileTextRevealButton" for="hero-text-toggle-index" aria-label="Раскрыть полный текст о мастере">
+                  <span class="mobileTextRevealMore">Читать больше</span>
+                  <span class="mobileTextRevealLess">Скрыть</span>
+                  <span class="mobileTextRevealIcon" aria-hidden="true">↓</span>
+                </label>
+              </div>
               <div class="ctaRow">
                 <a class="btn" href="#works">Смотреть работы</a>
                 <a class="btn primary" href="#contacts">Связаться</a>
-                <a class="btn" href="/tattoo-master-batumi.html">Батуми</a>
               </div>
             </div>
           </div>
@@ -487,7 +494,7 @@
       >
         <div class="container">
           <div class="sectionHead">
-            <h2 class="h2">Работы</h2>
+            <h2 class="h2">Портфолио</h2>
             <p class="muted">Выбери фото - откроется крупнее</p>
           </div>
           <div class="gallery" data-gallery="" id="worksGallery"></div>
@@ -1012,6 +1019,16 @@
             <p class="muted">Частые вопросы о записи и стоимости</p>
           </div>
           <div class="reviews">
+            <article class="reviewCard faqCareCard">
+              <h3 class="h3">Рекомендации по уходу за тату</h3>
+              <p class="reviewText">
+                Коротко о подготовке к сеансу, уходе после татуировки и важных
+                противопоказаниях. Все рекомендации собраны на отдельной странице.
+              </p>
+              <div class="ctaRow faqCareCta">
+                <a class="btn secondary faqCareBtn" href="/tattoo-care.html">Открыть рекомендации</a>
+              </div>
+            </article>
             <article class="reviewCard">
               <h3 class="h3">Сколько стоит татуировка?</h3>
               <p class="reviewText">
@@ -1187,28 +1204,7 @@
           </div>
         </div>
       </section>
-      <section class="section careTeaserSection" id="care-memo-link">
-        <div class="container">
-          <div class="card careTeaser">
-            <div>
-              <div class="kicker">Перед сеансом и после него</div>
-              <h2 class="h2">Памятка по уходу за тату</h2>
-              <br />
-              <p class="muted">
-                Коротко: как подготовиться, как ухаживать после сеанса и какие
-                противопоказания важно обсудить заранее.
-              </p>
-            </div>
-            <div class="ctaRow">
-              <a class="btn primary" href="/tattoo-care.html"
-                >Открыть памятку</a
-              >
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div aria-hidden="true" class="lightbox" data-lightbox="">
+<div aria-hidden="true" class="lightbox" data-lightbox="">
         <button
           aria-label="Закрыть"
           class="lightboxClose"

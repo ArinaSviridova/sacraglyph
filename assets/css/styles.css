@@ -2371,3 +2371,205 @@ body {
     margin-bottom: 0 !important;
   }
 }
+
+
+/* --- v20: hero CTA order on mobile + portfolio heading typography --- */
+/* Keep the hero CTA focused: only portfolio + contact, no city-switch button in the hero. */
+#about .heroText .ctaRow a:nth-child(n+3){
+  display:none !important;
+}
+
+/* Portfolio heading should use the normal site typography, not the spaced technical label style. */
+#works .sectionHead .h2,
+#works .sectionHead h2.h2{
+  font-family:var(--font) !important;
+  font-size:clamp(56px,7.4vw,118px) !important;
+  line-height:.96 !important;
+  letter-spacing:-.065em !important;
+  text-transform:none !important;
+  font-weight:300 !important;
+  color:var(--text) !important;
+}
+#works .sectionHead .h2::before{
+  display:none !important;
+}
+
+@media (max-width:960px){
+  /* On mobile: kicker -> buttons -> main title, because making people scroll to find the obvious actions was a little too artistic. */
+  #about .heroText{
+    display:flex !important;
+    flex-direction:column !important;
+  }
+  #about .heroText .kicker{order:1 !important;}
+  #about .heroText .ctaRow{
+    order:2 !important;
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:14px !important;
+    width:100% !important;
+    margin:0 0 34px !important;
+  }
+  #about .heroText .ctaRow .btn{
+    width:100% !important;
+    min-height:58px !important;
+  }
+  #about .heroText > .h1,
+  #about .heroText > h1{order:3 !important;}
+  #about .heroText > .h2,
+  #about .heroText > h2{order:4 !important;}
+  #about .heroText > p{order:5 !important;}
+  #about .heroText > .bullets{order:6 !important;}
+
+  #works .sectionHead{
+    display:block !important;
+    margin-bottom:26px !important;
+  }
+  #works .sectionHead .h2,
+  #works .sectionHead h2.h2{
+    font-size:clamp(46px,13vw,74px) !important;
+    letter-spacing:-.06em !important;
+    text-align:left !important;
+    white-space:normal !important;
+  }
+}
+
+@media (max-width:520px){
+  #works .sectionHead .h2,
+  #works .sectionHead h2.h2{
+    font-size:clamp(42px,12.2vw,62px) !important;
+  }
+}
+
+
+/* Mobile hero intro collapse: keep the desktop text intact, spare mobile users the thesis. */
+.mobileTextReveal{display:contents}
+.mobileTextRevealToggle{display:none}
+.mobileTextRevealButton{display:none}
+.mobileTextRevealBody{display:contents}
+
+@media (max-width: 780px){
+  .mobileTextReveal{
+    display:block;
+    position:relative;
+    max-width:100%;
+  }
+  .mobileTextRevealBody{
+    display:block;
+    position:relative;
+    max-height:8.6em;
+    overflow:hidden;
+    transition:max-height .42s ease;
+  }
+  .mobileTextRevealBody::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:4.4em;
+    pointer-events:none;
+    background:linear-gradient(180deg, rgba(4,5,5,0), rgba(4,5,5,.96) 72%, rgba(4,5,5,1));
+  }
+  .mobileTextRevealToggle:checked ~ .mobileTextRevealBody{
+    max-height:1200px;
+  }
+  .mobileTextRevealToggle:checked ~ .mobileTextRevealBody::after{
+    opacity:0;
+  }
+  .mobileTextRevealButton{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    width:auto;
+    margin:10px 0 20px;
+    padding:12px 16px;
+    border:1px solid rgba(241,236,229,.32);
+    background:rgba(255,255,255,.035);
+    color:rgba(241,236,229,.92);
+    border-radius:999px;
+    font-size:13px;
+    line-height:1;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mobileTextRevealIcon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:22px;
+    height:22px;
+    border-radius:999px;
+    border:1px solid rgba(241,236,229,.28);
+    transition:transform .25s ease;
+  }
+  .mobileTextRevealLess{display:none}
+  .mobileTextRevealToggle:checked ~ .mobileTextRevealButton .mobileTextRevealMore{display:none}
+  .mobileTextRevealToggle:checked ~ .mobileTextRevealButton .mobileTextRevealLess{display:inline}
+  .mobileTextRevealToggle:checked ~ .mobileTextRevealButton .mobileTextRevealIcon{transform:rotate(180deg)}
+  .mobileTextReveal .bullets{
+    margin-bottom:8px;
+  }
+}
+
+/* Fix mobile hero order after adding Read more: keep intro text under the title, not above the kicker. */
+@media (max-width:960px){
+  #about .heroText > .mobileTextReveal{
+    order:5 !important;
+    margin-top:0 !important;
+  }
+  #about .heroText > p{order:5 !important;}
+  #about .heroText > .bullets{order:6 !important;}
+}
+
+
+/* FAQ care recommendation card highlight */
+#faq .faqCareCard{
+  grid-column:1 / -1;
+  margin-bottom:18px;
+  padding:34px 32px;
+  border-color:rgba(241,236,229,.22);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(241,236,229,.08), transparent 42%),
+    linear-gradient(135deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
+  box-shadow:0 18px 52px rgba(0,0,0,.34), inset 0 0 0 1px rgba(255,255,255,.025);
+}
+#faq .faqCareCard::before{
+  color:rgba(241,236,229,.72);
+}
+#faq .faqCareCard .h3{
+  color:rgba(241,236,229,.92);
+}
+#faq .faqCareCard .reviewText{
+  max-width:760px;
+}
+#faq .faqCareCta{
+  margin-top:28px;
+  padding-top:6px;
+}
+#faq .faqCareBtn{
+  display:inline-flex;
+  width:auto;
+  min-width:280px;
+  justify-content:center;
+  border-color:rgba(241,236,229,.38);
+  background:rgba(255,255,255,.035);
+}
+#faq .faqCareBtn:hover{
+  border-color:rgba(241,236,229,.72);
+  background:rgba(241,236,229,.08);
+}
+@media (max-width:760px){
+  #faq .faqCareCard{
+    margin-bottom:22px;
+    padding:32px 26px 30px;
+  }
+  #faq .faqCareCta{
+    margin-top:24px;
+  }
+  #faq .faqCareBtn{
+    width:100%;
+    min-width:0;
+  }
+}
