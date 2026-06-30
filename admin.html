@@ -103,10 +103,10 @@
               <div class="adminField">
                 <label>Фото товара, можно несколько</label>
                 <input class="adminInput" id="merchImages" type="file" accept="image/webp" multiple />
-                <div class="adminTiny">Загружай именно .webp. Первое фото - заглавное, остальные показываются в карточке товара. Для каждого фото ниже можно прописать SEO: alt и title на русском и английском.</div>
+                <div class="adminTiny">Загружай именно .webp. После выбора фото ниже появятся карточки фото с очевидным блоком “SEO-подпись этого фото”. Первое/выбранное фото - заглавное, остальные показываются в карточке товара.</div>
               </div>
               <div class="adminImageManager" id="merchImageManager"></div>
-              <div class="adminTiny adminSeoNote">SEO фото не видно как обычный текст на странице. Оно попадает в атрибуты <code>alt</code> и <code>title</code> у картинки: это читают поисковики, скринридеры и браузер при наведении. Да, невидимый текст, который всё равно важен. Интернет обожает такие фокусы.</div>
+              <div class="adminTiny adminSeoNote"><b>SEO фото:</b> <code>alt</code> - главное описание для Google, Яндекс и скринридеров. <code>title</code> - короткая подпись, которую браузер может показать при наведении. На странице это не выглядит как отдельный текст, поэтому не надо паниковать и искать его глазами.</div>
               <div class="adminActions">
                 <button class="adminButton primary" type="submit">Сохранить товар</button>
                 <button class="adminButton" type="button" id="clearMerchForm">Очистить форму</button>
@@ -130,10 +130,10 @@
               <div class="adminField">
                 <label>Фото работы, можно несколько</label>
                 <input class="adminInput" id="tattooImages" type="file" accept="image/webp" multiple />
-                <div class="adminTiny">Загружай именно .webp. Первое фото - заглавное. Для каждого фото ниже можно прописать SEO: alt и title на русском и английском.</div>
+                <div class="adminTiny">Загружай именно .webp. После выбора фото ниже появятся поля для SEO-подписей. Первое/выбранное фото - заглавное в галерее работ.</div>
               </div>
               <div class="adminImageManager" id="tattooImageManager"></div>
-              <div class="adminTiny adminSeoNote">SEO фото будет использоваться в галерее работ как <code>alt</code> / <code>title</code>. Посетитель обычно видит только фото, а поисковики получают нормальное описание изображения.</div>
+              <div class="adminTiny adminSeoNote"><b>SEO фото работы:</b> в <code>alt</code> пиши что изображено: стиль, часть тела, техника, настроение. Например: “Абстрактная blackwork-татуировка на предплечье”. Это помогает поисковикам понять фото, а людям со скринридерами - сайт.</div>
               <div class="adminActions">
                 <button class="adminButton primary" type="submit">Сохранить работу</button>
                 <button class="adminButton" type="button" id="clearTattooForm">Очистить форму</button>

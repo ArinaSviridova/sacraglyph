@@ -99,10 +99,18 @@
     const empty = !existingRows.length && !newRows.length;
     container.innerHTML = `
       <div class="adminImageManagerHead">
-        <strong>Фото и SEO</strong>
-        <span>Отметь заглавное фото, задай порядок и подписи.</span>
+        <div>
+          <strong>Фото и SEO для каждого фото</strong>
+          <span>Заглавное фото будет первым на сайте. Остальные откроются внутри карточки.</span>
+        </div>
+        <div class="adminImageManagerBadge">только .webp</div>
       </div>
-      ${empty ? `<p class="adminTiny">Фото пока не выбраны. Загрузи .webp с телефона или компьютера.</p>` : `<div class="adminImageRows">${existingRows.concat(newRows).join("")}</div>`}
+      <div class="adminSeoGuide">
+        <b>Как подписывать:</b> в ALT пиши коротко, что видно на фото: предмет/работа, стиль, цвет, важная деталь. Без набора ключей через запятую.
+        <br><b>Пример RU:</b> “Черная футболка Yugen с белым lettering-принтом на груди”.
+        <br><b>Пример EN:</b> “Black Yugen T-shirt with white lettering print on the chest”.
+      </div>
+      ${empty ? `<p class="adminTiny">Фото пока не выбраны. Выбери .webp-файлы выше, и здесь появятся строки для порядка, заглавного фото и SEO-подписей.</p>` : `<div class="adminImageRows">${existingRows.concat(newRows).join("")}</div>`}
     `;
   }
 
@@ -119,13 +127,17 @@
             <div class="adminField"><label>Порядок</label><input class="adminInput" data-image-field="sortOrder" inputmode="numeric" value="${escapeHtml(image.sortOrder ?? index)}"></div>
             <label class="adminCheck"><input type="checkbox" data-image-remove> Убрать фото</label>
           </div>
-          <div class="adminTwo">
-            <div class="adminField"><label>Alt RU</label><input class="adminInput" data-image-field="altRu" value="${escapeHtml(image.altRu || "")}"></div>
-            <div class="adminField"><label>Alt EN</label><input class="adminInput" data-image-field="altEn" value="${escapeHtml(image.altEn || "")}"></div>
-          </div>
-          <div class="adminTwo">
-            <div class="adminField"><label>Title RU</label><input class="adminInput" data-image-field="titleRu" value="${escapeHtml(image.titleRu || "")}"></div>
-            <div class="adminField"><label>Title EN</label><input class="adminInput" data-image-field="titleEn" value="${escapeHtml(image.titleEn || "")}"></div>
+          <div class="adminImageSeoBox">
+            <div class="adminSeoBoxTitle">SEO-подпись этого фото</div>
+            <div class="adminTwo">
+              <div class="adminField"><label>ALT RU - что изображено на фото</label><input class="adminInput" data-image-field="altRu" placeholder="Черная футболка Yugen с белым lettering-принтом" value="${escapeHtml(image.altRu || "")}"></div>
+              <div class="adminField"><label>ALT EN - same description in English</label><input class="adminInput" data-image-field="altEn" placeholder="Black Yugen T-shirt with white lettering print" value="${escapeHtml(image.altEn || "")}"></div>
+            </div>
+            <div class="adminTwo">
+              <div class="adminField"><label>Title RU - короткая подпись при наведении</label><input class="adminInput" data-image-field="titleRu" placeholder="Yugen Black - футболка с lettering-принтом" value="${escapeHtml(image.titleRu || "")}"></div>
+              <div class="adminField"><label>Title EN - short hover title</label><input class="adminInput" data-image-field="titleEn" placeholder="Yugen Black - lettering T-shirt" value="${escapeHtml(image.titleEn || "")}"></div>
+            </div>
+            <p class="adminSeoMiniHint">ALT важнее для SEO и доступности. Title можно делать короче. Это не текст на странице, он живёт внутри HTML-картинки.</p>
           </div>
         </div>
       </article>
@@ -200,6 +212,9 @@
     merchItems = (content.merchItems || []).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
     tattooWorks = (content.tattooWorks || []).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
     renderAll();
+    if (window.BAZOOKA_SCHEMA_NEEDS_IMAGE_SEO) {
+      status("В Supabase не хватает SEO-колонок для фото. Запусти свежий /supabase/schema.sql в SQL Editor и обнови страницу.", true);
+    }
   }
 
   function renderCollectionSelect() {

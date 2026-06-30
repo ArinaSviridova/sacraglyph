@@ -6,6 +6,19 @@
   const ready = Boolean(cfg.url && cfg.anonKey && !PLACEHOLDER_RE.test(cfg.url) && !PLACEHOLDER_RE.test(cfg.anonKey));
   const bucket = cfg.bucket || "cms-media";
   const client = ready && window.supabase ? window.supabase.createClient(cfg.url, cfg.anonKey) : null;
+  const MERCH_IMAGES_SELECT_SEO = "*, merch_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)";
+  const TATTOO_IMAGES_SELECT_SEO = "*, tattoo_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)";
+  const MERCH_IMAGES_SELECT_BASIC = "*, merch_images(id, image_url, sort_order)";
+  const TATTOO_IMAGES_SELECT_BASIC = "*, tattoo_images(id, image_url, sort_order)";
+
+  function isMissingImageSeoColumn(error) {
+    const message = String(error?.message || error?.details || "").toLowerCase();
+    return Boolean(error && (message.includes("alt_ru") || message.includes("alt_en") || message.includes("title_ru") || message.includes("title_en")));
+  }
+
+  function markMissingImageSeoSchema() {
+    window.BAZOOKA_SCHEMA_NEEDS_IMAGE_SEO = true;
+  }
 
   function isReady() {
     return Boolean(client);
@@ -171,57 +184,69 @@
     return data || [];
   }
 
+  async function selectMerchItems(onlyPublished = false, withSeo = true) {
+    let query = client
+      .from("merch_items")
+      .select(withSeo ? MERCH_IMAGES_SELECT_SEO : MERCH_IMAGES_SELECT_BASIC)
+      .order("sort_order", { ascending: true });
+    if (onlyPublished) query = query.eq("is_published", true);
+    const { data, error } = await query;
+    if (error && withSeo && isMissingImageSeoColumn(error)) {
+      markMissingImageSeoSchema();
+      return selectMerchItems(onlyPublished, false);
+    }
+    if (error) throw error;
+    return data || [];
+  }
+
+  async function selectTattooWorks(onlyPublished = false, withSeo = true) {
+    let query = client
+      .from("tattoo_works")
+      .select(withSeo ? TATTOO_IMAGES_SELECT_SEO : TATTOO_IMAGES_SELECT_BASIC)
+      .order("sort_order", { ascending: true });
+    if (onlyPublished) query = query.eq("is_published", true);
+    const { data, error } = await query;
+    if (error && withSeo && isMissingImageSeoColumn(error)) {
+      markMissingImageSeoSchema();
+      return selectTattooWorks(onlyPublished, false);
+    }
+    if (error) throw error;
+    return data || [];
+  }
+
   async function getPublicContent() {
     if (!client) return null;
 
-    const [collectionsResult, merchResult, tattooResult] = await Promise.all([
+    const [collectionsResult, merchRows, tattooRows] = await Promise.all([
       client.from("merch_collections").select("*").eq("is_published", true).order("sort_order", { ascending: true }),
-      client
-        .from("merch_items")
-        .select("*, merch_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)")
-        .eq("is_published", true)
-        .order("sort_order", { ascending: true }),
-      client
-        .from("tattoo_works")
-        .select("*, tattoo_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)")
-        .eq("is_published", true)
-        .order("sort_order", { ascending: true }),
+      selectMerchItems(true),
+      selectTattooWorks(true),
     ]);
 
     if (collectionsResult.error) throw collectionsResult.error;
-    if (merchResult.error) throw merchResult.error;
-    if (tattooResult.error) throw tattooResult.error;
 
     return {
-      merchCollections: merchRowsToCollections(merchResult.data || [], collectionsResult.data || [], false),
-      tattooWorks: (tattooResult.data || []).map(toCamelWork),
+      merchCollections: merchRowsToCollections(merchRows || [], collectionsResult.data || [], false),
+      tattooWorks: (tattooRows || []).map(toCamelWork),
     };
   }
 
   async function getAdminContent() {
     if (!client) throw new Error("Supabase is not configured");
 
-    const [collectionsResult, merchResult, tattooResult] = await Promise.all([
+    const [collectionsResult, merchRows, tattooRows] = await Promise.all([
       client.from("merch_collections").select("*").order("sort_order", { ascending: true }),
-      client
-        .from("merch_items")
-        .select("*, merch_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)")
-        .order("sort_order", { ascending: true }),
-      client
-        .from("tattoo_works")
-        .select("*, tattoo_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)")
-        .order("sort_order", { ascending: true }),
+      selectMerchItems(false),
+      selectTattooWorks(false),
     ]);
 
     if (collectionsResult.error) throw collectionsResult.error;
-    if (merchResult.error) throw merchResult.error;
-    if (tattooResult.error) throw tattooResult.error;
 
-    const merchCollections = merchRowsToCollections(merchResult.data || [], collectionsResult.data || [], true);
+    const merchCollections = merchRowsToCollections(merchRows || [], collectionsResult.data || [], true);
     return {
       merchCollections,
-      merchItems: (merchResult.data || []).map(toCamelItem),
-      tattooWorks: (tattooResult.data || []).map(toCamelWork),
+      merchItems: (merchRows || []).map(toCamelItem),
+      tattooWorks: (tattooRows || []).map(toCamelWork),
     };
   }
 
@@ -367,6 +392,9 @@
         };
       }).filter((image) => image.image_url);
       const ins = await client.from("merch_images").insert(rows);
+      if (ins.error && isMissingImageSeoColumn(ins.error)) {
+        throw new Error("В Supabase не хватает SEO-колонок у merch_images. Запусти свежий /supabase/schema.sql в SQL Editor и обнови страницу.");
+      }
       if (ins.error) throw ins.error;
     }
     return row.id;
@@ -408,6 +436,9 @@
         };
       }).filter((image) => image.image_url);
       const ins = await client.from("tattoo_images").insert(rows);
+      if (ins.error && isMissingImageSeoColumn(ins.error)) {
+        throw new Error("В Supabase не хватает SEO-колонок у tattoo_images. Запусти свежий /supabase/schema.sql в SQL Editor и обнови страницу.");
+      }
       if (ins.error) throw ins.error;
     }
     return row.id;

@@ -2668,3 +2668,13 @@ body {
   .adminImagePreview{width:100%;height:190px}
   .adminCollectionHead{align-items:flex-start;flex-direction:column}
 }
+
+.adminImageManagerHead > div:first-child{display:grid;gap:4px}
+.adminImageManagerBadge{border:1px solid rgba(245,241,232,.22);border-radius:999px;padding:7px 10px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:rgba(245,241,232,.72);white-space:nowrap;background:rgba(245,241,232,.05)}
+.adminSeoGuide{border:1px solid rgba(245,241,232,.14);border-radius:16px;padding:12px 14px;margin:0 0 14px;background:rgba(245,241,232,.045);color:rgba(245,241,232,.74);font-size:13px;line-height:1.55}
+.adminSeoGuide b{color:#f5f1e8;font-weight:600}
+.adminImageSeoBox{border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:12px;background:rgba(0,0,0,.18);display:grid;gap:10px}
+.adminSeoBoxTitle{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:rgba(245,241,232,.78)}
+.adminSeoMiniHint{margin:0;font-size:12px;line-height:1.5;color:rgba(245,241,232,.55)}
+.adminSeoNote{border-left:2px solid rgba(245,241,232,.3);padding:10px 12px;background:rgba(245,241,232,.035);border-radius:0 12px 12px 0}
+@media(max-width:760px){.adminImageManagerHead{align-items:flex-start;flex-direction:column}.adminImageManagerBadge{width:max-content}}

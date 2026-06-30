@@ -333,3 +333,7 @@ on storage.objects
 for delete
 to authenticated
 using (bucket_id = 'cms-media' and public.is_cms_admin());
+
+-- Tell Supabase/PostgREST to refresh its schema cache after new columns are added.
+-- This prevents errors like: column merch_images_1.alt_ru does not exist
+notify pgrst, 'reload schema';
