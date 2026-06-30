@@ -164,10 +164,9 @@
         cover: Boolean(row.querySelector('input[type="radio"]')?.checked),
       };
     }).filter((item) => !item.remove);
-    const coverIndex = items.findIndex((item) => item.cover);
-    const sorted = items.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
-    if (coverIndex >= 0) {
-      const cover = items[coverIndex];
+    const cover = items.find((item) => item.cover);
+    const sorted = items.slice().sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    if (cover) {
       const withoutCover = sorted.filter((item) => item !== cover);
       return [cover, ...withoutCover].map((item, index) => ({ ...item, sortOrder: index }));
     }

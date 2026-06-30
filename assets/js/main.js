@@ -208,15 +208,39 @@
   const navLinks = $$(".nav a, .mobileNav a");
 
 
+  function getLegacyWorkNumber(value) {
+    const match = String(value || "").match(/(?:legacy-work-|work-)?(\d+)/i);
+    return match ? match[1] : "";
+  }
+
+  function staticWorkImageFromId(value, size = 900, format = "webp") {
+    const number = getLegacyWorkNumber(value);
+    return number ? `/assets/img/works/work-${number}-${size}.${format}` : "";
+  }
+
+  function firstCmsImage(work) {
+    if (!work) return null;
+    if (Array.isArray(work.images) && work.images.length) {
+      return work.images
+        .slice()
+        .sort((a, b) => Number(a?.sortOrder ?? a?.sort_order ?? 0) - Number(b?.sortOrder ?? b?.sort_order ?? 0))[0];
+    }
+    return null;
+  }
+
   function normalizeCmsWork(work, index) {
     const safeId = work.id || `cms-${Date.now()}-${index}`;
+    const firstImage = firstCmsImage(work);
+    const firstImageUrl = firstImage ? (firstImage.url || firstImage.jpg || firstImage.image_url || (typeof firstImage === "string" ? firstImage : "")) : "";
+    const directImage = work.image || work.imageUrl || work.src || "";
+    const legacyFallback = staticWorkImageFromId(safeId, 900, "webp");
     return {
       id: safeId,
-      image: work.image || work.imageUrl || work.src || (Array.isArray(work.images) && work.images[0] ? (work.images[0].url || work.images[0].jpg || work.images[0]) : ""),
-      imageTitleRu: Array.isArray(work.images) && work.images[0] ? (work.images[0].titleRu || "") : "",
-      imageTitleEn: Array.isArray(work.images) && work.images[0] ? (work.images[0].titleEn || "") : "",
-      altRu: work.altRu || (Array.isArray(work.images) && work.images[0] ? work.images[0].altRu : "") || work.descriptionRu || work.titleRu || "Тату-работа bazookatattoo.",
-      altEn: work.altEn || (Array.isArray(work.images) && work.images[0] ? work.images[0].altEn : "") || work.descriptionEn || work.titleEn || "Tattoo work by bazookatattoo.",
+      image: firstImageUrl || directImage || legacyFallback,
+      imageTitleRu: firstImage ? (firstImage.titleRu || firstImage.title_ru || "") : "",
+      imageTitleEn: firstImage ? (firstImage.titleEn || firstImage.title_en || "") : "",
+      altRu: work.altRu || (firstImage ? (firstImage.altRu || firstImage.alt_ru) : "") || work.descriptionRu || work.titleRu || "Тату-работа bazookatattoo.",
+      altEn: work.altEn || (firstImage ? (firstImage.altEn || firstImage.alt_en) : "") || work.descriptionEn || work.titleEn || "Tattoo work by bazookatattoo.",
       descriptionRu: work.descriptionRu || work.altRu || work.titleRu || "",
       descriptionEn: work.descriptionEn || work.altEn || work.titleEn || "",
     };
@@ -230,7 +254,7 @@
 
   function workImage(work, size = 600, format = "webp") {
     if (work.image) return work.image;
-    return `/assets/img/works/work-${work.id}-${size}.${format}`;
+    return staticWorkImageFromId(work.id, size, format) || `/assets/img/works/work-${work.id}-${size}.${format}`;
   }
 
   function renderWorksGallery() {
@@ -252,6 +276,7 @@
         const picture = work.image
           ? `<img
               src="${escapeHtml(work.image)}"
+              data-static-fallback="${escapeHtml(staticWorkImageFromId(work.id, 900, "webp"))}"
               alt="${escapeHtml(alt)}"${titleAttr}
               width="800"
               height="600"
@@ -287,6 +312,21 @@
       `;
       })
       .join("");
+  }
+
+
+  function initWorkImageFallbacks() {
+    const gallery = document.getElementById("worksGallery");
+    if (!gallery) return;
+    gallery.querySelectorAll("img[data-static-fallback]").forEach((img) => {
+      img.addEventListener("error", () => {
+        const fallback = img.getAttribute("data-static-fallback");
+        if (fallback && img.src !== fallback) {
+          img.removeAttribute("data-static-fallback");
+          img.src = fallback;
+        }
+      }, { once: true });
+    });
   }
 
 
@@ -820,6 +860,7 @@
     await loadSupabaseRuntimeContent();
     applyCmsWorks();
     renderWorksGallery();
+    initWorkImageFallbacks();
     initWorksScrollHint();
     initMobile();
     initAnchors();
