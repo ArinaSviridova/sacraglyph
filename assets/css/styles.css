@@ -2604,3 +2604,67 @@ body {
 .adminCollectionHead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:12px}
 .adminActions.compact{margin-top:0;justify-content:flex-end}.compactList{margin-top:0}
 @media(max-width:760px){.adminCollectionHead{display:grid}.adminActions.compact{justify-content:flex-start}.adminItem{display:grid}.adminItem img{width:100%;height:190px}.adminTwo,.adminThree{grid-template-columns:1fr}.adminGrid{grid-template-columns:1fr}.adminNav{position:static}}
+
+/* Admin v4 polish */
+.adminBody{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255,255,255,.08), transparent 28%),
+    radial-gradient(circle at 92% 12%, rgba(160,130,95,.14), transparent 30%),
+    linear-gradient(135deg,#040506 0%,#090b10 46%,#020203 100%) !important;
+}
+.adminShell{position:relative}
+.adminTop{
+  border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.025));
+  box-shadow:0 28px 90px rgba(0,0,0,.36);
+  border-radius:28px;
+  padding:28px;
+  margin-bottom:24px;
+}
+.adminTop .kicker{letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:rgba(245,241,232,.54)}
+.adminPanel,.adminSubPanel,.adminCollectionGroup{
+  border-radius:24px !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.025)) !important;
+  box-shadow:0 22px 70px rgba(0,0,0,.22);
+}
+.adminSubPanel{border:1px solid rgba(255,255,255,.1);padding:18px;margin-bottom:18px}
+.adminNav button,.adminButton,.adminInput,.adminTextarea,.adminSelect{border-radius:14px}
+.adminButton{text-align:center;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.adminNav button{text-align:left}
+.adminButton.primary{box-shadow:0 14px 30px rgba(255,255,255,.06)}
+.adminInput:focus,.adminTextarea:focus,.adminSelect:focus{outline:2px solid rgba(245,241,232,.26);outline-offset:2px;border-color:rgba(245,241,232,.42)}
+.adminImageManager{border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:16px;background:rgba(0,0,0,.24)}
+.adminImageManagerHead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px;color:#f5f1e8}
+.adminImageManagerHead span{font-size:13px;color:rgba(245,241,232,.58)}
+.adminImageRows{display:grid;gap:12px}
+.adminImageRow{display:grid;grid-template-columns:128px 1fr;gap:14px;border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:12px;background:rgba(255,255,255,.035)}
+.adminImagePreview{width:128px;min-height:128px;border-radius:14px;background:#101218;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.adminImagePreview img{width:100%;height:100%;object-fit:cover}
+.adminImageFields{display:grid;gap:10px;min-width:0}
+.adminImageFileName{font-size:13px;color:rgba(245,241,232,.66);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adminCheck{display:flex;align-items:center;gap:8px;color:rgba(245,241,232,.75);font-size:13px;min-height:46px}
+.adminCheck input{accent-color:#f5f1e8}
+.adminSeoNote code{padding:1px 5px;border-radius:6px;background:rgba(255,255,255,.08);color:#fff}
+.adminCollectionGroup{border:1px solid rgba(255,255,255,.1);padding:16px;margin-top:16px}
+.adminCollectionHead{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
+.adminActions.compact{margin-top:0}
+.compactList{margin-top:0}
+.adminLoveButton{display:flex;align-items:center;justify-content:center;width:36px;height:36px;margin:34px auto 0;border:0;background:transparent;cursor:pointer;opacity:.62;transition:opacity .2s ease,transform .2s ease}
+.adminLoveButton:hover{opacity:1;transform:translateY(-2px) scale(1.05)}
+.adminLoveButton img{width:30px;height:30px;object-fit:contain}
+.adminLoveModal{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);padding:20px}
+.adminLoveModal.open{display:flex}
+.adminLoveCard{position:relative;width:min(420px,100%);border:1px solid rgba(255,255,255,.16);border-radius:26px;background:#07080b;padding:26px;text-align:center;box-shadow:0 28px 90px rgba(0,0,0,.55)}
+.adminLoveCard img{width:120px;height:120px;object-fit:contain;margin-bottom:10px}
+.adminLoveCard p{margin:0;color:#f5f1e8;font-size:18px;line-height:1.55}
+.adminLoveClose{position:absolute;right:12px;top:10px;width:40px;height:40px;border:1px solid rgba(255,255,255,.14);border-radius:50%;background:rgba(255,255,255,.05);color:#f5f1e8;font-size:30px;line-height:1;cursor:pointer}
+.merchEtsyHero{margin:18px 0 26px !important;text-align:left !important}
+.merchEtsyHero a{min-height:52px !important;border-radius:0 !important;font-size:12px !important;letter-spacing:.11em !important}
+@media (max-width:760px){
+  .adminGrid,.adminTwo,.adminThree{grid-template-columns:1fr !important}
+  .adminTop{padding:20px;border-radius:20px}
+  .adminImageRow{grid-template-columns:1fr}
+  .adminImagePreview{width:100%;height:190px}
+  .adminCollectionHead{align-items:flex-start;flex-direction:column}
+}

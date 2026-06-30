@@ -8,6 +8,8 @@
   let merchItems = [];
   let merchCollections = [];
   let tattooWorks = [];
+  let editingMerchImages = [];
+  let editingTattooImages = [];
 
   function status(message, isError = false) {
     const el = $("#adminStatus");
@@ -58,8 +60,123 @@
     setValue("#priceEur", byCurrency.EUR || "");
   }
 
+  function imageUrl(image) {
+    if (!image) return "";
+    if (typeof image === "string") return image;
+    return image.url || image.jpg || image.image_url || "";
+  }
+
   function firstImage(images) {
-    return Array.isArray(images) && images.length ? images[0] : "";
+    return Array.isArray(images) && images.length ? imageUrl(images[0]) : "";
+  }
+
+  function normalizeImage(image, index = 0) {
+    if (!image) return null;
+    if (typeof image === "string") {
+      return { url: image, altRu: "", altEn: "", titleRu: "", titleEn: "", sortOrder: index };
+    }
+    return {
+      url: image.url || image.jpg || image.image_url || "",
+      altRu: image.altRu || image.alt_ru || "",
+      altEn: image.altEn || image.alt_en || "",
+      titleRu: image.titleRu || image.title_ru || "",
+      titleEn: image.titleEn || image.title_en || "",
+      sortOrder: Number(image.sortOrder ?? image.sort_order ?? index),
+    };
+  }
+
+  function renderImageManager(containerId, images, inputId, prefix) {
+    const container = $(containerId);
+    const input = $(inputId);
+    if (!container) return;
+    const files = Array.from(input?.files || []);
+    const existingRows = (images || []).map((image, index) => renderImageRow(normalizeImage(image, index), index, "existing", prefix));
+    const newRows = files.map((file, index) => {
+      const preview = URL.createObjectURL(file);
+      const image = { url: preview, altRu: "", altEn: "", titleRu: "", titleEn: "", sortOrder: existingRows.length + index, fileName: file.name };
+      return renderImageRow(image, existingRows.length + index, "new", prefix, file.name);
+    });
+    const empty = !existingRows.length && !newRows.length;
+    container.innerHTML = `
+      <div class="adminImageManagerHead">
+        <strong>Фото и SEO</strong>
+        <span>Отметь заглавное фото, задай порядок и подписи.</span>
+      </div>
+      ${empty ? `<p class="adminTiny">Фото пока не выбраны. Загрузи .webp с телефона или компьютера.</p>` : `<div class="adminImageRows">${existingRows.concat(newRows).join("")}</div>`}
+    `;
+  }
+
+  function renderImageRow(image, index, kind, prefix, fileName = "") {
+    const safeUrl = imageUrl(image);
+    const name = fileName || safeUrl.split("/").pop() || `Фото ${index + 1}`;
+    return `
+      <article class="adminImageRow" data-image-kind="${kind}" data-image-index="${index}" data-image-url="${escapeHtml(kind === "existing" ? safeUrl : "")}">
+        <div class="adminImagePreview">${safeUrl ? `<img src="${escapeHtml(safeUrl)}" alt="">` : ""}</div>
+        <div class="adminImageFields">
+          <div class="adminImageFileName">${escapeHtml(name)}</div>
+          <div class="adminThree">
+            <label class="adminCheck"><input type="radio" name="${prefix}Cover" ${index === 0 ? "checked" : ""}> Заглавная</label>
+            <div class="adminField"><label>Порядок</label><input class="adminInput" data-image-field="sortOrder" inputmode="numeric" value="${escapeHtml(image.sortOrder ?? index)}"></div>
+            <label class="adminCheck"><input type="checkbox" data-image-remove> Убрать фото</label>
+          </div>
+          <div class="adminTwo">
+            <div class="adminField"><label>Alt RU</label><input class="adminInput" data-image-field="altRu" value="${escapeHtml(image.altRu || "")}"></div>
+            <div class="adminField"><label>Alt EN</label><input class="adminInput" data-image-field="altEn" value="${escapeHtml(image.altEn || "")}"></div>
+          </div>
+          <div class="adminTwo">
+            <div class="adminField"><label>Title RU</label><input class="adminInput" data-image-field="titleRu" value="${escapeHtml(image.titleRu || "")}"></div>
+            <div class="adminField"><label>Title EN</label><input class="adminInput" data-image-field="titleEn" value="${escapeHtml(image.titleEn || "")}"></div>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function collectImageManager(containerId) {
+    const rows = $$(".adminImageRow", $(containerId));
+    const existingTotal = rows.filter((row) => row.dataset.imageKind === "existing").length;
+    const items = rows.map((row, visualIndex) => {
+      const field = (name) => row.querySelector(`[data-image-field="${name}"]`)?.value?.trim() || "";
+      const sourceIndex = Number(row.dataset.imageIndex || visualIndex);
+      return {
+        kind: row.dataset.imageKind,
+        sourceIndex,
+        fileIndex: row.dataset.imageKind === "new" ? sourceIndex - existingTotal : -1,
+        url: row.dataset.imageUrl || "",
+        altRu: field("altRu"),
+        altEn: field("altEn"),
+        titleRu: field("titleRu"),
+        titleEn: field("titleEn"),
+        sortOrder: Number(field("sortOrder") || visualIndex),
+        remove: Boolean(row.querySelector("[data-image-remove]")?.checked),
+        cover: Boolean(row.querySelector('input[type="radio"]')?.checked),
+      };
+    }).filter((item) => !item.remove);
+    const coverIndex = items.findIndex((item) => item.cover);
+    const sorted = items.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    if (coverIndex >= 0) {
+      const cover = items[coverIndex];
+      const withoutCover = sorted.filter((item) => item !== cover);
+      return [cover, ...withoutCover].map((item, index) => ({ ...item, sortOrder: index }));
+    }
+    return sorted.map((item, index) => ({ ...item, sortOrder: index }));
+  }
+
+  async function buildImagesForSave(inputId, containerId, folder) {
+    const meta = collectImageManager(containerId);
+    const files = Array.from($(inputId)?.files || []);
+    const uploads = await cms.uploadImages(files, folder);
+    return meta.map((entry) => {
+      const base = entry.kind === "new" ? uploads[entry.fileIndex] : { url: entry.url };
+      return {
+        url: base?.url || base?.jpg || entry.url || "",
+        altRu: entry.altRu,
+        altEn: entry.altEn,
+        titleRu: entry.titleRu,
+        titleEn: entry.titleEn,
+        sortOrder: entry.sortOrder,
+      };
+    }).filter((image) => image.url);
   }
 
   function priceLabel(item) {
@@ -183,6 +300,8 @@
   function renderAll() {
     renderMerchList();
     renderTattooList();
+    renderImageManager("#merchImageManager", editingMerchImages, "#merchImages", "merch");
+    renderImageManager("#tattooImageManager", editingTattooImages, "#tattooImages", "tattoo");
   }
 
   function clearCollectionForm() {
@@ -193,12 +312,16 @@
   function clearMerchForm() {
     $("#merchForm").reset();
     setValue("#merchEditId", "");
+    editingMerchImages = [];
     renderCollectionSelect();
+    renderImageManager("#merchImageManager", editingMerchImages, "#merchImages", "merch");
   }
 
   function clearTattooForm() {
     $("#tattooForm").reset();
     setValue("#tattooEditId", "");
+    editingTattooImages = [];
+    renderImageManager("#tattooImageManager", editingTattooImages, "#tattooImages", "tattoo");
   }
 
   async function onCollectionSubmit(event) {
@@ -236,7 +359,7 @@
         await cms.saveMerchCollection(collection);
         collection = { ...collection, isVirtual: false };
       }
-      const newImages = await cms.uploadImages($("#merchImages").files, "merch");
+      const itemImages = await buildImagesForSave("#merchImages", "#merchImageManager", "merch");
       const item = {
         id: editId || undefined,
         collectionId,
@@ -255,7 +378,7 @@
         telegram: "https://t.me/bazookatattoo",
         sortOrder: Number(text("#merchSortOrder") || 0),
       };
-      await cms.saveMerchItem(item, newImages.length ? newImages : existing?.images || []);
+      await cms.saveMerchItem(item, itemImages.length ? itemImages : existing?.images || []);
       clearMerchForm();
       await loadContent();
       status("Товар сохранён.");
@@ -270,7 +393,7 @@
       status("Сохраняю работу...");
       const editId = text("#tattooEditId");
       const existing = tattooWorks.find((work) => work.id === editId);
-      const newImages = await cms.uploadImages($("#tattooImages").files, "tattoo");
+      const workImages = await buildImagesForSave("#tattooImages", "#tattooImageManager", "tattoo");
       const work = {
         id: editId || undefined,
         descriptionRu: text("#tattooDescriptionRu"),
@@ -280,7 +403,7 @@
         isPublished: $("#tattooPublished").value === "true",
         sortOrder: Number(text("#tattooSortOrder") || tattooWorks.length),
       };
-      await cms.saveTattooWork(work, newImages.length ? newImages : existing?.images || (existing?.image ? [existing.image] : []));
+      await cms.saveTattooWork(work, workImages.length ? workImages : existing?.images || (existing?.image ? [existing.image] : []));
       clearTattooForm();
       await loadContent();
       status("Работа сохранена.");
@@ -319,6 +442,9 @@
     $("#merchPublished").value = item.isPublished === false ? "false" : "true";
     setValue("#merchDescriptionRu", item.descriptionRu);
     setValue("#merchDescriptionEn", item.descriptionEn);
+    editingMerchImages = (item.images || []).map(normalizeImage).filter(Boolean);
+    $("#merchImages").value = "";
+    renderImageManager("#merchImageManager", editingMerchImages, "#merchImages", "merch");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -330,6 +456,9 @@
     setValue("#tattooDescriptionEn", work.descriptionEn || work.altEn);
     setValue("#tattooSortOrder", work.sortOrder || "");
     $("#tattooPublished").value = work.isPublished === false ? "false" : "true";
+    editingTattooImages = (work.images && work.images.length ? work.images : (work.image ? [work.image] : [])).map(normalizeImage).filter(Boolean);
+    $("#tattooImages").value = "";
+    renderImageManager("#tattooImageManager", editingTattooImages, "#tattooImages", "tattoo");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -388,7 +517,13 @@
       for (let index = 0; index < works.length; index += 1) {
         const work = works[index];
         status(`Переношу тату-работу ${index + 1}/${works.length}...`);
-        const images = await uploadLegacyImages([work.image], "legacy-tattoo");
+        const images = (await uploadLegacyImages([work.image], "legacy-tattoo")).map((image, imageIndex) => ({
+          ...normalizeImage(image, imageIndex),
+          altRu: work.altRu || work.descriptionRu || "",
+          altEn: work.altEn || work.descriptionEn || "",
+          titleRu: work.descriptionRu || "",
+          titleEn: work.descriptionEn || "",
+        }));
         await cms.saveTattooWork({
           id: work.id,
           descriptionRu: work.descriptionRu,
@@ -447,7 +582,13 @@
       for (let index = 0; index < items.length; index += 1) {
         const item = items[index];
         status(`Переношу товар ${index + 1}/${items.length}: ${item.titleRu || item.titleEn || "без названия"}...`);
-        const images = await uploadLegacyImages(item.images || [], "legacy-merch");
+        const images = (await uploadLegacyImages(item.images || [], "legacy-merch")).map((image, imageIndex) => ({
+          ...normalizeImage(image, imageIndex),
+          altRu: `${item.titleRu || "Мерч bazookatattoo"} - фото ${imageIndex + 1}`,
+          altEn: `${item.titleEn || "bazookatattoo merch"} - photo ${imageIndex + 1}`,
+          titleRu: item.titleRu || "",
+          titleEn: item.titleEn || "",
+        }));
         const collection = collectionMap.get(`${item.collectionRu || "Мерч"}|||${item.collectionEn || item.collectionRu || "Merch"}`);
         await cms.saveMerchItem({
           id: item.id,
@@ -526,6 +667,26 @@
     $("#seedTattooWorks").addEventListener("click", seedTattooWorks);
     $("#seedMerchItems").addEventListener("click", seedMerchItems);
     $("#reloadContent").addEventListener("click", loadContent);
+    $("#merchImages").addEventListener("change", () => renderImageManager("#merchImageManager", editingMerchImages, "#merchImages", "merch"));
+    $("#tattooImages").addEventListener("change", () => renderImageManager("#tattooImageManager", editingTattooImages, "#tattooImages", "tattoo"));
+
+    const loveButton = $("#adminLoveButton");
+    const loveModal = $("#adminLoveModal");
+    const loveClose = $("#adminLoveClose");
+    loveButton?.addEventListener("click", () => {
+      loveModal?.classList.add("open");
+      loveModal?.setAttribute("aria-hidden", "false");
+    });
+    loveClose?.addEventListener("click", () => {
+      loveModal?.classList.remove("open");
+      loveModal?.setAttribute("aria-hidden", "true");
+    });
+    loveModal?.addEventListener("click", (event) => {
+      if (event.target === loveModal) {
+        loveModal.classList.remove("open");
+        loveModal.setAttribute("aria-hidden", "true");
+      }
+    });
 
     document.addEventListener("click", (event) => {
       const editCollectionButton = event.target.closest("[data-edit-collection]");

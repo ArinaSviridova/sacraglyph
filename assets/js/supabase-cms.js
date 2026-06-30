@@ -39,10 +39,38 @@
     };
   }
 
+  function toCamelImage(row) {
+    if (!row) return null;
+    if (typeof row === "string") return { url: row, altRu: "", altEn: "", titleRu: "", titleEn: "", sortOrder: 0 };
+    return {
+      id: row.id || "",
+      url: row.image_url || row.url || row.jpg || "",
+      jpg: row.image_url || row.url || row.jpg || "",
+      altRu: row.alt_ru || row.altRu || "",
+      altEn: row.alt_en || row.altEn || "",
+      titleRu: row.title_ru || row.titleRu || "",
+      titleEn: row.title_en || row.titleEn || "",
+      sortOrder: Number(row.sort_order ?? row.sortOrder ?? 0),
+    };
+  }
+
+  function normalizeImageInput(image, index = 0) {
+    const img = toCamelImage(image);
+    return {
+      id: id("img"),
+      url: img?.url || img?.jpg || String(image || ""),
+      altRu: img?.altRu || "",
+      altEn: img?.altEn || "",
+      titleRu: img?.titleRu || "",
+      titleEn: img?.titleEn || "",
+      sortOrder: Number(img?.sortOrder ?? index),
+    };
+  }
+
   function toCamelItem(row) {
     const prices = Array.isArray(row.prices) ? row.prices : [];
     const images = Array.isArray(row.merch_images)
-      ? row.merch_images.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)).map((img) => img.image_url).filter(Boolean)
+      ? row.merch_images.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)).map(toCamelImage).filter((img) => img && img.url)
       : [];
 
     return {
@@ -118,12 +146,12 @@
 
   function toCamelWork(row) {
     const images = Array.isArray(row.tattoo_images)
-      ? row.tattoo_images.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)).map((img) => img.image_url).filter(Boolean)
+      ? row.tattoo_images.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)).map(toCamelImage).filter((img) => img && img.url)
       : [];
 
     return {
       id: row.id,
-      image: images[0] || row.image_url || "",
+      image: images[0]?.url || row.image_url || "",
       images,
       descriptionRu: row.description_ru || row.alt_ru || "",
       descriptionEn: row.description_en || row.alt_en || row.description_ru || "",
@@ -150,12 +178,12 @@
       client.from("merch_collections").select("*").eq("is_published", true).order("sort_order", { ascending: true }),
       client
         .from("merch_items")
-        .select("*, merch_images(id, image_url, sort_order)")
+        .select("*, merch_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)")
         .eq("is_published", true)
         .order("sort_order", { ascending: true }),
       client
         .from("tattoo_works")
-        .select("*, tattoo_images(id, image_url, sort_order)")
+        .select("*, tattoo_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)")
         .eq("is_published", true)
         .order("sort_order", { ascending: true }),
     ]);
@@ -177,11 +205,11 @@
       client.from("merch_collections").select("*").order("sort_order", { ascending: true }),
       client
         .from("merch_items")
-        .select("*, merch_images(id, image_url, sort_order)")
+        .select("*, merch_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)")
         .order("sort_order", { ascending: true }),
       client
         .from("tattoo_works")
-        .select("*, tattoo_images(id, image_url, sort_order)")
+        .select("*, tattoo_images(id, image_url, alt_ru, alt_en, title_ru, title_en, sort_order)")
         .order("sort_order", { ascending: true }),
     ]);
 
@@ -228,19 +256,21 @@
     const uploaded = [];
     for (const file of Array.from(files || [])) {
       assertWebpFile(file);
-      uploaded.push(await uploadBlob(file, folder, file.name));
+      const url = await uploadBlob(file, folder, file.name);
+      uploaded.push({ url, altRu: "", altEn: "", titleRu: "", titleEn: "", sortOrder: uploaded.length });
     }
     return uploaded;
   }
 
   async function uploadLegacyImageUrl(url, folder) {
     if (!url) return "";
-    if (/^https:\/\//i.test(url) && url.includes("/storage/v1/object/public/")) return url;
+    if (/^https:\/\//i.test(url) && url.includes("/storage/v1/object/public/")) return { url, altRu: "", altEn: "", titleRu: "", titleEn: "", sortOrder: 0 };
     const response = await fetch(url, { cache: "force-cache" });
     if (!response.ok) throw new Error(`Не удалось загрузить старое фото: ${url}`);
     const blob = await response.blob();
     const name = String(url).split("/").pop() || "legacy-image.webp";
-    return uploadBlob(blob, folder, name);
+    const publicUrl = await uploadBlob(blob, folder, name);
+    return { url: publicUrl, altRu: "", altEn: "", titleRu: "", titleEn: "", sortOrder: 0 };
   }
 
   async function signIn(email, password) {
@@ -323,7 +353,19 @@
     if (Array.isArray(imageUrls) && imageUrls.length) {
       const del = await client.from("merch_images").delete().eq("item_id", row.id);
       if (del.error) throw del.error;
-      const rows = imageUrls.map((url, index) => ({ id: id("merch-img"), item_id: row.id, image_url: url, sort_order: index }));
+      const rows = imageUrls.map((image, index) => {
+        const normalized = normalizeImageInput(image, index);
+        return {
+          id: id("merch-img"),
+          item_id: row.id,
+          image_url: normalized.url,
+          alt_ru: normalized.altRu || "",
+          alt_en: normalized.altEn || "",
+          title_ru: normalized.titleRu || "",
+          title_en: normalized.titleEn || "",
+          sort_order: Number(normalized.sortOrder ?? index),
+        };
+      }).filter((image) => image.image_url);
       const ins = await client.from("merch_images").insert(rows);
       if (ins.error) throw ins.error;
     }
@@ -352,7 +394,19 @@
     if (Array.isArray(imageUrls) && imageUrls.length) {
       const del = await client.from("tattoo_images").delete().eq("work_id", row.id);
       if (del.error) throw del.error;
-      const rows = imageUrls.map((url, index) => ({ id: id("tattoo-img"), work_id: row.id, image_url: url, sort_order: index }));
+      const rows = imageUrls.map((image, index) => {
+        const normalized = normalizeImageInput(image, index);
+        return {
+          id: id("tattoo-img"),
+          work_id: row.id,
+          image_url: normalized.url,
+          alt_ru: normalized.altRu || work.altRu || work.descriptionRu || "",
+          alt_en: normalized.altEn || work.altEn || work.descriptionEn || "",
+          title_ru: normalized.titleRu || "",
+          title_en: normalized.titleEn || "",
+          sort_order: Number(normalized.sortOrder ?? index),
+        };
+      }).filter((image) => image.image_url);
       const ins = await client.from("tattoo_images").insert(rows);
       if (ins.error) throw ins.error;
     }

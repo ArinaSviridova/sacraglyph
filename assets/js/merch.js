@@ -40,11 +40,19 @@
   function normalizeImageSet(image) {
     if (!image) return { jpg: "/assets/img/price-placeholder.jpg" };
     if (typeof image === "string") return { jpg: image };
-    if (image.url) return { jpg: image.url };
-    if (image.path) return { jpg: image.path };
+    if (image.url) return { ...image, jpg: image.url };
+    if (image.path) return { ...image, jpg: image.path };
     if (image.jpg || image.webp || image.avif) return image;
     if (image.baseName) return createImageSet(image.baseName);
     return { jpg: "/assets/img/price-placeholder.jpg" };
+  }
+
+  function imageSeo(imageSet, fallback) {
+    const normalized = normalizeImageSet(imageSet);
+    return {
+      alt: t(normalized.altRu || fallback, normalized.altEn || normalized.altRu || fallback),
+      title: t(normalized.titleRu || "", normalized.titleEn || normalized.titleRu || ""),
+    };
   }
 
   function renderPicture(
@@ -63,6 +71,7 @@
           class="${escapeHtml(imgClass)}"
           src="${escapeHtml(jpg)}"
           alt="${escapeHtml(alt)}"
+          ${normalized.titleRu || normalized.titleEn || normalized.title ? `title="${escapeHtml(t(normalized.titleRu || normalized.title || "", normalized.titleEn || normalized.titleRu || normalized.title || ""))}"` : ""}
           loading="${escapeHtml(loading)}"
           decoding="async">
       `;
@@ -76,6 +85,7 @@
           class="${escapeHtml(imgClass)}"
           src="${escapeHtml(jpg)}"
           alt="${escapeHtml(alt)}"
+          ${normalized.titleRu || normalized.titleEn || normalized.title ? `title="${escapeHtml(t(normalized.titleRu || normalized.title || "", normalized.titleEn || normalized.titleRu || normalized.title || ""))}"` : ""}
           loading="${escapeHtml(loading)}"
           decoding="async">
       </picture>
@@ -686,7 +696,7 @@
                 <div class="merchMedia">
                   ${renderPicture(
                     item.images[0],
-                    t(item.titleRu, item.titleEn),
+                    imageSeo(item.images[0], t(item.titleRu, item.titleEn)).alt,
                     "merchCardImg",
                     "(max-width: 767px) 70vw, (max-width: 1200px) 33vw, 280px",
                   )}
@@ -712,7 +722,7 @@
 
     viewerMedia.innerHTML = renderPicture(
       currentItem.images[currentImageIndex],
-      t(currentItem.titleRu, currentItem.titleEn),
+      imageSeo(currentItem.images[currentImageIndex], t(currentItem.titleRu, currentItem.titleEn)).alt,
       "merchViewerImg",
       "(max-width: 767px) 100vw, 900px",
       "eager",
@@ -729,7 +739,7 @@
         class="merchThumb ${index === currentImageIndex ? "active" : ""}"
         type="button"
         data-thumb-index="${index}">
-        ${renderPicture(imageSet, "", "merchThumbImg", "120px")}
+        ${renderPicture(imageSet, imageSeo(imageSet, t(currentItem.titleRu, currentItem.titleEn)).alt, "merchThumbImg", "120px")}
       </button>
     `,
       )

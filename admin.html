@@ -18,9 +18,7 @@
         <div>
           <p class="kicker">Supabase CMS</p>
           <h1>Админка bazookatattoo</h1>
-          <p class="adminTiny">
-            Вход по Supabase Auth. Контент сохраняется в базу, фото - в Storage. Пароль больше не лежит в коде, потому что мы всё-таки не совсем варвары.
-          </p>
+          <p class="adminTiny">Управление работами, мерчом, коллекциями, фото и SEO-подписями.</p>
           <p class="adminStatus" id="adminStatus">Проверяю подключение...</p>
         </div>
         <div class="adminActions">
@@ -105,8 +103,10 @@
               <div class="adminField">
                 <label>Фото товара, можно несколько</label>
                 <input class="adminInput" id="merchImages" type="file" accept="image/webp" multiple />
-                <div class="adminTiny">Загружай именно .webp. Если редактируешь товар и не выбираешь новые фото, старые фото останутся.</div>
+                <div class="adminTiny">Загружай именно .webp. Первое фото - заглавное, остальные показываются в карточке товара. Для каждого фото ниже можно прописать SEO: alt и title на русском и английском.</div>
               </div>
+              <div class="adminImageManager" id="merchImageManager"></div>
+              <div class="adminTiny adminSeoNote">SEO фото не видно как обычный текст на странице. Оно попадает в атрибуты <code>alt</code> и <code>title</code> у картинки: это читают поисковики, скринридеры и браузер при наведении. Да, невидимый текст, который всё равно важен. Интернет обожает такие фокусы.</div>
               <div class="adminActions">
                 <button class="adminButton primary" type="submit">Сохранить товар</button>
                 <button class="adminButton" type="button" id="clearMerchForm">Очистить форму</button>
@@ -130,8 +130,10 @@
               <div class="adminField">
                 <label>Фото работы, можно несколько</label>
                 <input class="adminInput" id="tattooImages" type="file" accept="image/webp" multiple />
-                <div class="adminTiny">Загружай именно .webp. Если редактируешь работу и не выбираешь новые фото, старые фото останутся.</div>
+                <div class="adminTiny">Загружай именно .webp. Первое фото - заглавное. Для каждого фото ниже можно прописать SEO: alt и title на русском и английском.</div>
               </div>
+              <div class="adminImageManager" id="tattooImageManager"></div>
+              <div class="adminTiny adminSeoNote">SEO фото будет использоваться в галерее работ как <code>alt</code> / <code>title</code>. Посетитель обычно видит только фото, а поисковики получают нормальное описание изображения.</div>
               <div class="adminActions">
                 <button class="adminButton primary" type="submit">Сохранить работу</button>
                 <button class="adminButton" type="button" id="clearTattooForm">Очистить форму</button>
@@ -167,6 +169,16 @@
           </section>
         </div>
       </section>
+      <button class="adminLoveButton" type="button" id="adminLoveButton" aria-label="Открыть пасхалку">
+        <img src="/assets/img/dark_lettering_heart_transparent.webp" alt="" />
+      </button>
+      <div class="adminLoveModal" id="adminLoveModal" aria-hidden="true">
+        <div class="adminLoveCard">
+          <button class="adminLoveClose" type="button" id="adminLoveClose" aria-label="Закрыть">×</button>
+          <img src="/assets/img/dark_lettering_heart_transparent.webp" alt="" />
+          <p>Не забывай, я тебя очень сильно люблю! (с) Твоя любимая разработчица</p>
+        </div>
+      </div>
     </main>
   </body>
 </html>

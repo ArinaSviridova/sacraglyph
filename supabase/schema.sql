@@ -49,9 +49,18 @@ create table if not exists public.merch_images (
   id text primary key default gen_random_uuid()::text,
   item_id text not null references public.merch_items(id) on delete cascade,
   image_url text not null,
+  alt_ru text default '',
+  alt_en text default '',
+  title_ru text default '',
+  title_en text default '',
   sort_order integer not null default 0,
   created_at timestamptz not null default now()
 );
+
+alter table if exists public.merch_images add column if not exists alt_ru text default '';
+alter table if exists public.merch_images add column if not exists alt_en text default '';
+alter table if exists public.merch_images add column if not exists title_ru text default '';
+alter table if exists public.merch_images add column if not exists title_en text default '';
 
 create table if not exists public.tattoo_works (
   id text primary key default gen_random_uuid()::text,
@@ -69,9 +78,18 @@ create table if not exists public.tattoo_images (
   id text primary key default gen_random_uuid()::text,
   work_id text not null references public.tattoo_works(id) on delete cascade,
   image_url text not null,
+  alt_ru text default '',
+  alt_en text default '',
+  title_ru text default '',
+  title_en text default '',
   sort_order integer not null default 0,
   created_at timestamptz not null default now()
 );
+
+alter table if exists public.tattoo_images add column if not exists alt_ru text default '';
+alter table if exists public.tattoo_images add column if not exists alt_en text default '';
+alter table if exists public.tattoo_images add column if not exists title_ru text default '';
+alter table if exists public.tattoo_images add column if not exists title_en text default '';
 
 create or replace function public.touch_updated_at()
 returns trigger

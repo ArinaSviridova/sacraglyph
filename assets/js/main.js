@@ -212,9 +212,11 @@
     const safeId = work.id || `cms-${Date.now()}-${index}`;
     return {
       id: safeId,
-      image: work.image || work.imageUrl || work.src || "",
-      altRu: work.altRu || work.descriptionRu || work.titleRu || "Тату-работа bazookatattoo.",
-      altEn: work.altEn || work.descriptionEn || work.titleEn || "Tattoo work by bazookatattoo.",
+      image: work.image || work.imageUrl || work.src || (Array.isArray(work.images) && work.images[0] ? (work.images[0].url || work.images[0].jpg || work.images[0]) : ""),
+      imageTitleRu: Array.isArray(work.images) && work.images[0] ? (work.images[0].titleRu || "") : "",
+      imageTitleEn: Array.isArray(work.images) && work.images[0] ? (work.images[0].titleEn || "") : "",
+      altRu: work.altRu || (Array.isArray(work.images) && work.images[0] ? work.images[0].altRu : "") || work.descriptionRu || work.titleRu || "Тату-работа bazookatattoo.",
+      altEn: work.altEn || (Array.isArray(work.images) && work.images[0] ? work.images[0].altEn : "") || work.descriptionEn || work.titleEn || "Tattoo work by bazookatattoo.",
       descriptionRu: work.descriptionRu || work.altRu || work.titleRu || "",
       descriptionEn: work.descriptionEn || work.altEn || work.titleEn || "",
     };
@@ -244,10 +246,13 @@
           ? work.altEn || work.altRu || ""
           : work.altRu || work.altEn || "";
 
+        const title = isEn ? work.imageTitleEn || work.imageTitleRu || "" : work.imageTitleRu || work.imageTitleEn || "";
+        const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
+
         const picture = work.image
           ? `<img
               src="${escapeHtml(work.image)}"
-              alt="${escapeHtml(alt)}"
+              alt="${escapeHtml(alt)}"${titleAttr}
               width="800"
               height="600"
               loading="lazy"
@@ -264,7 +269,7 @@
                 sizes="(max-width: 900px) 100vw, 33vw">
               <img
                 src="${escapeHtml(workImage(work, 600, "webp"))}"
-                alt="${escapeHtml(alt)}"
+                alt="${escapeHtml(alt)}"${titleAttr}
                 width="800"
                 height="600"
                 loading="lazy"

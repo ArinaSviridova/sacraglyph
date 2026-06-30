@@ -79,3 +79,21 @@ After verification, you can remove:
 - `assets/img/merch/*`
 
 Do not delete background, hero, favicon, review, SEO, or other image folders unless you confirm they are no longer referenced.
+
+## Как добавить ещё одного админа
+
+Одного создания пользователя в `Authentication -> Users` недостаточно. Это только логин. Чтобы человек мог зайти именно в админку сайта, его UUID надо добавить в таблицу `admin_users`.
+
+1. Supabase -> Authentication -> Users.
+2. Открой нового пользователя.
+3. Скопируй его `User UID`.
+4. SQL Editor -> New query.
+5. Выполни:
+
+```sql
+insert into public.admin_users (user_id, email)
+values ('PASTE_USER_UUID_HERE', 'email@example.com')
+on conflict (user_id) do update set email = excluded.email;
+```
+
+После этого пользователь сможет войти в `/admin.html` своим email и паролем.
