@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+      name="viewport"
+    />
 
     <title>Merch | bazookatattoo</title>
     <meta
@@ -154,7 +157,7 @@
         /></div
     ></noscript>
     <!-- /Yandex.Metrika counter -->
-</head>
+  </head>
   <body>
     <header class="header">
       <div class="container headerRow">
@@ -239,11 +242,17 @@
             </p>
           </div>
 
+          <div class="worksMore merchEtsyHero">
+            <a href="https://yugenmagazart.etsy.com" target="_blank" rel="noopener">
+              Open Etsy shop
+            </a>
+          </div>
+
           <div id="merchCollections"></div>
 
           <div class="worksMore">
             <a
-              href="https://www.instagram.com/bazookatats"
+              href="https://www.instagram.com/yugenmagaz/"
               target="_blank"
               rel="noopener"
             >
@@ -252,12 +261,18 @@
           </div>
 
           <div class="worksMore merchSecondLink">
+            <a href="https://t.me/bazookatattoo" target="_blank" rel="noopener">
+              Order via Telegram
+            </a>
+          </div>
+
+          <div class="worksMore merchThirdLink">
             <a
-              href="https://t.me/bazookatattoo"
+              href="https://yugenmagazart.etsy.com"
               target="_blank"
               rel="noopener"
             >
-              Order via Telegram
+              Order via Etsy
             </a>
           </div>
         </div>
@@ -356,13 +371,15 @@
           <a href="/privacy-policy.html">Privacy Policy</a>
         </div>
       </div>
-    
-
-</footer>
+    </footer>
 
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="/assets/js/supabase-config.js" defer></script>
+    <script src="/assets/js/supabase-cms.js" defer></script>
+    <script src="/assets/data/site-content.js" defer></script>
     <script src="/assets/js/main.js" defer></script>
     <script src="/assets/js/merch.js" defer></script>
   </body>

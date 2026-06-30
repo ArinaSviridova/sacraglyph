@@ -4,7 +4,28 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  const works = [
+  function escapeHtml(str) {
+    return String(str || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  const CMS_STORAGE_KEY = "bazookaCmsContent";
+
+  function readCmsContent() {
+    if (window.BAZOOKA_RUNTIME_CONTENT) return window.BAZOOKA_RUNTIME_CONTENT;
+    try {
+      const local = window.localStorage && window.localStorage.getItem(CMS_STORAGE_KEY);
+      if (local) return JSON.parse(local) || {};
+    } catch (error) {}
+
+    return window.BAZOOKA_SITE_CONTENT || {};
+  }
+
+  let works = [
     {
       id: 12,
       altRu:
@@ -186,6 +207,30 @@
 
   const navLinks = $$(".nav a, .mobileNav a");
 
+
+  function normalizeCmsWork(work, index) {
+    const safeId = work.id || `cms-${Date.now()}-${index}`;
+    return {
+      id: safeId,
+      image: work.image || work.imageUrl || work.src || "",
+      altRu: work.altRu || work.descriptionRu || work.titleRu || "Тату-работа bazookatattoo.",
+      altEn: work.altEn || work.descriptionEn || work.titleEn || "Tattoo work by bazookatattoo.",
+      descriptionRu: work.descriptionRu || work.altRu || work.titleRu || "",
+      descriptionEn: work.descriptionEn || work.altEn || work.titleEn || "",
+    };
+  }
+
+  function applyCmsWorks() {
+    const cms = readCmsContent();
+    if (!cms || !Array.isArray(cms.tattooWorks) || !cms.tattooWorks.length) return;
+    works = cms.tattooWorks.map(normalizeCmsWork).filter((work) => work.image || work.id);
+  }
+
+  function workImage(work, size = 600, format = "webp") {
+    if (work.image) return work.image;
+    return `/assets/img/works/work-${work.id}-${size}.${format}`;
+  }
+
   function renderWorksGallery() {
     const gallery = document.getElementById("worksGallery");
     if (!gallery) return;
@@ -199,29 +244,40 @@
           ? work.altEn || work.altRu || ""
           : work.altRu || work.altEn || "";
 
-        return `
-        <a class="thumb"
-          href="/assets/img/works/work-${work.id}-1600.webp"
-          data-full-avif="/assets/img/works/work-${work.id}-1600.avif"
-          data-lightbox-link>
-          <picture>
-            <source
-              type="image/avif"
-              srcset="/assets/img/works/work-${work.id}-400.avif 400w, /assets/img/works/work-${work.id}-600.avif 600w, /assets/img/works/work-${work.id}-900.avif 900w"
-              sizes="(max-width: 900px) 100vw, 33vw">
-            <source
-              type="image/webp"
-              srcset="/assets/img/works/work-${work.id}-400.webp 400w, /assets/img/works/work-${work.id}-600.webp 600w, /assets/img/works/work-${work.id}-900.webp 900w"
-              sizes="(max-width: 900px) 100vw, 33vw">
-            <img
-              src="/assets/img/works/work-${work.id}-600.webp"
-              alt="${alt}"
+        const picture = work.image
+          ? `<img
+              src="${escapeHtml(work.image)}"
+              alt="${escapeHtml(alt)}"
               width="800"
               height="600"
               loading="lazy"
               decoding="async"
-              fetchpriority="low">
-          </picture>
+              fetchpriority="low">`
+          : `<picture>
+              <source
+                type="image/avif"
+                srcset="/assets/img/works/work-${work.id}-400.avif 400w, /assets/img/works/work-${work.id}-600.avif 600w, /assets/img/works/work-${work.id}-900.avif 900w"
+                sizes="(max-width: 900px) 100vw, 33vw">
+              <source
+                type="image/webp"
+                srcset="/assets/img/works/work-${work.id}-400.webp 400w, /assets/img/works/work-${work.id}-600.webp 600w, /assets/img/works/work-${work.id}-900.webp 900w"
+                sizes="(max-width: 900px) 100vw, 33vw">
+              <img
+                src="${escapeHtml(workImage(work, 600, "webp"))}"
+                alt="${escapeHtml(alt)}"
+                width="800"
+                height="600"
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low">
+            </picture>`;
+
+        return `
+        <a class="thumb"
+          href="${escapeHtml(workImage(work, 1600, "webp"))}"
+          data-full-avif="${work.image ? "" : escapeHtml(workImage(work, 1600, "avif"))}"
+          data-lightbox-link>
+          ${picture}
         </a>
       `;
       })
@@ -745,7 +801,19 @@
     });
   }
 
-  function init() {
+  async function loadSupabaseRuntimeContent() {
+    try {
+      if (!window.BazookaCMS || !window.BazookaCMS.isReady()) return;
+      const content = await window.BazookaCMS.getPublicContent();
+      if (content) window.BAZOOKA_RUNTIME_CONTENT = content;
+    } catch (error) {
+      console.warn("Supabase content fallback:", error);
+    }
+  }
+
+  async function init() {
+    await loadSupabaseRuntimeContent();
+    applyCmsWorks();
     renderWorksGallery();
     initWorksScrollHint();
     initMobile();

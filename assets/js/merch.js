@@ -5,6 +5,18 @@
     return lang === "en" ? en : ru;
   }
 
+  const CMS_STORAGE_KEY = "bazookaCmsContent";
+
+  function readCmsContent() {
+    if (window.BAZOOKA_RUNTIME_CONTENT) return window.BAZOOKA_RUNTIME_CONTENT;
+    try {
+      const local = window.localStorage && window.localStorage.getItem(CMS_STORAGE_KEY);
+      if (local) return JSON.parse(local) || {};
+    } catch (error) {}
+
+    return window.BAZOOKA_SITE_CONTENT || {};
+  }
+
   function escapeHtml(str) {
     return String(str)
       .replaceAll("&", "&amp;")
@@ -25,6 +37,16 @@
     };
   }
 
+  function normalizeImageSet(image) {
+    if (!image) return { jpg: "/assets/img/price-placeholder.jpg" };
+    if (typeof image === "string") return { jpg: image };
+    if (image.url) return { jpg: image.url };
+    if (image.path) return { jpg: image.path };
+    if (image.jpg || image.webp || image.avif) return image;
+    if (image.baseName) return createImageSet(image.baseName);
+    return { jpg: "/assets/img/price-placeholder.jpg" };
+  }
+
   function renderPicture(
     imageSet,
     alt,
@@ -32,19 +54,27 @@
     sizes = "100vw",
     loading = "lazy",
   ) {
-    return `
-      <picture>
-        <source
-          type="image/avif"
-          srcset="${escapeHtml(imageSet.avif)}"
-          sizes="${escapeHtml(sizes)}">
-        <source
-          type="image/webp"
-          srcset="${escapeHtml(imageSet.webp)}"
-          sizes="${escapeHtml(sizes)}">
+    const normalized = normalizeImageSet(imageSet);
+    const jpg = normalized.jpg || normalized.webp || normalized.avif || "/assets/img/price-placeholder.jpg";
+
+    if (!normalized.avif && !normalized.webp) {
+      return `
         <img
           class="${escapeHtml(imgClass)}"
-          src="${escapeHtml(imageSet.jpg)}"
+          src="${escapeHtml(jpg)}"
+          alt="${escapeHtml(alt)}"
+          loading="${escapeHtml(loading)}"
+          decoding="async">
+      `;
+    }
+
+    return `
+      <picture>
+        ${normalized.avif ? `<source type="image/avif" srcset="${escapeHtml(normalized.avif)}" sizes="${escapeHtml(sizes)}">` : ""}
+        ${normalized.webp ? `<source type="image/webp" srcset="${escapeHtml(normalized.webp)}" sizes="${escapeHtml(sizes)}">` : ""}
+        <img
+          class="${escapeHtml(imgClass)}"
+          src="${escapeHtml(jpg)}"
           alt="${escapeHtml(alt)}"
           loading="${escapeHtml(loading)}"
           decoding="async">
@@ -52,7 +82,7 @@
     `;
   }
 
-  const merchCollections = [
+  let merchCollections = [
     {
       id: "black",
       titleRu: "Black",
@@ -573,6 +603,63 @@
     };
   }
 
+
+  function normalizeCmsMerchItem(item, index, collectionId) {
+    const id = item.id || `${collectionId || "item"}-${Date.now()}-${index}`;
+    return {
+      id,
+      categoryRu: item.categoryRu || item.typeRu || "Мерч",
+      categoryEn: item.categoryEn || item.typeEn || "Merch",
+      titleRu: item.titleRu || item.title || "Товар",
+      titleEn: item.titleEn || item.title || "Product",
+      collectionRu: item.collectionRu || "",
+      collectionEn: item.collectionEn || "",
+      priceRu: formatPrice(item, "ru"),
+      priceEn: formatPrice(item, "en"),
+      inStock: item.inStock !== false,
+      descriptionRu: item.descriptionRu || "",
+      descriptionEn: item.descriptionEn || item.descriptionRu || "",
+      images: Array.isArray(item.images) && item.images.length ? item.images.map(normalizeImageSet) : [normalizeImageSet(item.image)],
+      instagram: item.instagram || "https://www.instagram.com/yugenmagaz/",
+      telegram: item.telegram || "https://t.me/bazookatattoo",
+    };
+  }
+
+  function normalizeCmsCollection(collection, index) {
+    const id = collection.id || `collection-${Date.now()}-${index}`;
+    const items = Array.isArray(collection.items)
+      ? collection.items.map((item, itemIndex) => normalizeCmsMerchItem(item, itemIndex, id))
+      : [];
+
+    return {
+      id,
+      titleRu: collection.titleRu || collection.title || "Коллекция",
+      titleEn: collection.titleEn || collection.title || "Collection",
+      textRu: collection.textRu || "Выбери вещь и открой карточку для подробностей.",
+      textEn: collection.textEn || "Choose an item and open the card for details.",
+      items,
+    };
+  }
+
+  function formatPrice(item, targetLang) {
+    if (item.inStock === false) return targetLang === "en" ? "Out of stock" : "Нет в наличии";
+    if (Array.isArray(item.prices) && item.prices.length) {
+      return item.prices
+        .filter((price) => price && (price.amount || price.value))
+        .map((price) => `${price.amount || price.value} ${price.currency || ""}`.trim())
+        .join(" / ");
+    }
+    return targetLang === "en"
+      ? item.priceEn || item.priceRu || "Price on request"
+      : item.priceRu || item.priceEn || "Цена по запросу";
+  }
+
+  function applyCmsMerch() {
+    const cms = readCmsContent();
+    if (!cms || !Array.isArray(cms.merchCollections) || !cms.merchCollections.length) return;
+    merchCollections = cms.merchCollections.map(normalizeCmsCollection).filter((collection) => collection.items.length);
+  }
+
   function renderCollections() {
     root.className = "merchCollections";
 
@@ -605,7 +692,7 @@
                 </div>
                 <div class="merchBody">
                   <div class="merchTitle">${escapeHtml(t(item.titleRu, item.titleEn))}</div>
-                  <div class="merchMeta">${escapeHtml(t(item.priceRu, item.priceEn))}</div>
+                  <div class="merchMeta merchMetaVisible">${escapeHtml(t(item.priceRu, item.priceEn))}</div>
                 </div>
               </button>
             </article>
@@ -726,10 +813,18 @@
       row.addEventListener(
         "wheel",
         (e) => {
-          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-            e.preventDefault();
-            row.scrollLeft += e.deltaY;
-          }
+          if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+
+          const maxLeft = row.scrollWidth - row.clientWidth;
+          const atStart = row.scrollLeft <= 0;
+          const atEnd = row.scrollLeft >= maxLeft - 1;
+          const wantsPrevious = e.deltaY < 0;
+          const wantsNext = e.deltaY > 0;
+
+          if ((atStart && wantsPrevious) || (atEnd && wantsNext)) return;
+
+          e.preventDefault();
+          row.scrollLeft += e.deltaY;
         },
         { passive: false },
       );
@@ -780,6 +875,22 @@
     if (e.key === "ArrowLeft") prevItem();
   });
 
-  renderCollections();
-  setupHorizontalWheel();
+  async function loadSupabaseRuntimeContent() {
+    try {
+      if (!window.BazookaCMS || !window.BazookaCMS.isReady()) return;
+      const content = await window.BazookaCMS.getPublicContent();
+      if (content) window.BAZOOKA_RUNTIME_CONTENT = content;
+    } catch (error) {
+      console.warn("Supabase merch fallback:", error);
+    }
+  }
+
+  async function initMerchPage() {
+    await loadSupabaseRuntimeContent();
+    applyCmsMerch();
+    renderCollections();
+    setupHorizontalWheel();
+  }
+
+  initMerchPage();
 })();

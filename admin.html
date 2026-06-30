@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Админка | bazookatattoo</title>
+    <link rel="icon" href="/favicon.png" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="/assets/js/supabase-config.js" defer></script>
+    <script src="/assets/js/supabase-cms.js" defer></script>
+    <script src="/assets/data/seed-content.js" defer></script>
+    <script src="/assets/js/admin.js" defer></script>
+  </head>
+  <body class="adminBody">
+    <main class="adminShell">
+      <section class="adminTop">
+        <div>
+          <p class="kicker">Supabase CMS</p>
+          <h1>Админка bazookatattoo</h1>
+          <p class="adminTiny">
+            Вход по Supabase Auth. Контент сохраняется в базу, фото - в Storage. Пароль больше не лежит в коде, потому что мы всё-таки не совсем варвары.
+          </p>
+          <p class="adminStatus" id="adminStatus">Проверяю подключение...</p>
+        </div>
+        <div class="adminActions">
+          <a class="adminButton" href="/">На сайт</a>
+          <a class="adminButton" href="/merch.html">Мерч</a>
+          <button class="adminButton adminDanger" type="button" id="logoutBtn" hidden>Выйти</button>
+        </div>
+      </section>
+
+      <section class="adminPanel active" id="loginPanel">
+        <h2>Вход</h2>
+        <form class="adminForm" id="loginForm">
+          <div class="adminTwo">
+            <div class="adminField"><label>Email</label><input class="adminInput" id="loginEmail" type="email" autocomplete="email" required /></div>
+            <div class="adminField"><label>Пароль</label><input class="adminInput" id="loginPassword" type="password" autocomplete="current-password" required /></div>
+          </div>
+          <button class="adminButton primary" type="submit">Войти в админку</button>
+        </form>
+      </section>
+
+      <section class="adminGrid" id="adminApp" hidden>
+        <nav class="adminNav" aria-label="Разделы админки">
+          <button type="button" class="active" data-admin-tab="merch">Мерч</button>
+          <button type="button" data-admin-tab="tattoo">Тату-работы</button>
+          <button type="button" data-admin-tab="seed">Перенос старых работ</button>
+        </nav>
+
+        <div>
+          <section class="adminPanel active" data-admin-panel="merch">
+            <h2>Мерч</h2>
+            <form class="adminForm" id="merchForm">
+              <input type="hidden" id="merchEditId" />
+              <div class="adminTwo">
+                <div class="adminField"><label>Название RU</label><input class="adminInput" id="merchTitleRu" required /></div>
+                <div class="adminField"><label>Название EN</label><input class="adminInput" id="merchTitleEn" required /></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Коллекция RU</label><input class="adminInput" id="merchCollectionRu" placeholder="Например: Yugen" /></div>
+                <div class="adminField"><label>Коллекция EN</label><input class="adminInput" id="merchCollectionEn" placeholder="For example: Yugen" /></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Категория RU</label><input class="adminInput" id="merchCategoryRu" placeholder="Футболка" /></div>
+                <div class="adminField"><label>Категория EN</label><input class="adminInput" id="merchCategoryEn" placeholder="T-shirt" /></div>
+              </div>
+              <div class="adminThree">
+                <div class="adminField"><label>Цена GEL</label><input class="adminInput" id="priceGel" inputmode="decimal" /></div>
+                <div class="adminField"><label>Цена USD</label><input class="adminInput" id="priceUsd" inputmode="decimal" /></div>
+                <div class="adminField"><label>Цена EUR</label><input class="adminInput" id="priceEur" inputmode="decimal" /></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Наличие</label><select class="adminSelect" id="merchStock"><option value="true">В наличии</option><option value="false">Нет в наличии</option></select></div>
+                <div class="adminField"><label>Опубликовано</label><select class="adminSelect" id="merchPublished"><option value="true">Да</option><option value="false">Нет</option></select></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Описание RU</label><textarea class="adminTextarea" id="merchDescriptionRu"></textarea></div>
+                <div class="adminField"><label>Описание EN</label><textarea class="adminTextarea" id="merchDescriptionEn"></textarea></div>
+              </div>
+              <div class="adminField">
+                <label>Фото товара, можно несколько</label>
+                <input class="adminInput" id="merchImages" type="file" accept="image/*" multiple />
+                <div class="adminTiny">Если редактируешь товар и не выбираешь новые фото, старые фото останутся.</div>
+              </div>
+              <div class="adminActions">
+                <button class="adminButton primary" type="submit">Сохранить товар</button>
+                <button class="adminButton" type="button" id="clearMerchForm">Очистить форму</button>
+              </div>
+            </form>
+            <div class="adminList" id="merchList"></div>
+          </section>
+
+          <section class="adminPanel" data-admin-panel="tattoo">
+            <h2>Тату-работы</h2>
+            <form class="adminForm" id="tattooForm">
+              <input type="hidden" id="tattooEditId" />
+              <div class="adminTwo">
+                <div class="adminField"><label>Описание RU</label><textarea class="adminTextarea" id="tattooDescriptionRu" required></textarea></div>
+                <div class="adminField"><label>Description EN</label><textarea class="adminTextarea" id="tattooDescriptionEn" required></textarea></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Опубликовано</label><select class="adminSelect" id="tattooPublished"><option value="true">Да</option><option value="false">Нет</option></select></div>
+                <div class="adminField"><label>Порядок</label><input class="adminInput" id="tattooSortOrder" inputmode="numeric" placeholder="0" /></div>
+              </div>
+              <div class="adminField">
+                <label>Фото работы, можно несколько</label>
+                <input class="adminInput" id="tattooImages" type="file" accept="image/*" multiple />
+                <div class="adminTiny">Если редактируешь работу и не выбираешь новые фото, старые фото останутся.</div>
+              </div>
+              <div class="adminActions">
+                <button class="adminButton primary" type="submit">Сохранить работу</button>
+                <button class="adminButton" type="button" id="clearTattooForm">Очистить форму</button>
+              </div>
+            </form>
+            <div class="adminList" id="tattooList"></div>
+          </section>
+
+          <section class="adminPanel" data-admin-panel="seed">
+            <h2>Перенос старых работ</h2>
+            <p class="adminTiny">
+              Старые описания тату-работ уже вытащены из текущего сайта. Кнопка ниже загрузит их в Supabase как опубликованные работы. Фото останутся по старым путям сайта, новые фото потом можно будет заменить через админку.
+            </p>
+            <div class="adminActions">
+              <button class="adminButton primary" type="button" id="seedTattooWorks">Перенести старые тату-работы</button>
+              <button class="adminButton" type="button" id="reloadContent">Обновить список</button>
+            </div>
+            <div class="adminField" style="margin-top:18px">
+              <label>Памятка</label>
+              <textarea class="adminTextarea" readonly style="min-height:220px">1. Создай таблицы и политики SQL из файла /supabase/schema.sql.
+2. Создай пользователя в Supabase Auth.
+3. Добавь его user_id в таблицу admin_users.
+4. Вставь Project URL и anon key в /assets/js/supabase-config.js.
+5. Открой /admin.html и войди.</textarea>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
