@@ -96,6 +96,7 @@
       collectionRu: row.collection_ru || "Мерч",
       collectionEn: row.collection_en || "Merch",
       prices,
+      stockStatus: row.stock_status || (row.in_stock === false ? "out" : "in"),
       inStock: row.in_stock !== false,
       descriptionRu: row.description_ru || "",
       descriptionEn: row.description_en || row.description_ru || "",
@@ -452,7 +453,8 @@
       description_ru: item.descriptionRu || "",
       description_en: item.descriptionEn || "",
       prices: pricesToDb(item.prices),
-      in_stock: item.inStock !== false,
+      stock_status: item.stockStatus || (item.inStock === false ? "out" : "in"),
+      in_stock: (item.stockStatus || (item.inStock === false ? "out" : "in")) !== "out",
       is_published: item.isPublished !== false,
       instagram: item.instagram || "https://www.instagram.com/yugenmagaz/",
       telegram: item.telegram || "https://t.me/bazookatattoo",
@@ -515,8 +517,8 @@
           id: id("tattoo-img"),
           work_id: row.id,
           image_url: normalized.url,
-          alt_ru: normalized.altRu || work.altRu || work.descriptionRu || "",
-          alt_en: normalized.altEn || work.altEn || work.descriptionEn || "",
+          alt_ru: normalized.altRu || "",
+          alt_en: normalized.altEn || "",
           title_ru: normalized.titleRu || "",
           title_en: normalized.titleEn || "",
           sort_order: Number(normalized.sortOrder ?? index),
@@ -533,6 +535,39 @@
 
   async function deleteTattooWork(workId) {
     const { error } = await client.from("tattoo_works").delete().eq("id", workId);
+    if (error) throw error;
+  }
+
+
+  async function updateMerchOrders(updates) {
+    for (const update of updates || []) {
+      const row = { sort_order: Number(update.sortOrder || 0) };
+      if (update.collectionId !== undefined) row.collection_id = update.collectionId || null;
+      const { error } = await client.from("merch_items").update(row).eq("id", update.id);
+      if (error) throw error;
+    }
+  }
+
+  async function updateTattooOrders(updates) {
+    for (const update of updates || []) {
+      const { error } = await client.from("tattoo_works").update({ sort_order: Number(update.sortOrder || 0) }).eq("id", update.id);
+      if (error) throw error;
+    }
+  }
+
+  async function updateCollectionOrders(updates) {
+    for (const update of updates || []) {
+      const { error } = await client.from("merch_collections").update({ sort_order: Number(update.sortOrder || 0) }).eq("id", update.id);
+      if (error) throw error;
+    }
+  }
+
+  async function bulkUpdateMerchStock(ids, stockStatus) {
+    const status = stockStatus || "in";
+    const { error } = await client
+      .from("merch_items")
+      .update({ stock_status: status, in_stock: status !== "out" })
+      .in("id", ids || []);
     if (error) throw error;
   }
 
@@ -555,5 +590,9 @@
     deleteMerchItem,
     saveTattooWork,
     deleteTattooWork,
+    updateMerchOrders,
+    updateTattooOrders,
+    updateCollectionOrders,
+    bulkUpdateMerchStock,
   };
 })();

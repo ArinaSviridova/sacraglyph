@@ -109,9 +109,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black1")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -125,9 +125,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black2")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -141,9 +141,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black3")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -157,9 +157,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black4")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -173,9 +173,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black5")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -189,9 +189,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black6")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -205,9 +205,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black7")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -221,9 +221,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black8")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -237,9 +237,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black9")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -253,9 +253,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black10")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -269,9 +269,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Black. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Black collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Black11")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -296,9 +296,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Custom. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Custom. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Custom collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Custom1"), createImageSet("CustomBack1")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -312,9 +312,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Custom. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Custom. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Custom collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Custom2"), createImageSet("CustomBack2")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -328,9 +328,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Custom. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Custom. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Custom collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Custom3"), createImageSet("CustomBack3")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -344,9 +344,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Custom. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Custom. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Custom collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Custom4"), createImageSet("CustomBack4")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -371,9 +371,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Худи из линейки Hoodie. Для заказа напиши в Instagram или Telegram.",
+            "Худи из линейки Hoodie. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "Hoodie from the Hoodie collection. Contact via Instagram or Telegram to order.",
+            "Hoodie from the Hoodie collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Hoodie1"), createImageSet("HoodieBack1")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -387,9 +387,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Худи из линейки Hoodie. Для заказа напиши в Instagram или Telegram.",
+            "Худи из линейки Hoodie. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "Hoodie from the Hoodie collection. Contact via Instagram or Telegram to order.",
+            "Hoodie from the Hoodie collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [
             createImageSet("Hoodie2"),
             createImageSet("HoodieBack2"),
@@ -417,9 +417,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Yugen1")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -433,9 +433,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [
             createImageSet("Yugen2"),
             createImageSet("Yugen12"),
@@ -453,9 +453,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Yugen3")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -469,9 +469,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Yugen4")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -485,9 +485,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Yugen5"), createImageSet("Yugen14")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -501,9 +501,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Yugen6")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -517,9 +517,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Yugen7")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -533,9 +533,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Yugen8")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -549,9 +549,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Yugen10"), createImageSet("Yugen9")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -565,9 +565,9 @@
           priceRu: "Нет в наличии",
           priceEn: "Out of stock",
           descriptionRu:
-            "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+            "Футболка из линейки Yugen. Купить можно на Etsy. Вопросы по размеру, наличию и доставке - в Instagram или Telegram.",
           descriptionEn:
-            "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+            "T-shirt from the Yugen collection. Buy on Etsy. For sizing, stock and delivery questions, message Instagram or Telegram.",
           images: [createImageSet("Yugen11")],
           instagram: "https://www.instagram.com/yugenmagaz/",
           telegram: 'https://t.me/bazookatattoo',
@@ -591,6 +591,7 @@
   const thumbsEl = document.getElementById("merchThumbs");
   const instagramBtn = document.getElementById("merchInstagramBtn");
   const telegramBtn = document.getElementById("merchTelegramBtn");
+  const etsyBtn = document.getElementById("merchEtsyBtn");
 
   let currentCollection = null;
   let currentItem = null;
@@ -625,6 +626,7 @@
       titleEn: item.titleEn || item.title || "Product",
       collectionRu: item.collectionRu || "",
       collectionEn: item.collectionEn || "",
+      stockStatus: item.stockStatus || (item.inStock === false ? "out" : "in"),
       priceRu: formatPrice(item, "ru"),
       priceEn: formatPrice(item, "en"),
       inStock: item.inStock !== false,
@@ -652,17 +654,23 @@
     };
   }
 
+  function stockLabel(item, targetLang) {
+    const status = item.stockStatus || (item.inStock === false ? "out" : "in");
+    if (status === "out") return targetLang === "en" ? "Out of stock" : "Нет в наличии";
+    if (status === "preorder") return targetLang === "en" ? "Made to order" : "Под заказ";
+    return targetLang === "en" ? "In stock" : "В наличии";
+  }
+
   function formatPrice(item, targetLang) {
-    if (item.inStock === false) return targetLang === "en" ? "Out of stock" : "Нет в наличии";
+    const status = stockLabel(item, targetLang);
     if (Array.isArray(item.prices) && item.prices.length) {
-      return item.prices
+      const prices = item.prices
         .filter((price) => price && (price.amount || price.value))
         .map((price) => `${price.amount || price.value} ${price.currency || ""}`.trim())
         .join(" / ");
+      return prices ? `${prices} · ${status}` : status;
     }
-    return targetLang === "en"
-      ? item.priceEn || item.priceRu || "Price on request"
-      : item.priceRu || item.priceEn || "Цена по запросу";
+    return status;
   }
 
   function applyCmsMerch() {
@@ -766,6 +774,7 @@
 
     if (instagramBtn) instagramBtn.href = currentItem.instagram;
     if (telegramBtn) telegramBtn.href = currentItem.telegram;
+    if (etsyBtn) etsyBtn.href = "https://yugenmagazart.etsy.com";
   }
 
   function openModalByIds(collectionId, itemId) {

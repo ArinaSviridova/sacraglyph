@@ -2678,3 +2678,31 @@ body {
 .adminSeoMiniHint{margin:0;font-size:12px;line-height:1.5;color:rgba(245,241,232,.55)}
 .adminSeoNote{border-left:2px solid rgba(245,241,232,.3);padding:10px 12px;background:rgba(245,241,232,.035);border-radius:0 12px 12px 0}
 @media(max-width:760px){.adminImageManagerHead{align-items:flex-start;flex-direction:column}.adminImageManagerBadge{width:max-content}}
+
+/* v9 merch/admin refinements */
+.merchEtsyHero{display:flex!important;justify-content:center!important;align-items:center!important;margin:26px 0 38px!important;text-align:center!important}
+.merchEtsyMain{display:inline-flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:5px!important;min-width:min(420px,100%)!important;min-height:76px!important;padding:18px 34px!important;border:1px solid rgba(241,236,229,.55)!important;border-radius:999px!important;background:linear-gradient(135deg,rgba(241,236,229,.18),rgba(241,236,229,.05))!important;color:var(--text)!important;text-decoration:none!important;box-shadow:0 24px 70px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.18)!important;transition:transform .2s ease,border-color .2s ease,background .2s ease!important}
+.merchEtsyMain:hover{transform:translateY(-2px)!important;border-color:rgba(241,236,229,.85)!important;background:linear-gradient(135deg,rgba(241,236,229,.24),rgba(241,236,229,.08))!important}
+.merchEtsyMain span{font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.22em;color:rgba(241,236,229,.68)}
+.merchEtsyMain b{font-size:18px;line-height:1.15;font-weight:500;letter-spacing:.04em;color:var(--text)}
+.merchBottomCta{display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:14px;margin:44px 0 10px}
+.merchBottomCta a{display:flex;min-height:70px;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:14px 18px;border:1px solid rgba(241,236,229,.22);border-radius:24px;background:rgba(241,236,229,.055);text-align:center;text-decoration:none;color:var(--text);transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.merchBottomCta a:hover{transform:translateY(-2px);border-color:rgba(241,236,229,.55);background:rgba(241,236,229,.1)}
+.merchBottomCta span{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:rgba(241,236,229,.58)}
+.merchBottomCta b{font-size:16px;font-weight:500;color:var(--text)}
+.merchBottomCta .merchBuyBtn{border-color:rgba(241,236,229,.58);background:linear-gradient(135deg,rgba(241,236,229,.2),rgba(241,236,229,.07));box-shadow:0 22px 60px rgba(0,0,0,.28)}
+.merchCtaRow{display:grid!important;grid-template-columns:1fr 1fr;gap:10px!important}
+.merchCtaRow #merchEtsyBtn{grid-column:1/-1;min-height:58px!important;font-size:14px!important}
+@media(max-width:767px){.merchBottomCta{grid-template-columns:1fr;gap:10px}.merchEtsyMain{min-height:68px!important;border-radius:28px!important}.merchCtaRow{grid-template-columns:1fr!important}.merchCtaRow #merchEtsyBtn{grid-column:auto}}
+
+.adminDragHandle{width:42px;height:42px;border:1px solid rgba(241,236,229,.22);border-radius:14px;background:rgba(241,236,229,.06);color:rgba(241,236,229,.86);cursor:grab;font-size:18px;line-height:1;display:inline-flex;align-items:center;justify-content:center;touch-action:none;flex:0 0 auto}
+.adminDragHandle:active{cursor:grabbing}
+.adminItem.isDragging,.adminCollectionGroup.isDragging{outline:1px solid rgba(241,236,229,.55);background:rgba(241,236,229,.08)}
+.adminCollectionHead{gap:12px}
+.adminBulkBar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:12px 0 14px;padding:12px;border:1px solid rgba(241,236,229,.14);border-radius:18px;background:rgba(241,236,229,.035)}
+.adminBulkBar.global{margin:0 0 18px;background:rgba(241,236,229,.055)}
+.adminSelectBox{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;flex:0 0 auto}
+.adminSelectBox input,.adminBulkBar input{accent-color:#f1ece5}
+.adminOrderHint{margin:0 0 12px}
+.adminItem{gap:12px}
+.adminField small{display:block;margin-top:6px;color:rgba(241,236,229,.55);font-size:12px;line-height:1.35}

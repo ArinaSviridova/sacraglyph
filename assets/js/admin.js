@@ -70,6 +70,17 @@
     return Array.isArray(images) && images.length ? imageUrl(images[0]) : "";
   }
 
+  function merchStockStatus(item) {
+    return item?.stockStatus || (item?.inStock === false ? "out" : "in");
+  }
+
+  function stockLabel(statusValue) {
+    const value = statusValue || "in";
+    if (value === "out") return "нет в наличии";
+    if (value === "preorder") return "под заказ";
+    return "в наличии";
+  }
+
   function normalizeImage(image, index = 0) {
     if (!image) return null;
     if (typeof image === "string") {
@@ -191,8 +202,9 @@
   }
 
   function priceLabel(item) {
-    if (item.inStock === false) return "нет в наличии";
-    return (item.prices || []).map((price) => `${price.amount} ${price.currency}`).join(" / ") || "цена по запросу";
+    const statusText = stockLabel(merchStockStatus(item));
+    const prices = (item.prices || []).map((price) => `${price.amount} ${price.currency}`).join(" / ");
+    return prices ? `${prices} · ${statusText}` : statusText;
   }
 
   function collectionById(id) {
@@ -246,8 +258,9 @@
         .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
       return `
-        <section class="adminCollectionGroup">
+        <section class="adminCollectionGroup" data-sort-id="${escapeHtml(collection.id)}" data-collection-id="${escapeHtml(collection.id)}">
           <div class="adminCollectionHead">
+            <button class="adminDragHandle" type="button" data-drag-handle aria-label="Передвинуть коллекцию">☰</button>
             <div>
               <div class="adminItemTitle">№${escapeHtml(collection.sortOrder)} · ${escapeHtml(collection.titleRu)} / ${escapeHtml(collection.titleEn)}</div>
               <div class="adminItemMeta">${items.length} товар(ов) · ${collection.isVirtual ? "нужно сохранить как коллекцию" : (collection.isPublished === false ? "скрыта" : "опубликована")}</div>
@@ -257,7 +270,13 @@
               <button class="adminButton adminDanger" type="button" data-delete-collection="${escapeHtml(collection.id)}">Удалить</button>
             </div>
           </div>
-          <div class="adminList compactList">
+          <div class="adminBulkBar">
+            <label class="adminCheck"><input type="checkbox" data-select-all-merch="${escapeHtml(collection.id)}"> выбрать всё в коллекции</label>
+            <button class="adminButton" type="button" data-bulk-stock="in" data-bulk-collection="${escapeHtml(collection.id)}">В наличии</button>
+            <button class="adminButton" type="button" data-bulk-stock="preorder" data-bulk-collection="${escapeHtml(collection.id)}">Под заказ</button>
+            <button class="adminButton" type="button" data-bulk-stock="out" data-bulk-collection="${escapeHtml(collection.id)}">Нет в наличии</button>
+          </div>
+          <div class="adminList compactList adminSortable" data-sortable="merch" data-collection-id="${escapeHtml(collection.id)}">
             ${items.length ? items.map(renderMerchItem).join("") : `<p class="adminTiny">В этой коллекции пока нет товаров. Лента появится на сайте, когда добавишь товар.</p>`}
           </div>
         </section>
@@ -266,24 +285,37 @@
 
     const unassigned = merchItems.filter((item) => !assigned.has(item.id));
     const unassignedBlock = unassigned.length ? `
-      <section class="adminCollectionGroup">
+      <section class="adminCollectionGroup" data-collection-id="">
         <div class="adminCollectionHead">
           <div>
             <div class="adminItemTitle">Без коллекции</div>
             <div class="adminItemMeta">${unassigned.length} товар(ов), которые надо пристроить в нормальный дом</div>
           </div>
         </div>
-        <div class="adminList compactList">${unassigned.map(renderMerchItem).join("")}</div>
+        <div class="adminList compactList adminSortable" data-sortable="merch" data-collection-id="">${unassigned.map(renderMerchItem).join("")}</div>
       </section>
     ` : "";
 
-    list.innerHTML = collectionBlocks + unassignedBlock;
+    list.innerHTML = `
+      <div class="adminBulkBar global">
+        <label class="adminCheck"><input type="checkbox" id="selectAllMerchGlobal"> выбрать все товары</label>
+        <button class="adminButton" type="button" data-bulk-stock="in">Все выбранные: в наличии</button>
+        <button class="adminButton" type="button" data-bulk-stock="preorder">Все выбранные: под заказ</button>
+        <button class="adminButton" type="button" data-bulk-stock="out">Все выбранные: нет в наличии</button>
+        <span class="adminTiny">Очередность меняется перетаскиванием за ☰. В мерче номер считается отдельно внутри каждой коллекции.</span>
+      </div>
+      <div class="adminSortable" data-sortable="collections">${collectionBlocks}</div>
+      ${unassignedBlock}
+    `;
+    setupSortableLists();
   }
 
   function renderMerchItem(item) {
     const collection = collectionForItem(item);
     return `
-      <article class="adminItem">
+      <article class="adminItem" data-sort-id="${escapeHtml(item.id)}" data-merch-id="${escapeHtml(item.id)}">
+        <button class="adminDragHandle" type="button" data-drag-handle aria-label="Передвинуть товар">☰</button>
+        <label class="adminSelectBox"><input type="checkbox" data-merch-select value="${escapeHtml(item.id)}"></label>
         ${firstImage(item.images) ? `<img src="${escapeHtml(firstImage(item.images))}" alt="">` : ""}
         <div class="adminItemText">
           <div class="adminItemTitle">№${escapeHtml(item.sortOrder)} · ${escapeHtml(item.titleRu || item.titleEn || "Без названия")}</div>
@@ -298,17 +330,24 @@
   function renderTattooList() {
     const list = $("#tattooList");
     if (!list) return;
-    list.innerHTML = tattooWorks.length ? tattooWorks.map((work) => `
-      <article class="adminItem">
-        ${firstImage(work.images) || work.image ? `<img src="${escapeHtml(firstImage(work.images) || work.image)}" alt="">` : ""}
-        <div class="adminItemText">
-          <div class="adminItemTitle">№${escapeHtml(work.sortOrder)} · ${escapeHtml((work.descriptionRu || "Работа").slice(0, 100))}</div>
-          <div class="adminItemMeta">${escapeHtml((work.descriptionEn || "").slice(0, 120))}</div>
-        </div>
-        <button class="adminButton" type="button" data-edit-tattoo="${escapeHtml(work.id)}">Редактировать</button>
-        <button class="adminButton adminDanger" type="button" data-delete-tattoo="${escapeHtml(work.id)}">Удалить</button>
-      </article>
-    `).join("") : `<p class="adminTiny">Пока работ нет.</p>`;
+    list.innerHTML = tattooWorks.length ? `
+      <div class="adminTiny adminOrderHint">Очередность меняется перетаскиванием за ☰. После отпускания порядок сразу сохраняется.</div>
+      <div class="adminList adminSortable" data-sortable="tattoo">
+        ${tattooWorks.map((work) => `
+          <article class="adminItem" data-sort-id="${escapeHtml(work.id)}">
+            <button class="adminDragHandle" type="button" data-drag-handle aria-label="Передвинуть работу">☰</button>
+            ${firstImage(work.images) || work.image ? `<img src="${escapeHtml(firstImage(work.images) || work.image)}" alt="">` : ""}
+            <div class="adminItemText">
+              <div class="adminItemTitle">№${escapeHtml(work.sortOrder)} · ${escapeHtml((work.descriptionRu || "Работа").slice(0, 100))}</div>
+              <div class="adminItemMeta">${escapeHtml((work.descriptionEn || "").slice(0, 120))}</div>
+            </div>
+            <button class="adminButton" type="button" data-edit-tattoo="${escapeHtml(work.id)}">Редактировать</button>
+            <button class="adminButton adminDanger" type="button" data-delete-tattoo="${escapeHtml(work.id)}">Удалить</button>
+          </article>
+        `).join("")}
+      </div>
+    ` : `<p class="adminTiny">Пока работ нет.</p>`;
+    setupSortableLists();
   }
 
   function renderAll() {
@@ -384,7 +423,8 @@
         collectionRu: collection.titleRu,
         collectionEn: collection.titleEn,
         prices: pricesFromForm(),
-        inStock: $("#merchStock").value === "true",
+        stockStatus: $("#merchStock").value,
+        inStock: $("#merchStock").value !== "out",
         isPublished: $("#merchPublished").value === "true",
         descriptionRu: text("#merchDescriptionRu"),
         descriptionEn: text("#merchDescriptionEn"),
@@ -452,7 +492,7 @@
     setValue("#merchCategoryRu", item.categoryRu);
     setValue("#merchCategoryEn", item.categoryEn);
     fillPrices(item.prices);
-    $("#merchStock").value = item.inStock === false ? "false" : "true";
+    $("#merchStock").value = merchStockStatus(item);
     $("#merchPublished").value = item.isPublished === false ? "false" : "true";
     setValue("#merchDescriptionRu", item.descriptionRu);
     setValue("#merchDescriptionEn", item.descriptionEn);
@@ -533,10 +573,10 @@
         status(`Переношу тату-работу ${index + 1}/${works.length}...`);
         const images = (await uploadLegacyImages([work.image], "legacy-tattoo")).map((image, imageIndex) => ({
           ...normalizeImage(image, imageIndex),
-          altRu: work.altRu || work.descriptionRu || "",
-          altEn: work.altEn || work.descriptionEn || "",
-          titleRu: work.descriptionRu || "",
-          titleEn: work.descriptionEn || "",
+          altRu: "",
+          altEn: "",
+          titleRu: "",
+          titleEn: "",
         }));
         await cms.saveTattooWork({
           id: work.id,
@@ -598,10 +638,10 @@
         status(`Переношу товар ${index + 1}/${items.length}: ${item.titleRu || item.titleEn || "без названия"}...`);
         const images = (await uploadLegacyImages(item.images || [], "legacy-merch")).map((image, imageIndex) => ({
           ...normalizeImage(image, imageIndex),
-          altRu: `${item.titleRu || "Мерч bazookatattoo"} - фото ${imageIndex + 1}`,
-          altEn: `${item.titleEn || "bazookatattoo merch"} - photo ${imageIndex + 1}`,
-          titleRu: item.titleRu || "",
-          titleEn: item.titleEn || "",
+          altRu: "",
+          altEn: "",
+          titleRu: "",
+          titleEn: "",
         }));
         const collection = collectionMap.get(`${item.collectionRu || "Мерч"}|||${item.collectionEn || item.collectionRu || "Merch"}`);
         await cms.saveMerchItem({
@@ -616,6 +656,7 @@
           descriptionRu: item.descriptionRu,
           descriptionEn: item.descriptionEn,
           prices: item.prices || [],
+          stockStatus: item.stockStatus || (item.inStock === false ? "out" : "in"),
           inStock: item.inStock !== false,
           isPublished: item.isPublished !== false,
           instagram: item.instagram,
@@ -627,6 +668,103 @@
       status("Старый мерч перенесён в Supabase, коллекции созданы, фото скопированы в Storage.");
     } catch (error) {
       status(error.message || "Не удалось перенести старый мерч", true);
+    }
+  }
+
+
+  let sortableSetupTimer = 0;
+
+  function setupSortableLists() {
+    clearTimeout(sortableSetupTimer);
+    sortableSetupTimer = setTimeout(() => {
+      $$(".adminSortable").forEach((list) => {
+        if (list.dataset.sortReady === "true") return;
+        list.dataset.sortReady = "true";
+        list.addEventListener("pointerdown", onSortPointerDown);
+      });
+    }, 0);
+  }
+
+  function sortableItems(list) {
+    return Array.from(list.children).filter((el) => el.matches("[data-sort-id]"));
+  }
+
+  async function saveOrderFromList(list) {
+    const type = list.dataset.sortable;
+    const items = sortableItems(list);
+    try {
+      status("Сохраняю порядок...");
+      if (type === "merch") {
+        const collectionId = list.dataset.collectionId || null;
+        await cms.updateMerchOrders(items.map((el, index) => ({ id: el.dataset.sortId, collectionId, sortOrder: index })));
+      }
+      if (type === "tattoo") {
+        await cms.updateTattooOrders(items.map((el, index) => ({ id: el.dataset.sortId, sortOrder: index })));
+      }
+      if (type === "collections") {
+        await cms.updateCollectionOrders(items.map((el, index) => ({ id: el.dataset.sortId, sortOrder: index })));
+      }
+      await loadContent();
+      status("Порядок сохранён.");
+    } catch (error) {
+      status(error.message || "Не удалось сохранить порядок", true);
+    }
+  }
+
+  function onSortPointerDown(event) {
+    const handle = event.target.closest("[data-drag-handle]");
+    if (!handle) return;
+    const item = handle.closest("[data-sort-id]");
+    const list = handle.closest(".adminSortable");
+    if (!item || !list) return;
+
+    event.preventDefault();
+    item.classList.add("isDragging");
+    item.setPointerCapture?.(event.pointerId);
+
+    const onMove = (moveEvent) => {
+      moveEvent.preventDefault();
+      item.style.opacity = "0.55";
+      const target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY)?.closest("[data-sort-id]");
+      if (!target || target === item || target.parentElement !== list) return;
+      const rect = target.getBoundingClientRect();
+      const before = moveEvent.clientY < rect.top + rect.height / 2;
+      list.insertBefore(item, before ? target : target.nextSibling);
+    };
+
+    const onUp = async (upEvent) => {
+      item.releasePointerCapture?.(upEvent.pointerId);
+      item.classList.remove("isDragging");
+      item.style.opacity = "";
+      document.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerup", onUp);
+      document.removeEventListener("pointercancel", onUp);
+      await saveOrderFromList(list);
+    };
+
+    document.addEventListener("pointermove", onMove, { passive: false });
+    document.addEventListener("pointerup", onUp, { once: true });
+    document.addEventListener("pointercancel", onUp, { once: true });
+  }
+
+  function selectedMerchIds(collectionId = null) {
+    const selector = collectionId ? `[data-collection-id="${CSS.escape(collectionId)}"] [data-merch-select]:checked` : "[data-merch-select]:checked";
+    return $$(selector).map((input) => input.value).filter(Boolean);
+  }
+
+  async function bulkSetStock(statusValue, collectionId = null) {
+    const ids = selectedMerchIds(collectionId);
+    if (!ids.length) {
+      status("Сначала выбери товары галочками.", true);
+      return;
+    }
+    try {
+      status("Меняю наличие выбранных товаров...");
+      await cms.bulkUpdateMerchStock(ids, statusValue);
+      await loadContent();
+      status(`Обновлено товаров: ${ids.length}.`);
+    } catch (error) {
+      status(error.message || "Не удалось поменять наличие", true);
     }
   }
 
@@ -703,12 +841,22 @@
     });
 
     document.addEventListener("click", (event) => {
+      const bulkStockButton = event.target.closest("[data-bulk-stock]");
+      const selectAllCollection = event.target.closest("[data-select-all-merch]");
       const editCollectionButton = event.target.closest("[data-edit-collection]");
       const deleteCollectionButton = event.target.closest("[data-delete-collection]");
       const editMerchButton = event.target.closest("[data-edit-merch]");
       const deleteMerchButton = event.target.closest("[data-delete-merch]");
       const editTattooButton = event.target.closest("[data-edit-tattoo]");
       const deleteTattooButton = event.target.closest("[data-delete-tattoo]");
+      if (bulkStockButton) bulkSetStock(bulkStockButton.dataset.bulkStock, bulkStockButton.dataset.bulkCollection || null);
+      if (selectAllCollection) {
+        const wrap = selectAllCollection.closest("[data-collection-id]");
+        $$("[data-merch-select]", wrap).forEach((input) => { input.checked = selectAllCollection.checked; });
+      }
+      if (event.target && event.target.id === "selectAllMerchGlobal") {
+        $$("[data-merch-select]").forEach((input) => { input.checked = event.target.checked; });
+      }
       if (editCollectionButton) editCollection(editCollectionButton.dataset.editCollection);
       if (deleteCollectionButton) deleteCollection(deleteCollectionButton.dataset.deleteCollection);
       if (editMerchButton) editMerch(editMerchButton.dataset.editMerch);
