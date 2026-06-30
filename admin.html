@@ -45,21 +45,45 @@
         <nav class="adminNav" aria-label="Разделы админки">
           <button type="button" class="active" data-admin-tab="merch">Мерч</button>
           <button type="button" data-admin-tab="tattoo">Тату-работы</button>
-          <button type="button" data-admin-tab="seed">Перенос старых работ</button>
+          <button type="button" data-admin-tab="seed">Перенос старого контента</button>
         </nav>
 
         <div>
           <section class="adminPanel active" data-admin-panel="merch">
             <h2>Мерч</h2>
+
+            <form class="adminForm adminSubPanel" id="collectionForm">
+              <input type="hidden" id="collectionEditId" />
+              <h3>Линейки / коллекции мерча</h3>
+              <p class="adminTiny">Создай коллекцию, задай ей номер отображения, а потом выбирай её у товара. На сайте каждая коллекция будет отдельной лентой вправо-влево.</p>
+              <div class="adminTwo">
+                <div class="adminField"><label>Коллекция RU</label><input class="adminInput" id="collectionTitleRu" placeholder="Например: Yugen" required /></div>
+                <div class="adminField"><label>Collection EN</label><input class="adminInput" id="collectionTitleEn" placeholder="For example: Yugen" required /></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Описание коллекции RU</label><textarea class="adminTextarea" id="collectionTextRu"></textarea></div>
+                <div class="adminField"><label>Collection text EN</label><textarea class="adminTextarea" id="collectionTextEn"></textarea></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Номер коллекции на сайте</label><input class="adminInput" id="collectionSortOrder" inputmode="numeric" placeholder="0" /></div>
+                <div class="adminField"><label>Опубликовано</label><select class="adminSelect" id="collectionPublished"><option value="true">Да</option><option value="false">Нет</option></select></div>
+              </div>
+              <div class="adminActions">
+                <button class="adminButton primary" type="submit">Сохранить коллекцию</button>
+                <button class="adminButton" type="button" id="clearCollectionForm">Очистить коллекцию</button>
+              </div>
+            </form>
+
             <form class="adminForm" id="merchForm">
               <input type="hidden" id="merchEditId" />
+              <h3>Товар</h3>
               <div class="adminTwo">
                 <div class="adminField"><label>Название RU</label><input class="adminInput" id="merchTitleRu" required /></div>
                 <div class="adminField"><label>Название EN</label><input class="adminInput" id="merchTitleEn" required /></div>
               </div>
               <div class="adminTwo">
-                <div class="adminField"><label>Коллекция RU</label><input class="adminInput" id="merchCollectionRu" placeholder="Например: Yugen" /></div>
-                <div class="adminField"><label>Коллекция EN</label><input class="adminInput" id="merchCollectionEn" placeholder="For example: Yugen" /></div>
+                <div class="adminField"><label>Коллекция</label><select class="adminSelect" id="merchCollectionId" required></select></div>
+                <div class="adminField"><label>Номер товара внутри коллекции</label><input class="adminInput" id="merchSortOrder" inputmode="numeric" placeholder="0" /></div>
               </div>
               <div class="adminTwo">
                 <div class="adminField"><label>Категория RU</label><input class="adminInput" id="merchCategoryRu" placeholder="Футболка" /></div>
@@ -80,8 +104,8 @@
               </div>
               <div class="adminField">
                 <label>Фото товара, можно несколько</label>
-                <input class="adminInput" id="merchImages" type="file" accept="image/*" multiple />
-                <div class="adminTiny">Если редактируешь товар и не выбираешь новые фото, старые фото останутся.</div>
+                <input class="adminInput" id="merchImages" type="file" accept="image/webp" multiple />
+                <div class="adminTiny">Загружай именно .webp. Если редактируешь товар и не выбираешь новые фото, старые фото останутся.</div>
               </div>
               <div class="adminActions">
                 <button class="adminButton primary" type="submit">Сохранить товар</button>
@@ -101,12 +125,12 @@
               </div>
               <div class="adminTwo">
                 <div class="adminField"><label>Опубликовано</label><select class="adminSelect" id="tattooPublished"><option value="true">Да</option><option value="false">Нет</option></select></div>
-                <div class="adminField"><label>Порядок</label><input class="adminInput" id="tattooSortOrder" inputmode="numeric" placeholder="0" /></div>
+                <div class="adminField"><label>Номер работы на сайте</label><input class="adminInput" id="tattooSortOrder" inputmode="numeric" placeholder="0" /></div>
               </div>
               <div class="adminField">
                 <label>Фото работы, можно несколько</label>
-                <input class="adminInput" id="tattooImages" type="file" accept="image/*" multiple />
-                <div class="adminTiny">Если редактируешь работу и не выбираешь новые фото, старые фото останутся.</div>
+                <input class="adminInput" id="tattooImages" type="file" accept="image/webp" multiple />
+                <div class="adminTiny">Загружай именно .webp. Если редактируешь работу и не выбираешь новые фото, старые фото останутся.</div>
               </div>
               <div class="adminActions">
                 <button class="adminButton primary" type="submit">Сохранить работу</button>
@@ -117,12 +141,16 @@
           </section>
 
           <section class="adminPanel" data-admin-panel="seed">
-            <h2>Перенос старых работ</h2>
+            <h2>Перенос старого контента</h2>
             <p class="adminTiny">
-              Старые описания тату-работ уже вытащены из текущего сайта. Кнопка ниже загрузит их в Supabase как опубликованные работы. Фото останутся по старым путям сайта, новые фото потом можно будет заменить через админку.
+              Кнопки ниже перенесут старые тату-работы и мерч в Supabase. Фото будут скопированы из текущих папок сайта в Supabase Storage, а в базу запишутся уже новые ссылки. Да, это тот редкий случай, когда кнопка правда делает полезное дело.
+            </p>
+            <p class="adminTiny">
+              Для новых загрузок используй только .webp. Старые фото можно будет удалить из проекта только после успешного переноса и проверки сайта.
             </p>
             <div class="adminActions">
               <button class="adminButton primary" type="button" id="seedTattooWorks">Перенести старые тату-работы</button>
+              <button class="adminButton primary" type="button" id="seedMerchItems">Перенести старый мерч</button>
               <button class="adminButton" type="button" id="reloadContent">Обновить список</button>
             </div>
             <div class="adminField" style="margin-top:18px">
@@ -131,7 +159,10 @@
 2. Создай пользователя в Supabase Auth.
 3. Добавь его user_id в таблицу admin_users.
 4. Вставь Project URL и anon key в /assets/js/supabase-config.js.
-5. Открой /admin.html и войди.</textarea>
+5. Открой /admin.html и войди.
+6. В разделе переноса сначала перенеси тату-работы и мерч.
+7. Старые коллекции мерча создадутся автоматически.
+8. После проверки можно удалить старые фото из /assets/img/works и /assets/img/merch.</textarea>
             </div>
           </section>
         </div>

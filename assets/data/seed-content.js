@@ -1,4 +1,557 @@
 window.BAZOOKA_SEED_CONTENT = {
+  "merchItems": [
+      {
+          "id": "legacy-merch-black-1",
+          "titleRu": "Black 1",
+          "titleEn": "Black 1",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 0,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black1-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-2",
+          "titleRu": "Black 2",
+          "titleEn": "Black 2",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 1,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black2-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-3",
+          "titleRu": "Black 3",
+          "titleEn": "Black 3",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 2,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black3-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-4",
+          "titleRu": "Black 4",
+          "titleEn": "Black 4",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 3,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black4-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-5",
+          "titleRu": "Black 5",
+          "titleEn": "Black 5",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 4,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black5-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-6",
+          "titleRu": "Black 6",
+          "titleEn": "Black 6",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 5,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black6-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-7",
+          "titleRu": "Black 7",
+          "titleEn": "Black 7",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 6,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black7-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-8",
+          "titleRu": "Black 8",
+          "titleEn": "Black 8",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 7,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black8-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-9",
+          "titleRu": "Black 9",
+          "titleEn": "Black 9",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 8,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black9-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-10",
+          "titleRu": "Black 10",
+          "titleEn": "Black 10",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 9,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black10-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-black-11",
+          "titleRu": "Black 11",
+          "titleEn": "Black 11",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Black",
+          "collectionEn": "Black",
+          "descriptionRu": "Футболка из линейки Black. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Black collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 10,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/black11-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-custom-1",
+          "titleRu": "Custom 1",
+          "titleEn": "Custom 1",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Custom",
+          "collectionEn": "Custom",
+          "descriptionRu": "Футболка из линейки Custom. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 11,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/custom1-900.webp",
+              "/assets/img/merch/customback1-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-custom-2",
+          "titleRu": "Custom 2",
+          "titleEn": "Custom 2",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Custom",
+          "collectionEn": "Custom",
+          "descriptionRu": "Футболка из линейки Custom. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 12,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/custom2-900.webp",
+              "/assets/img/merch/customback2-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-custom-3",
+          "titleRu": "Custom 3",
+          "titleEn": "Custom 3",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Custom",
+          "collectionEn": "Custom",
+          "descriptionRu": "Футболка из линейки Custom. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 13,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/custom3-900.webp",
+              "/assets/img/merch/customback3-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-custom-4",
+          "titleRu": "Custom 4",
+          "titleEn": "Custom 4",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Custom",
+          "collectionEn": "Custom",
+          "descriptionRu": "Футболка из линейки Custom. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Custom collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 14,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/custom4-900.webp",
+              "/assets/img/merch/customback4-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-hoodie-1",
+          "titleRu": "Hoodie 1",
+          "titleEn": "Hoodie 1",
+          "categoryRu": "Худи",
+          "categoryEn": "Hoodie",
+          "collectionRu": "Hoodie",
+          "collectionEn": "Hoodie",
+          "descriptionRu": "Худи из линейки Hoodie. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "Hoodie from the Hoodie collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 15,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/hoodie1-900.webp",
+              "/assets/img/merch/hoodieback1-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-hoodie-2",
+          "titleRu": "Hoodie 2",
+          "titleEn": "Hoodie 2",
+          "categoryRu": "Худи",
+          "categoryEn": "Hoodie",
+          "collectionRu": "Hoodie",
+          "collectionEn": "Hoodie",
+          "descriptionRu": "Худи из линейки Hoodie. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "Hoodie from the Hoodie collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 16,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/hoodie2-900.webp",
+              "/assets/img/merch/hoodieback2-900.webp",
+              "/assets/img/merch/hoodieback2-1-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-1",
+          "titleRu": "Yugen 1",
+          "titleEn": "Yugen 1",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 17,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen1-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-2",
+          "titleRu": "Yugen 2",
+          "titleEn": "Yugen 2",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 18,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen2-900.webp",
+              "/assets/img/merch/yugen12-900.webp",
+              "/assets/img/merch/yugen13-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-3",
+          "titleRu": "Yugen 3",
+          "titleEn": "Yugen 3",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 19,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen3-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-4",
+          "titleRu": "Yugen 4",
+          "titleEn": "Yugen 4",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 20,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen4-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-5",
+          "titleRu": "Yugen 5",
+          "titleEn": "Yugen 5",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 21,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen5-900.webp",
+              "/assets/img/merch/yugen14-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-6",
+          "titleRu": "Yugen 6",
+          "titleEn": "Yugen 6",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 22,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen6-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-7",
+          "titleRu": "Yugen 7",
+          "titleEn": "Yugen 7",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 23,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen7-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-8",
+          "titleRu": "Yugen 8",
+          "titleEn": "Yugen 8",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 24,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen8-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-10",
+          "titleRu": "Yugen 10",
+          "titleEn": "Yugen 10",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 25,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen10-900.webp",
+              "/assets/img/merch/yugen9-900.webp"
+          ]
+      },
+      {
+          "id": "legacy-merch-yugen-11",
+          "titleRu": "Yugen 11",
+          "titleEn": "Yugen 11",
+          "categoryRu": "Футболка",
+          "categoryEn": "T-shirt",
+          "collectionRu": "Yugen",
+          "collectionEn": "Yugen",
+          "descriptionRu": "Футболка из линейки Yugen. Для заказа напиши в Instagram или Telegram.",
+          "descriptionEn": "T-shirt from the Yugen collection. Contact via Instagram or Telegram to order.",
+          "prices": [],
+          "inStock": false,
+          "isPublished": true,
+          "sortOrder": 26,
+          "instagram": "https://www.instagram.com/yugenmagaz/",
+          "telegram": "https://t.me/bazookatattoo",
+          "images": [
+              "/assets/img/merch/yugen11-900.webp"
+          ]
+      }
+  ],
   "tattooWorks": [
     {
       "id": "legacy-work-12",

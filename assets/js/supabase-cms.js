@@ -11,6 +11,34 @@
     return Boolean(client);
   }
 
+  function id(prefix) {
+    if (crypto && crypto.randomUUID) return crypto.randomUUID();
+    return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  function slugify(value, fallback = "collection") {
+    return String(value || fallback)
+      .toLowerCase()
+      .trim()
+      .replace(/ё/g, "e")
+      .replace(/[^a-zа-я0-9]+/gi, "-")
+      .replace(/^-|-$/g, "") || fallback;
+  }
+
+  function toCamelCollection(row) {
+    return {
+      id: row.id,
+      titleRu: row.title_ru || "Коллекция",
+      titleEn: row.title_en || row.title_ru || "Collection",
+      textRu: row.text_ru || "Выбери вещь и открой карточку для подробностей.",
+      textEn: row.text_en || "Choose an item and open the card for details.",
+      isPublished: row.is_published !== false,
+      sortOrder: Number(row.sort_order || 0),
+      isVirtual: false,
+      items: [],
+    };
+  }
+
   function toCamelItem(row) {
     const prices = Array.isArray(row.prices) ? row.prices : [];
     const images = Array.isArray(row.merch_images)
@@ -19,6 +47,7 @@
 
     return {
       id: row.id,
+      collectionId: row.collection_id || "",
       titleRu: row.title_ru || "",
       titleEn: row.title_en || row.title_ru || "",
       categoryRu: row.category_ru || "Мерч",
@@ -33,28 +62,58 @@
       instagram: row.instagram || "https://www.instagram.com/yugenmagaz/",
       telegram: row.telegram || "https://t.me/bazookatattoo",
       isPublished: row.is_published !== false,
-      sortOrder: row.sort_order || 0,
+      sortOrder: Number(row.sort_order || 0),
     };
   }
 
-  function merchRowsToCollections(rows) {
+  function merchRowsToCollections(rows, collectionRows = [], includeEmpty = false) {
     const map = new Map();
+    const collections = (collectionRows || []).map(toCamelCollection).sort((a, b) => a.sortOrder - b.sortOrder);
+
+    collections.forEach((collection) => map.set(collection.id, { ...collection, items: [] }));
+
     (rows || []).forEach((row) => {
       const item = toCamelItem(row);
-      const key = `${item.collectionRu}|||${item.collectionEn}`;
-      if (!map.has(key)) {
-        map.set(key, {
-          id: key.toLowerCase().replace(/[^a-zа-я0-9]+/gi, "-").replace(/^-|-$/g, "") || "merch",
-          titleRu: item.collectionRu,
-          titleEn: item.collectionEn,
-          textRu: `Коллекция ${item.collectionRu}. Выбери вещь и открой карточку для подробностей.`,
-          textEn: `${item.collectionEn} collection. Choose an item and open the card for details.`,
-          items: [],
+      let collection = item.collectionId ? map.get(item.collectionId) : null;
+
+      if (!collection) {
+        collection = collections.find((entry) => {
+          return entry.titleRu === item.collectionRu || entry.titleEn === item.collectionEn;
         });
+        if (collection) collection = map.get(collection.id);
       }
-      map.get(key).items.push(item);
+
+      if (!collection) {
+        const virtualId = slugify(`${item.collectionRu}-${item.collectionEn}`, "merch");
+        if (!map.has(virtualId)) {
+          map.set(virtualId, {
+            id: virtualId,
+            titleRu: item.collectionRu || "Мерч",
+            titleEn: item.collectionEn || "Merch",
+            textRu: `Коллекция ${item.collectionRu || "Мерч"}. Выбери вещь и открой карточку для подробностей.`,
+            textEn: `${item.collectionEn || "Merch"} collection. Choose an item and open the card for details.`,
+            isPublished: true,
+            sortOrder: 9999,
+            isVirtual: true,
+            items: [],
+          });
+        }
+        collection = map.get(virtualId);
+      }
+
+      item.collectionId = collection.id;
+      item.collectionRu = collection.titleRu;
+      item.collectionEn = collection.titleEn;
+      collection.items.push(item);
     });
-    return Array.from(map.values());
+
+    return Array.from(map.values())
+      .map((collection) => ({
+        ...collection,
+        items: collection.items.sort((a, b) => a.sortOrder - b.sortOrder),
+      }))
+      .filter((collection) => includeEmpty || collection.items.length)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   function toCamelWork(row) {
@@ -71,14 +130,24 @@
       altRu: row.alt_ru || row.description_ru || "Тату-работа bazookatattoo.",
       altEn: row.alt_en || row.description_en || "Tattoo work by bazookatattoo.",
       isPublished: row.is_published !== false,
-      sortOrder: row.sort_order || 0,
+      sortOrder: Number(row.sort_order || 0),
     };
+  }
+
+  async function fetchCollections(onlyPublished = false) {
+    if (!client) throw new Error("Supabase is not configured");
+    let query = client.from("merch_collections").select("*").order("sort_order", { ascending: true });
+    if (onlyPublished) query = query.eq("is_published", true);
+    const { data, error } = await query;
+    if (error) throw error;
+    return data || [];
   }
 
   async function getPublicContent() {
     if (!client) return null;
 
-    const [merchResult, tattooResult] = await Promise.all([
+    const [collectionsResult, merchResult, tattooResult] = await Promise.all([
+      client.from("merch_collections").select("*").eq("is_published", true).order("sort_order", { ascending: true }),
       client
         .from("merch_items")
         .select("*, merch_images(id, image_url, sort_order)")
@@ -91,11 +160,12 @@
         .order("sort_order", { ascending: true }),
     ]);
 
+    if (collectionsResult.error) throw collectionsResult.error;
     if (merchResult.error) throw merchResult.error;
     if (tattooResult.error) throw tattooResult.error;
 
     return {
-      merchCollections: merchRowsToCollections(merchResult.data || []),
+      merchCollections: merchRowsToCollections(merchResult.data || [], collectionsResult.data || [], false),
       tattooWorks: (tattooResult.data || []).map(toCamelWork),
     };
   }
@@ -103,7 +173,8 @@
   async function getAdminContent() {
     if (!client) throw new Error("Supabase is not configured");
 
-    const [merchResult, tattooResult] = await Promise.all([
+    const [collectionsResult, merchResult, tattooResult] = await Promise.all([
+      client.from("merch_collections").select("*").order("sort_order", { ascending: true }),
       client
         .from("merch_items")
         .select("*, merch_images(id, image_url, sort_order)")
@@ -114,40 +185,62 @@
         .order("sort_order", { ascending: true }),
     ]);
 
+    if (collectionsResult.error) throw collectionsResult.error;
     if (merchResult.error) throw merchResult.error;
     if (tattooResult.error) throw tattooResult.error;
 
+    const merchCollections = merchRowsToCollections(merchResult.data || [], collectionsResult.data || [], true);
     return {
+      merchCollections,
       merchItems: (merchResult.data || []).map(toCamelItem),
       tattooWorks: (tattooResult.data || []).map(toCamelWork),
     };
   }
 
-  function id(prefix) {
-    if (crypto && crypto.randomUUID) return crypto.randomUUID();
-    return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  function slugFileName(name) {
+    const clean = String(name || "image.webp").toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-|-$/g, "");
+    return clean || "image.webp";
   }
 
-  function slugFileName(name) {
-    const clean = String(name || "image").toLowerCase().replace(/[^a-z0-9.]+/g, "-").replace(/^-|-$/g, "");
-    return clean || "image.jpg";
+  function assertWebpFile(file) {
+    const name = String(file?.name || "").toLowerCase();
+    const type = String(file?.type || "").toLowerCase();
+    if (!name.endsWith(".webp") && type !== "image/webp") {
+      throw new Error("Загружай фото только в формате .webp. Да, JPEG тоже милый, но не сегодня.");
+    }
+  }
+
+  async function uploadBlob(blob, folder, fileName) {
+    if (!client) throw new Error("Supabase is not configured");
+    const safeName = slugFileName(fileName).replace(/\.(jpg|jpeg|png|heic|avif)$/i, ".webp");
+    const path = `${folder}/${Date.now()}-${Math.random().toString(16).slice(2)}-${safeName}`;
+    const { error } = await client.storage.from(bucket).upload(path, blob, {
+      cacheControl: "31536000",
+      upsert: false,
+      contentType: "image/webp",
+    });
+    if (error) throw error;
+    const { data } = client.storage.from(bucket).getPublicUrl(path);
+    return data.publicUrl;
   }
 
   async function uploadImages(files, folder) {
-    if (!client) throw new Error("Supabase is not configured");
     const uploaded = [];
     for (const file of Array.from(files || [])) {
-      const path = `${folder}/${Date.now()}-${Math.random().toString(16).slice(2)}-${slugFileName(file.name)}`;
-      const { error } = await client.storage.from(bucket).upload(path, file, {
-        cacheControl: "3600",
-        upsert: false,
-        contentType: file.type || "image/jpeg",
-      });
-      if (error) throw error;
-      const { data } = client.storage.from(bucket).getPublicUrl(path);
-      uploaded.push(data.publicUrl);
+      assertWebpFile(file);
+      uploaded.push(await uploadBlob(file, folder, file.name));
     }
     return uploaded;
+  }
+
+  async function uploadLegacyImageUrl(url, folder) {
+    if (!url) return "";
+    if (/^https:\/\//i.test(url) && url.includes("/storage/v1/object/public/")) return url;
+    const response = await fetch(url, { cache: "force-cache" });
+    if (!response.ok) throw new Error(`Не удалось загрузить старое фото: ${url}`);
+    const blob = await response.blob();
+    const name = String(url).split("/").pop() || "legacy-image.webp";
+    return uploadBlob(blob, folder, name);
   }
 
   async function signIn(email, password) {
@@ -184,9 +277,30 @@
     }));
   }
 
+  async function saveMerchCollection(collection) {
+    const row = {
+      id: collection.id || id("collection"),
+      title_ru: collection.titleRu || "Коллекция",
+      title_en: collection.titleEn || collection.titleRu || "Collection",
+      text_ru: collection.textRu || "",
+      text_en: collection.textEn || "",
+      is_published: collection.isPublished !== false,
+      sort_order: Number(collection.sortOrder || 0),
+    };
+    const { data, error } = await client.from("merch_collections").upsert(row, { onConflict: "id" }).select("id").single();
+    if (error) throw error;
+    return data?.id || row.id;
+  }
+
+  async function deleteMerchCollection(collectionId) {
+    const { error } = await client.from("merch_collections").delete().eq("id", collectionId);
+    if (error) throw error;
+  }
+
   async function saveMerchItem(item, imageUrls) {
     const row = {
       id: item.id || id("merch"),
+      collection_id: item.collectionId || null,
       title_ru: item.titleRu,
       title_en: item.titleEn,
       category_ru: item.categoryRu || "Мерч",
@@ -256,11 +370,15 @@
     bucket,
     getPublicContent,
     getAdminContent,
+    fetchCollections,
     uploadImages,
+    uploadLegacyImageUrl,
     signIn,
     signOut,
     getSession,
     isAdmin,
+    saveMerchCollection,
+    deleteMerchCollection,
     saveMerchItem,
     deleteMerchItem,
     saveTattooWork,

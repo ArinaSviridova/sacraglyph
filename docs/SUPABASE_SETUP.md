@@ -10,6 +10,7 @@ Open SQL Editor and run:
 
 It creates:
 - admin_users
+- merch_collections
 - merch_items
 - merch_images
 - tattoo_works
@@ -50,11 +51,31 @@ Open:
 
 Log in with the Supabase Auth user.
 
-## 6. Move old tattoo works into Supabase
-In admin, open the tab "Перенос старых работ" and click "Перенести старые тату-работы".
+## 6. Move old content into Supabase
+In admin, open the tab "Перенос старого контента".
 
-The old descriptions are already extracted into:
+Click:
+- "Перенести старые тату-работы"
+- "Перенести старый мерч"
+
+The old tattoo works and merch are already extracted into. Existing merch collections are created automatically during import:
 
 `assets/data/seed-content.js`
 
-Old images use existing local site paths. New images uploaded from admin go to Supabase Storage.
+The transfer buttons fetch old local images from `/assets/img/works` and `/assets/img/merch`, upload them to Supabase Storage, and save the new public Storage URLs in the database.
+
+For all new uploads use `.webp` only. The admin form blocks non-webp images.
+
+In admin you can set:
+- collection display order with `Номер коллекции на сайте`
+- merch item display order with `Номер товара внутри коллекции`
+- tattoo work display order with `Номер работы на сайте`
+
+## 7. Can old image folders be deleted?
+Only after the transfer buttons finish successfully and you check the deployed site.
+
+After verification, you can remove:
+- `assets/img/works/*`
+- `assets/img/merch/*`
+
+Do not delete background, hero, favicon, review, SEO, or other image folders unless you confirm they are no longer referenced.

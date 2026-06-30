@@ -9,8 +9,22 @@ create table if not exists public.admin_users (
   created_at timestamptz not null default now()
 );
 
+
+create table if not exists public.merch_collections (
+  id text primary key default gen_random_uuid()::text,
+  title_ru text not null,
+  title_en text not null,
+  text_ru text default '',
+  text_en text default '',
+  is_published boolean not null default true,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.merch_items (
   id text primary key default gen_random_uuid()::text,
+  collection_id text references public.merch_collections(id) on delete set null,
   title_ru text not null,
   title_en text not null,
   category_ru text default 'Мерч',
@@ -28,6 +42,8 @@ create table if not exists public.merch_items (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table if exists public.merch_items add column if not exists collection_id text references public.merch_collections(id) on delete set null;
 
 create table if not exists public.merch_images (
   id text primary key default gen_random_uuid()::text,
@@ -67,6 +83,12 @@ begin
 end;
 $$;
 
+
+drop trigger if exists merch_collections_touch_updated_at on public.merch_collections;
+create trigger merch_collections_touch_updated_at
+before update on public.merch_collections
+for each row execute function public.touch_updated_at();
+
 drop trigger if exists merch_items_touch_updated_at on public.merch_items;
 create trigger merch_items_touch_updated_at
 before update on public.merch_items
@@ -78,6 +100,7 @@ before update on public.tattoo_works
 for each row execute function public.touch_updated_at();
 
 alter table public.admin_users enable row level security;
+alter table public.merch_collections enable row level security;
 alter table public.merch_items enable row level security;
 alter table public.merch_images enable row level security;
 alter table public.tattoo_works enable row level security;
@@ -101,6 +124,36 @@ on public.admin_users
 for select
 to authenticated
 using (user_id = auth.uid());
+
+
+drop policy if exists "Public can read published merch collections" on public.merch_collections;
+create policy "Public can read published merch collections"
+on public.merch_collections
+for select
+to anon, authenticated
+using (is_published = true or public.is_cms_admin());
+
+drop policy if exists "Admins can insert merch collections" on public.merch_collections;
+create policy "Admins can insert merch collections"
+on public.merch_collections
+for insert
+to authenticated
+with check (public.is_cms_admin());
+
+drop policy if exists "Admins can update merch collections" on public.merch_collections;
+create policy "Admins can update merch collections"
+on public.merch_collections
+for update
+to authenticated
+using (public.is_cms_admin())
+with check (public.is_cms_admin());
+
+drop policy if exists "Admins can delete merch collections" on public.merch_collections;
+create policy "Admins can delete merch collections"
+on public.merch_collections
+for delete
+to authenticated
+using (public.is_cms_admin());
 
 drop policy if exists "Public can read published merch" on public.merch_items;
 create policy "Public can read published merch"

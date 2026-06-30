@@ -586,6 +586,7 @@
   let currentItem = null;
   let currentItemIndex = 0;
   let currentImageIndex = 0;
+  let lastFocusedElement = null;
 
   function getCollectionById(collectionId) {
     return (
@@ -772,15 +773,23 @@
     renderMainImage();
     renderThumbs();
 
+    lastFocusedElement = document.activeElement;
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    const closeButton = modal.querySelector("[data-merch-close]");
+    if (closeButton) closeButton.focus({ preventScroll: true });
   }
 
   function closeModal() {
+    const active = document.activeElement;
+    if (active && modal.contains(active)) active.blur();
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    if (lastFocusedElement && document.contains(lastFocusedElement)) {
+      lastFocusedElement.focus({ preventScroll: true });
+    }
   }
 
   function setCurrentItemByIndex(nextIndex) {
