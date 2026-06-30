@@ -102,8 +102,8 @@
               </div>
               <div class="adminField">
                 <label>Фото товара, можно несколько</label>
-                <input class="adminInput" id="merchImages" type="file" accept="image/webp" multiple />
-                <div class="adminTiny">Загружай именно .webp. После выбора фото ниже появятся карточки фото с очевидным блоком “SEO-подпись этого фото”. Первое/выбранное фото - заглавное, остальные показываются в карточке товара.</div>
+                <input class="adminInput" id="merchImages" type="file" accept="image/*,.heic,.heif" multiple />
+                <div class="adminTiny">Можно загрузить JPG, PNG, WEBP, AVIF, HEIC/HEIF. Админка сама сожмёт фото и отправит на сайт уже в .webp. Если браузер не умеет прочитать HEIC, он попросит пересохранить фото в JPG/PNG, потому что браузеры тоже иногда делают вид, что 2026 год не наступил.</div>
               </div>
               <div class="adminImageManager" id="merchImageManager"></div>
               <div class="adminTiny adminSeoNote"><b>SEO фото:</b> <code>alt</code> - главное описание для Google, Яндекс и скринридеров. <code>title</code> - короткая подпись, которую браузер может показать при наведении. На странице это не выглядит как отдельный текст, поэтому не надо паниковать и искать его глазами.</div>
@@ -129,8 +129,8 @@
               </div>
               <div class="adminField">
                 <label>Фото работы, можно несколько</label>
-                <input class="adminInput" id="tattooImages" type="file" accept="image/webp" multiple />
-                <div class="adminTiny">Загружай именно .webp. После выбора фото ниже появятся поля для SEO-подписей. Первое/выбранное фото - заглавное в галерее работ.</div>
+                <input class="adminInput" id="tattooImages" type="file" accept="image/*,.heic,.heif" multiple />
+                <div class="adminTiny">Можно загрузить JPG, PNG, WEBP, AVIF, HEIC/HEIF. Админка автоматически уменьшит фото, сконвертирует в .webp и загрузит в Supabase Storage. Первое/выбранное фото - заглавное в галерее работ.</div>
               </div>
               <div class="adminImageManager" id="tattooImageManager"></div>
               <div class="adminTiny adminSeoNote"><b>SEO фото работы:</b> в <code>alt</code> пиши что изображено: стиль, часть тела, техника, настроение. Например: “Абстрактная blackwork-татуировка на предплечье”. Это помогает поисковикам понять фото, а людям со скринридерами - сайт.</div>
@@ -148,7 +148,7 @@
               Кнопки ниже перенесут старые тату-работы и мерч в Supabase. Фото будут скопированы из текущих папок сайта в Supabase Storage, а в базу запишутся уже новые ссылки. Да, это тот редкий случай, когда кнопка правда делает полезное дело.
             </p>
             <p class="adminTiny">
-              Для новых загрузок используй только .webp. Старые фото можно будет удалить из проекта только после успешного переноса и проверки сайта.
+              Для новых загрузок можно использовать JPG, PNG, WEBP, AVIF, HEIC/HEIF. Перед отправкой админка сама делает сжатый .webp. Старые фото можно удалять из проекта только после успешного переноса и проверки сайта.
             </p>
             <div class="adminActions">
               <button class="adminButton primary" type="button" id="seedTattooWorks">Перенести старые тату-работы</button>

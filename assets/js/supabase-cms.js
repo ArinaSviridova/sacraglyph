@@ -255,17 +255,95 @@
     return clean || "image.webp";
   }
 
-  function assertWebpFile(file) {
+  function assertImageFile(file) {
     const name = String(file?.name || "").toLowerCase();
     const type = String(file?.type || "").toLowerCase();
-    if (!name.endsWith(".webp") && type !== "image/webp") {
-      throw new Error("Загружай фото только в формате .webp. Да, JPEG тоже милый, но не сегодня.");
+    const allowedByType = type.startsWith("image/");
+    const allowedByName = /\.(jpe?g|png|webp|avif|gif|heic|heif)$/i.test(name);
+    if (!allowedByType && !allowedByName) {
+      throw new Error("Это не похоже на фото. Загружай JPG, PNG, WEBP, AVIF, HEIC/HEIF или другой нормальный image-файл.");
     }
+  }
+
+  function webpFileName(name) {
+    const base = slugFileName(name || "image.webp")
+      .replace(/\.(jpe?g|png|webp|avif|gif|heic|heif)$/i, "")
+      .replace(/\.+$/g, "") || "image";
+    return `${base}.webp`;
+  }
+
+  function loadFileAsImage(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const image = new Image();
+      image.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve(image);
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error(`Браузер не смог прочитать файл “${file.name}”. Если это HEIC/HEIF, пересохрани его в JPG или PNG и загрузи снова. Да, формально “любой формат”, но браузеры всё ещё живут своей тревожной жизнью.`));
+      };
+      image.src = url;
+    });
+  }
+
+  async function fileToBitmap(file) {
+    if ("createImageBitmap" in window) {
+      try {
+        return await createImageBitmap(file, { imageOrientation: "from-image" });
+      } catch (error) {
+        // fallback ниже через Image, потому что поддержка форматов у браузеров - цирк без расписания
+      }
+    }
+    return loadFileAsImage(file);
+  }
+
+  function canvasToWebpBlob(canvas, quality) {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error("Не удалось сжать фото в .webp. Попробуй другой файл или другой браузер."));
+      }, "image/webp", quality);
+    });
+  }
+
+  async function convertImageFileToWebp(file, options = {}) {
+    assertImageFile(file);
+    const maxSide = Number(options.maxSide || 1800);
+    const quality = Number(options.quality || 0.84);
+    const bitmap = await fileToBitmap(file);
+    const originalWidth = bitmap.width || bitmap.naturalWidth;
+    const originalHeight = bitmap.height || bitmap.naturalHeight;
+    if (!originalWidth || !originalHeight) throw new Error(`Не удалось определить размер фото “${file.name}”.`);
+
+    const ratio = Math.min(1, maxSide / Math.max(originalWidth, originalHeight));
+    const width = Math.max(1, Math.round(originalWidth * ratio));
+    const height = Math.max(1, Math.round(originalHeight * ratio));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { alpha: true });
+    if (!context) throw new Error("Браузер не дал доступ к canvas для сжатия фото. Очень зрелое поведение, конечно.");
+    context.drawImage(bitmap, 0, 0, width, height);
+    if (bitmap.close) bitmap.close();
+
+    const blob = await canvasToWebpBlob(canvas, quality);
+    return {
+      blob,
+      fileName: webpFileName(file.name),
+      originalName: file.name,
+      originalSize: file.size || 0,
+      size: blob.size || 0,
+      width,
+      height,
+    };
   }
 
   async function uploadBlob(blob, folder, fileName) {
     if (!client) throw new Error("Supabase is not configured");
-    const safeName = slugFileName(fileName).replace(/\.(jpg|jpeg|png|heic|avif)$/i, ".webp");
+    const safeName = webpFileName(fileName);
     const path = `${folder}/${Date.now()}-${Math.random().toString(16).slice(2)}-${safeName}`;
     const { error } = await client.storage.from(bucket).upload(path, blob, {
       cacheControl: "31536000",
@@ -280,9 +358,18 @@
   async function uploadImages(files, folder) {
     const uploaded = [];
     for (const file of Array.from(files || [])) {
-      assertWebpFile(file);
-      const url = await uploadBlob(file, folder, file.name);
-      uploaded.push({ url, altRu: "", altEn: "", titleRu: "", titleEn: "", sortOrder: uploaded.length });
+      const converted = await convertImageFileToWebp(file);
+      const url = await uploadBlob(converted.blob, folder, converted.fileName);
+      uploaded.push({
+        url,
+        altRu: "",
+        altEn: "",
+        titleRu: "",
+        titleEn: "",
+        sortOrder: uploaded.length,
+        width: converted.width,
+        height: converted.height,
+      });
     }
     return uploaded;
   }

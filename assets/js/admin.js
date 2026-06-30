@@ -101,16 +101,16 @@
       <div class="adminImageManagerHead">
         <div>
           <strong>Фото и SEO для каждого фото</strong>
-          <span>Заглавное фото будет первым на сайте. Остальные откроются внутри карточки.</span>
+          <span>Заглавное фото будет первым на сайте. Остальные откроются внутри карточки. Новые файлы перед загрузкой автоматически сжимаются и конвертируются в .webp.</span>
         </div>
-        <div class="adminImageManagerBadge">только .webp</div>
+        <div class="adminImageManagerBadge">авто .webp</div>
       </div>
       <div class="adminSeoGuide">
         <b>Как подписывать:</b> в ALT пиши коротко, что видно на фото: предмет/работа, стиль, цвет, важная деталь. Без набора ключей через запятую.
         <br><b>Пример RU:</b> “Черная футболка Yugen с белым lettering-принтом на груди”.
         <br><b>Пример EN:</b> “Black Yugen T-shirt with white lettering print on the chest”.
       </div>
-      ${empty ? `<p class="adminTiny">Фото пока не выбраны. Выбери .webp-файлы выше, и здесь появятся строки для порядка, заглавного фото и SEO-подписей.</p>` : `<div class="adminImageRows">${existingRows.concat(newRows).join("")}</div>`}
+      ${empty ? `<p class="adminTiny">Фото пока не выбраны. Выбери JPG, PNG, WEBP, AVIF или HEIC/HEIF выше, и здесь появятся строки для порядка, заглавного фото и SEO-подписей. При сохранении файлы станут сжатыми .webp.</p>` : `<div class="adminImageRows">${existingRows.concat(newRows).join("")}</div>`}
     `;
   }
 
@@ -363,7 +363,7 @@
   async function onMerchSubmit(event) {
     event.preventDefault();
     try {
-      status("Сохраняю товар...");
+      status("Сжимаю фото и сохраняю товар...");
       const editId = text("#merchEditId");
       const existing = merchItems.find((item) => item.id === editId);
       const collectionId = text("#merchCollectionId");
@@ -404,7 +404,7 @@
   async function onTattooSubmit(event) {
     event.preventDefault();
     try {
-      status("Сохраняю работу...");
+      status("Сжимаю фото и сохраняю работу...");
       const editId = text("#tattooEditId");
       const existing = tattooWorks.find((work) => work.id === editId);
       const workImages = await buildImagesForSave("#tattooImages", "#tattooImageManager", "tattoo");
