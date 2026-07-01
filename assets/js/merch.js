@@ -635,6 +635,7 @@
       images: Array.isArray(item.images) && item.images.length ? item.images.map(normalizeImageSet) : [normalizeImageSet(item.image)],
       instagram: item.instagram || "https://www.instagram.com/yugenmagaz/",
       telegram: item.telegram || "https://t.me/bazookatattoo",
+      etsyUrl: item.etsyUrl || item.etsy_url || "https://yugenmagazart.etsy.com",
     };
   }
 
@@ -774,7 +775,7 @@
 
     if (instagramBtn) instagramBtn.href = currentItem.instagram;
     if (telegramBtn) telegramBtn.href = currentItem.telegram;
-    if (etsyBtn) etsyBtn.href = "https://yugenmagazart.etsy.com";
+    if (etsyBtn) etsyBtn.href = currentItem.etsyUrl || "https://yugenmagazart.etsy.com";
   }
 
   function openModalByIds(collectionId, itemId) {

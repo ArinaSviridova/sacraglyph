@@ -365,6 +365,7 @@
   function clearMerchForm() {
     $("#merchForm").reset();
     setValue("#merchEditId", "");
+    setValue("#merchEtsyUrl", "https://yugenmagazart.etsy.com");
     editingMerchImages = [];
     renderCollectionSelect();
     renderImageManager("#merchImageManager", editingMerchImages, "#merchImages", "merch");
@@ -430,6 +431,7 @@
         descriptionEn: text("#merchDescriptionEn"),
         instagram: "https://www.instagram.com/yugenmagaz/",
         telegram: "https://t.me/bazookatattoo",
+        etsyUrl: text("#merchEtsyUrl") || "https://yugenmagazart.etsy.com",
         sortOrder: Number(text("#merchSortOrder") || 0),
       };
       await cms.saveMerchItem(item, itemImages.length ? itemImages : existing?.images || []);
@@ -496,6 +498,7 @@
     $("#merchPublished").value = item.isPublished === false ? "false" : "true";
     setValue("#merchDescriptionRu", item.descriptionRu);
     setValue("#merchDescriptionEn", item.descriptionEn);
+    setValue("#merchEtsyUrl", item.etsyUrl || item.etsy_url || "https://yugenmagazart.etsy.com");
     editingMerchImages = (item.images || []).map(normalizeImage).filter(Boolean);
     $("#merchImages").value = "";
     renderImageManager("#merchImageManager", editingMerchImages, "#merchImages", "merch");
@@ -661,6 +664,7 @@
           isPublished: item.isPublished !== false,
           instagram: item.instagram,
           telegram: item.telegram,
+          etsyUrl: item.etsyUrl || item.etsy_url || "https://yugenmagazart.etsy.com",
           sortOrder: Number(item.sortOrder || index),
         }, images.length ? images : item.images || []);
       }

@@ -39,6 +39,7 @@ create table if not exists public.merch_items (
   is_published boolean not null default true,
   instagram text default 'https://www.instagram.com/yugenmagaz/',
   telegram text default 'https://t.me/bazookatattoo',
+  etsy_url text default 'https://yugenmagazart.etsy.com',
   sort_order integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -46,6 +47,7 @@ create table if not exists public.merch_items (
 
 alter table if exists public.merch_items add column if not exists collection_id text references public.merch_collections(id) on delete set null;
 alter table if exists public.merch_items add column if not exists stock_status text not null default 'in';
+alter table if exists public.merch_items add column if not exists etsy_url text default 'https://yugenmagazart.etsy.com';
 alter table if exists public.merch_items drop constraint if exists merch_items_stock_status_check;
 alter table if exists public.merch_items add constraint merch_items_stock_status_check check (stock_status in ('in','out','preorder'));
 update public.merch_items set stock_status = case when in_stock = false then 'out' else coalesce(nullif(stock_status, ''), 'in') end where stock_status is null or stock_status = '';

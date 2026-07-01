@@ -103,6 +103,7 @@
       images,
       instagram: row.instagram || "https://www.instagram.com/yugenmagaz/",
       telegram: row.telegram || "https://t.me/bazookatattoo",
+      etsyUrl: row.etsy_url || row.etsyUrl || "https://yugenmagazart.etsy.com",
       isPublished: row.is_published !== false,
       sortOrder: Number(row.sort_order || 0),
     };
@@ -458,6 +459,7 @@
       is_published: item.isPublished !== false,
       instagram: item.instagram || "https://www.instagram.com/yugenmagaz/",
       telegram: item.telegram || "https://t.me/bazookatattoo",
+      etsy_url: item.etsyUrl || item.etsy_url || "https://yugenmagazart.etsy.com",
       sort_order: Number(item.sortOrder || 0),
     };
 
