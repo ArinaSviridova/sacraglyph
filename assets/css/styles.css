@@ -2918,3 +2918,105 @@ html[lang="en"] .lightboxClose::after {
     font-size: 17px !important;
   }
 }
+
+/* v15 merch card text + scroll behavior fixes */
+.merchCard,
+.merchCard:visited,
+.merchCard:hover,
+.merchCard:focus,
+.merchCard:active {
+  color: var(--text) !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.merchTitle,
+.merchCard .merchTitle,
+.merchCard .merchTitle * {
+  color: var(--text) !important;
+}
+
+.merchMeta,
+.merchCard .merchMeta,
+.merchMetaVisible {
+  color: rgba(241,236,229,.78) !important;
+}
+
+.merchRow {
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
+  touch-action: pan-x pan-y;
+}
+
+
+/* v16: location CTA alignment, merch modal readability and faster image perception */
+#cities .locationMapNote {
+  display: block !important;
+  width: 100% !important;
+  max-width: 560px !important;
+  margin: 30px auto 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+#cities .locationMapNote a {
+  display: flex !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: normal !important;
+  text-align: center !important;
+  margin: 0 !important;
+}
+#cities .reviews {
+  overflow: visible !important;
+}
+#cities .reviewCard {
+  overflow: visible !important;
+}
+#merchDescription,
+.merchInfo #merchDescription,
+.merchModal #merchDescription {
+  color: rgba(241,236,229,.92) !important;
+}
+.merchInfo .p {
+  color: rgba(241,236,229,.92) !important;
+}
+.merchMedia,
+.thumb {
+  background: rgba(241,236,229,.04) !important;
+}
+.merchMedia img,
+.thumb img {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+@media (max-width: 720px) {
+  #cities .locationMapNote {
+    max-width: 100% !important;
+    margin-top: 24px !important;
+  }
+  #cities .locationMapNote a {
+    min-height: 58px !important;
+    padding: 14px 18px !important;
+    font-size: 17px !important;
+    border-radius: 999px !important;
+  }
+}
+
+/* v16.1: keep the map button inside the location content column */
+#cities .locationMapNote {
+  grid-column: 2 / 3 !important;
+  justify-self: start !important;
+}
+@media (max-width: 900px) {
+  #cities .locationMapNote {
+    grid-column: 1 / -1 !important;
+    justify-self: stretch !important;
+  }
+}

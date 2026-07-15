@@ -265,7 +265,10 @@
     const isEn = lang === "en";
 
     gallery.innerHTML = works
-      .map((work) => {
+      .map((work, index) => {
+        const isPriority = index < 8;
+        const loadingMode = isPriority ? "eager" : "lazy";
+        const fetchPriority = isPriority ? "high" : "low";
         const alt = isEn
           ? work.altEn || work.altRu || ""
           : work.altRu || work.altEn || "";
@@ -280,9 +283,9 @@
               alt="${escapeHtml(alt)}"${titleAttr}
               width="800"
               height="600"
-              loading="lazy"
+              loading="${loadingMode}"
               decoding="async"
-              fetchpriority="low">`
+              fetchpriority="${fetchPriority}">`
           : `<picture>
               <source
                 type="image/avif"
@@ -297,9 +300,9 @@
                 alt="${escapeHtml(alt)}"${titleAttr}
                 width="800"
                 height="600"
-                loading="lazy"
+                loading="${loadingMode}"
                 decoding="async"
-                fetchpriority="low">
+                fetchpriority="${fetchPriority}">
             </picture>`;
 
         return `
@@ -314,6 +317,21 @@
       .join("");
   }
 
+
+
+  function warmUpWorkImages() {
+    const gallery = document.getElementById("worksGallery");
+    if (!gallery) return;
+    const urls = Array.from(gallery.querySelectorAll("img"))
+      .slice(0, 10)
+      .map((img) => img.currentSrc || img.src)
+      .filter(Boolean);
+    urls.forEach((url) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = url;
+    });
+  }
 
   function initWorkImageFallbacks() {
     const gallery = document.getElementById("worksGallery");
@@ -860,6 +878,7 @@
     await loadSupabaseRuntimeContent();
     applyCmsWorks();
     renderWorksGallery();
+    warmUpWorkImages();
     initWorkImageFallbacks();
     initWorksScrollHint();
     initMobile();

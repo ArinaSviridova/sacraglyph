@@ -61,6 +61,7 @@
     imgClass = "",
     sizes = "100vw",
     loading = "lazy",
+    fetchPriority = "auto",
   ) {
     const normalized = normalizeImageSet(imageSet);
     const jpg = normalized.jpg || normalized.webp || normalized.avif || "/assets/img/price-placeholder.jpg";
@@ -73,6 +74,7 @@
           alt="${escapeHtml(alt)}"
           ${normalized.titleRu || normalized.titleEn || normalized.title ? `title="${escapeHtml(t(normalized.titleRu || normalized.title || "", normalized.titleEn || normalized.titleRu || normalized.title || ""))}"` : ""}
           loading="${escapeHtml(loading)}"
+          fetchpriority="${escapeHtml(fetchPriority)}"
           decoding="async">
       `;
     }
@@ -87,6 +89,7 @@
           alt="${escapeHtml(alt)}"
           ${normalized.titleRu || normalized.titleEn || normalized.title ? `title="${escapeHtml(t(normalized.titleRu || normalized.title || "", normalized.titleEn || normalized.titleRu || normalized.title || ""))}"` : ""}
           loading="${escapeHtml(loading)}"
+          fetchpriority="${escapeHtml(fetchPriority)}"
           decoding="async">
       </picture>
     `;
@@ -695,7 +698,9 @@
         <div class="merchRow" data-merch-row>
           ${collection.items
             .map(
-              (item) => `
+              (item, itemIndex) => {
+                const isPriority = itemIndex < 4;
+                return `
             <article class="merchItem">
               <button
                 class="merchCard"
@@ -708,6 +713,8 @@
                     imageSeo(item.images[0], t(item.titleRu, item.titleEn)).alt,
                     "merchCardImg",
                     "(max-width: 767px) 70vw, (max-width: 1200px) 33vw, 280px",
+                    isPriority ? "eager" : "lazy",
+                    isPriority ? "high" : "auto",
                   )}
                 </div>
                 <div class="merchBody">
@@ -716,7 +723,8 @@
                 </div>
               </button>
             </article>
-          `,
+          `;
+              },
             )
             .join("")}
         </div>
@@ -724,6 +732,20 @@
     `,
       )
       .join("");
+  }
+
+
+  function warmUpMerchImages() {
+    if (!root) return;
+    const urls = Array.from(root.querySelectorAll(".merchCardImg"))
+      .slice(0, 12)
+      .map((img) => img.currentSrc || img.src)
+      .filter(Boolean);
+    urls.forEach((url) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = url;
+    });
   }
 
   function renderMainImage() {
@@ -735,6 +757,7 @@
       "merchViewerImg",
       "(max-width: 767px) 100vw, 900px",
       "eager",
+      "high",
     );
   }
 
@@ -836,28 +859,10 @@
   }
 
   function setupHorizontalWheel() {
-    const rows = document.querySelectorAll("[data-merch-row]");
-
-    rows.forEach((row) => {
-      row.addEventListener(
-        "wheel",
-        (e) => {
-          if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
-
-          const maxLeft = row.scrollWidth - row.clientWidth;
-          const atStart = row.scrollLeft <= 0;
-          const atEnd = row.scrollLeft >= maxLeft - 1;
-          const wantsPrevious = e.deltaY < 0;
-          const wantsNext = e.deltaY > 0;
-
-          if ((atStart && wantsPrevious) || (atEnd && wantsNext)) return;
-
-          e.preventDefault();
-          row.scrollLeft += e.deltaY;
-        },
-        { passive: false },
-      );
-    });
+    // Keep the mouse wheel / trackpad vertical gesture for normal page scrolling.
+    // Horizontal scrolling still works with horizontal swipe/trackpad gestures, drag, and scrollbar.
+    // The previous version converted vertical wheel movement into horizontal row scroll,
+    // which trapped users inside the merch carousel. A tiny UX prison, basically.
   }
 
   root.addEventListener("click", (e) => {
