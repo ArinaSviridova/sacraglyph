@@ -26,6 +26,20 @@
       .replaceAll("'", "&#039;");
   }
 
+  function optimizeMerchImage(url, options = {}) {
+    if (window.BazookaImages && window.BazookaImages.optimizedUrl) {
+      return window.BazookaImages.optimizedUrl(url, options);
+    }
+    return url;
+  }
+
+  function merchImageSrcset(url, widths, options = {}) {
+    if (window.BazookaImages && window.BazookaImages.srcset) {
+      return window.BazookaImages.srcset(url, widths, options);
+    }
+    return "";
+  }
+
   function createImageSet(baseName) {
     const basePath = `/assets/img/merch/${baseName}`;
 
@@ -64,13 +78,23 @@
     fetchPriority = "auto",
   ) {
     const normalized = normalizeImageSet(imageSet);
-    const jpg = normalized.jpg || normalized.webp || normalized.avif || "/assets/img/price-placeholder.jpg";
+    const original = normalized.jpg || normalized.webp || normalized.avif || "/assets/img/price-placeholder.jpg";
+    const isMerchVisual = /merch/i.test(imgClass) || /viewer/i.test(imgClass);
+    const resize = isMerchVisual ? "contain" : "cover";
+    const quality = imgClass.includes("Viewer") ? 82 : 74;
+    const optimizedSrc = optimizeMerchImage(original, {
+      width: imgClass.includes("Viewer") ? 1400 : 700,
+      quality,
+      resize,
+    });
+    const optimizedSrcset = merchImageSrcset(original, [360, 520, 700, 900, 1200, 1400], { quality, resize });
 
     if (!normalized.avif && !normalized.webp) {
       return `
         <img
           class="${escapeHtml(imgClass)}"
-          src="${escapeHtml(jpg)}"
+          src="${escapeHtml(optimizedSrc)}"
+          ${optimizedSrcset ? `srcset="${escapeHtml(optimizedSrcset)}" sizes="${escapeHtml(sizes)}"` : ""}
           alt="${escapeHtml(alt)}"
           ${normalized.titleRu || normalized.titleEn || normalized.title ? `title="${escapeHtml(t(normalized.titleRu || normalized.title || "", normalized.titleEn || normalized.titleRu || normalized.title || ""))}"` : ""}
           loading="${escapeHtml(loading)}"
@@ -85,7 +109,7 @@
         ${normalized.webp ? `<source type="image/webp" srcset="${escapeHtml(normalized.webp)}" sizes="${escapeHtml(sizes)}">` : ""}
         <img
           class="${escapeHtml(imgClass)}"
-          src="${escapeHtml(jpg)}"
+          src="${escapeHtml(optimizedSrc)}"
           alt="${escapeHtml(alt)}"
           ${normalized.titleRu || normalized.titleEn || normalized.title ? `title="${escapeHtml(t(normalized.titleRu || normalized.title || "", normalized.titleEn || normalized.titleRu || normalized.title || ""))}"` : ""}
           loading="${escapeHtml(loading)}"
@@ -737,11 +761,26 @@
 
   function warmUpMerchImages() {
     if (!root) return;
-    const urls = Array.from(root.querySelectorAll(".merchCardImg"))
-      .slice(0, 12)
+    const cardUrls = Array.from(root.querySelectorAll(".merchCardImg"))
       .map((img) => img.currentSrc || img.src)
       .filter(Boolean);
-    urls.forEach((url) => {
+    const modalUrls = merchCollections
+      .flatMap((collection) => collection.items || [])
+      .flatMap((item) => item.images || [])
+      .map((imageSet) => {
+        const normalized = normalizeImageSet(imageSet);
+        const src = normalized.jpg || normalized.webp || normalized.avif || "";
+        return optimizeMerchImage(src, { width: 1200, quality: 82, resize: "contain" });
+      })
+      .filter(Boolean);
+
+    if (window.BazookaImages && window.BazookaImages.preloadBatch) {
+      window.BazookaImages.preloadBatch(cardUrls.slice(0, 18), { limit: 12, priority: "high", delay: 20 });
+      window.BazookaImages.preloadBatch(cardUrls.slice(18).concat(modalUrls), { limit: 10, priority: "low", delay: 260 });
+      return;
+    }
+
+    cardUrls.slice(0, 12).forEach((url) => {
       const image = new Image();
       image.decoding = "async";
       image.src = url;

@@ -252,8 +252,28 @@
     works = cms.tattooWorks.map(normalizeCmsWork).filter((work) => work.image || work.id);
   }
 
+  function optimizeCmsImage(url, options = {}) {
+    if (window.BazookaImages && window.BazookaImages.optimizedUrl) {
+      return window.BazookaImages.optimizedUrl(url, options);
+    }
+    return url;
+  }
+
+  function cmsImageSrcset(url, widths, options = {}) {
+    if (window.BazookaImages && window.BazookaImages.srcset) {
+      return window.BazookaImages.srcset(url, widths, options);
+    }
+    return "";
+  }
+
   function workImage(work, size = 600, format = "webp") {
-    if (work.image) return work.image;
+    if (work.image) {
+      return optimizeCmsImage(work.image, {
+        width: size,
+        quality: size >= 1400 ? 82 : 74,
+        resize: "cover",
+      });
+    }
     return staticWorkImageFromId(work.id, size, format) || `/assets/img/works/work-${work.id}-${size}.${format}`;
   }
 
@@ -276,9 +296,14 @@
         const title = isEn ? work.imageTitleEn || work.imageTitleRu || "" : work.imageTitleRu || work.imageTitleEn || "";
         const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
 
+        const cmsSrcset = work.image
+          ? cmsImageSrcset(work.image, [360, 520, 700, 900, 1200], { quality: 74, resize: "cover" })
+          : "";
+
         const picture = work.image
           ? `<img
-              src="${escapeHtml(work.image)}"
+              src="${escapeHtml(workImage(work, 700, "webp"))}"
+              ${cmsSrcset ? `srcset="${escapeHtml(cmsSrcset)}" sizes="(max-width: 900px) 50vw, 33vw"` : ""}
               data-static-fallback="${escapeHtml(staticWorkImageFromId(work.id, 900, "webp"))}"
               alt="${escapeHtml(alt)}"${titleAttr}
               width="800"
@@ -322,11 +347,21 @@
   function warmUpWorkImages() {
     const gallery = document.getElementById("worksGallery");
     if (!gallery) return;
-    const urls = Array.from(gallery.querySelectorAll("img"))
-      .slice(0, 10)
+    const visibleUrls = Array.from(gallery.querySelectorAll("img"))
+      .slice(0, 12)
       .map((img) => img.currentSrc || img.src)
       .filter(Boolean);
-    urls.forEach((url) => {
+    const fullUrls = Array.from(gallery.querySelectorAll("[data-lightbox-link]"))
+      .map((link) => link.getAttribute("href"))
+      .filter(Boolean);
+
+    if (window.BazookaImages && window.BazookaImages.preloadBatch) {
+      window.BazookaImages.preloadBatch(visibleUrls, { limit: 12, priority: "high", delay: 20 });
+      window.BazookaImages.preloadBatch(fullUrls, { limit: 8, priority: "low", delay: 220 });
+      return;
+    }
+
+    visibleUrls.forEach((url) => {
       const image = new Image();
       image.decoding = "async";
       image.src = url;
@@ -572,6 +607,10 @@
 
     function preload(url) {
       if (!url) return;
+      if (window.BazookaImages && window.BazookaImages.preload) {
+        window.BazookaImages.preload(url, { priority: "low" });
+        return;
+      }
       const img = new Image();
       img.decoding = "async";
       img.src = url;
@@ -582,7 +621,7 @@
       if (el.lightboxSrcWebp) el.lightboxSrcWebp.srcset = fullWebp || "";
       el.lightboxImg.src = fullWebp || "";
       el.lightboxImg.decoding = "async";
-      el.lightboxImg.fetchPriority = "low";
+      el.lightboxImg.fetchPriority = "high";
     }
 
     function open(index) {

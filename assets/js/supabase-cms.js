@@ -312,8 +312,8 @@
 
   async function convertImageFileToWebp(file, options = {}) {
     assertImageFile(file);
-    const maxSide = Number(options.maxSide || 1800);
-    const quality = Number(options.quality || 0.84);
+    const maxSide = Number(options.maxSide || 1600);
+    const quality = Number(options.quality || 0.78);
     const bitmap = await fileToBitmap(file);
     const originalWidth = bitmap.width || bitmap.naturalWidth;
     const originalHeight = bitmap.height || bitmap.naturalHeight;
