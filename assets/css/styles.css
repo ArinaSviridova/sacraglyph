@@ -2706,3 +2706,215 @@ body {
 .adminOrderHint{margin:0 0 12px}
 .adminItem{gap:12px}
 .adminField small{display:block;margin-top:6px;color:rgba(241,236,229,.55);font-size:12px;line-height:1.35}
+
+/* v11 portfolio preview + lightbox close fixes */
+#works .gallery {
+  align-items: stretch !important;
+}
+
+#works .gallery .thumb {
+  height: clamp(360px, 34vw, 520px) !important;
+  aspect-ratio: 3 / 4 !important;
+  border-radius: 0 !important;
+  background: rgba(255,255,255,.035) !important;
+}
+
+#works .gallery .thumb > picture,
+#works .gallery .thumb > img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#works .gallery .thumb img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
+.lightbox.open {
+  z-index: 20000 !important;
+}
+
+.lightboxClose {
+  position: fixed !important;
+  top: max(18px, env(safe-area-inset-top)) !important;
+  right: max(18px, env(safe-area-inset-right)) !important;
+  z-index: 20010 !important;
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(241,236,229,.55) !important;
+  background: rgba(8,8,8,.86) !important;
+  color: #f1ece5 !important;
+  box-shadow: 0 18px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.14) !important;
+  font-size: 44px !important;
+  line-height: 56px !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.lightboxClose::after {
+  content: "Закрыть";
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 82px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(8,8,8,.72);
+  color: rgba(241,236,229,.78);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+html[lang="en"] .lightboxClose::after {
+  content: "Close";
+}
+
+.lightboxBody {
+  padding-top: 34px !important;
+}
+
+.lightboxImg {
+  max-width: min(1320px, calc(100vw - 32px)) !important;
+  max-height: calc(100vh - 118px) !important;
+  object-fit: contain !important;
+}
+
+@media (max-width: 760px) {
+  #works .gallery .thumb {
+    height: 96vw !important;
+    max-height: 560px !important;
+    min-height: 320px !important;
+  }
+
+  .lightbox {
+    padding: 16px !important;
+  }
+
+  .lightboxClose {
+    width: 58px !important;
+    height: 58px !important;
+    font-size: 40px !important;
+    line-height: 50px !important;
+    top: max(14px, env(safe-area-inset-top)) !important;
+    right: max(14px, env(safe-area-inset-right)) !important;
+  }
+
+  .lightboxClose::after {
+    display: none;
+  }
+
+  .lightboxImg {
+    max-width: calc(100vw - 28px) !important;
+    max-height: calc(100vh - 96px) !important;
+  }
+}
+
+/* --- requested fix v13: larger mobile work/price thumbnails --- */
+@media (max-width: 720px) {
+  #prices .priceItem {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) clamp(148px, 43vw, 190px) !important;
+    gap: 16px !important;
+    align-items: start !important;
+    padding: 20px 0 !important;
+  }
+
+  #prices .priceMedia {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    aspect-ratio: 1 / 1.08 !important;
+    justify-self: end !important;
+  }
+
+  #prices .priceMedia img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  #prices .priceBox {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    align-self: center !important;
+  }
+
+  #prices .priceLine span {
+    margin-bottom: 5px !important;
+    font-size: 11px !important;
+    letter-spacing: .18em !important;
+  }
+
+  #prices .priceLine strong {
+    font-size: clamp(18px, 5vw, 23px) !important;
+  }
+
+  #prices .priceLine:last-child strong {
+    font-size: clamp(19px, 5.3vw, 25px) !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #prices .priceItem {
+    grid-template-columns: minmax(0, 1fr) 140px !important;
+    gap: 12px !important;
+  }
+
+  #prices .priceLine strong {
+    font-size: 17px !important;
+  }
+
+  #prices .priceLine:last-child strong {
+    font-size: 18px !important;
+  }
+}
+
+
+/* v14: location section map CTA */
+.locationMapNote {
+  margin: 24px auto 0 !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  background: rgba(255,255,255,.035) !important;
+  border-color: rgba(241,236,229,.18) !important;
+  box-shadow: 0 18px 50px rgba(0,0,0,.22) !important;
+}
+.locationMapNote a {
+  min-width: min(520px, calc(100vw - 52px)) !important;
+  min-height: 58px !important;
+  justify-content: center !important;
+  padding: 15px 24px !important;
+  font-size: 18px !important;
+  letter-spacing: .02em !important;
+  border-color: rgba(241,236,229,.34) !important;
+  background: linear-gradient(135deg, rgba(241,236,229,.12), rgba(241,236,229,.035)) !important;
+}
+.locationMapNote a:hover,
+.locationMapNote a:focus-visible {
+  background: rgba(241,236,229,.15) !important;
+  border-color: rgba(241,236,229,.62) !important;
+  box-shadow: 0 18px 42px rgba(0,0,0,.28) !important;
+}
+@media (max-width: 720px) {
+  .locationMapNote {
+    width: 100% !important;
+    padding: 12px !important;
+  }
+  .locationMapNote a {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 56px !important;
+    font-size: 17px !important;
+  }
+}
