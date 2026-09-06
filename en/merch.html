@@ -2,15 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
-      name="viewport"
-    />
-
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <meta name="p:domain_verify" content="731721b1bdec003f0fb9e0f246d44fce"/>
     <title>Merch | bazookatattoo</title>
     <meta
       name="description"
-      content="bazookatattoo merch. Buy on Etsy, ask sizing, stock and delivery questions on Instagram or Telegram."
+      content="T-shirts and merch by bazookatattoo. Order via Instagram or Telegram."
     />
     <meta
       name="robots"
@@ -44,7 +41,7 @@
     <meta property="og:title" content="Merch | bazookatattoo" />
     <meta
       property="og:description"
-      content="bazookatattoo merch. Buy on Etsy, ask sizing, stock and delivery questions on Instagram or Telegram."
+      content="T-shirts and merch by bazookatattoo. Order via Instagram or Telegram."
     />
     <meta property="og:url" content="https://sacraglyph.com/en/merch.html" />
     <meta
@@ -64,24 +61,6 @@
     />
 
     <link rel="stylesheet" href="/assets/css/styles.css" />
-
-    <!-- Consent Mode defaults before Google Tag Manager / gtag -->
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("consent", "default", {
-        ad_storage: "denied",
-        analytics_storage: "denied",
-        ad_user_data: "denied",
-        ad_personalization: "denied",
-        functionality_storage: "denied",
-        personalization_storage: "denied",
-        security_storage: "granted",
-        wait_for_update: 500,
-      });
-    </script>
 
     <!-- Google Tag Manager -->
     <script>
@@ -175,7 +154,7 @@
         /></div
     ></noscript>
     <!-- /Yandex.Metrika counter -->
-  </head>
+</head>
   <body>
     <header class="header">
       <div class="container headerRow">
@@ -249,28 +228,36 @@
           <div class="sectionHead center">
             <h1 class="h1">Merch</h1>
             <p class="muted">
-              Buy merch on Etsy. For sizing, stock, delivery and custom questions, message Instagram or Telegram.
+              Merch collections available to order via Instagram or Telegram
             </p>
           </div>
 
-          <div class="merchEtsyHero">
-            <a class="merchEtsyMain" href="https://yugenmagazart.etsy.com" target="_blank" rel="noopener">
-              <span>Buy on Etsy</span>
-              <b>Open shop</b>
-            </a>
+          <div class="card heroText merchIntroCard">
+            <p class="p">
+              Choose a collection, scroll the items to the right and click a
+              card to see details.
+            </p>
           </div>
 
           <div id="merchCollections"></div>
 
-          <div class="merchBottomCta">
-            <a class="merchQuestionBtn" href="https://www.instagram.com/yugenmagaz/" target="_blank" rel="noopener">
-              <span>Questions</span><b>Instagram</b>
+          <div class="worksMore">
+            <a
+              href="https://www.instagram.com/bazookatats"
+              target="_blank"
+              rel="noopener"
+            >
+              Order via Instagram @yugenmagaz
             </a>
-            <a class="merchQuestionBtn" href="https://t.me/bazookatattoo" target="_blank" rel="noopener">
-              <span>Questions</span><b>Telegram</b>
-            </a>
-            <a class="merchBuyBtn" href="https://yugenmagazart.etsy.com" target="_blank" rel="noopener">
-              <span>Shop</span><b>Buy on Etsy</b>
+          </div>
+
+          <div class="worksMore merchSecondLink">
+            <a
+              href="https://t.me/bazookatattoo"
+              target="_blank"
+              rel="noopener"
+            >
+              Order via Telegram
             </a>
           </div>
         </div>
@@ -330,7 +317,7 @@
                   target="_blank"
                   rel="noopener"
                 >
-                  Questions on Instagram
+                  Order on Instagram
                 </a>
                 <a
                   class="btn"
@@ -339,16 +326,7 @@
                   target="_blank"
                   rel="noopener"
                 >
-                  Questions on Telegram
-                </a>
-                <a
-                  class="btn primary"
-                  id="merchEtsyBtn"
-                  href="https://yugenmagazart.etsy.com"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  Buy on Etsy
+                  Order on Telegram
                 </a>
               </div>
             </div>
@@ -378,16 +356,13 @@
           <a href="/privacy-policy.html">Privacy Policy</a>
         </div>
       </div>
-    </footer>
+    
+
+</footer>
 
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-    <script src="/assets/js/supabase-config.js" defer></script>
-    <script src="/assets/js/supabase-cms.js" defer></script>
-    <script src="/assets/js/image-optimizer.js" defer></script>
-    <script src="/assets/data/site-content.js" defer></script>
     <script src="/assets/js/main.js" defer></script>
     <script src="/assets/js/merch.js" defer></script>
   </body>
