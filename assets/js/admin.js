@@ -321,6 +321,11 @@
           <div class="adminItemTitle">№${escapeHtml(item.sortOrder)} · ${escapeHtml(item.titleRu || item.titleEn || "Без названия")}</div>
           <div class="adminItemMeta">${escapeHtml(collection?.titleRu || item.collectionRu || "Без коллекции")} · ${escapeHtml(priceLabel(item))}</div>
         </div>
+        <label class="adminStockSwitch" title="Наличие товара: включено = в наличии, выключено = нет в наличии">
+          <input type="checkbox" data-merch-stock-toggle="${escapeHtml(item.id)}" ${merchStockStatus(item) === "in" ? "checked" : ""} aria-label="В наличии: ${escapeHtml(item.titleRu || item.titleEn || "товар")}">
+          <span class="adminStockSwitchTrack" aria-hidden="true"></span>
+          <span class="adminStockSwitchText">${merchStockStatus(item) === "in" ? "В наличии" : (merchStockStatus(item) === "preorder" ? "Под заказ" : "Нет в наличии")}</span>
+        </label>
         <button class="adminButton" type="button" data-edit-merch="${escapeHtml(item.id)}">Редактировать</button>
         <button class="adminButton adminDanger" type="button" data-delete-merch="${escapeHtml(item.id)}">Удалить</button>
       </article>
@@ -841,6 +846,25 @@
       if (event.target === loveModal) {
         loveModal.classList.remove("open");
         loveModal.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    document.addEventListener("change", async (event) => {
+      const toggle = event.target.closest("[data-merch-stock-toggle]");
+      if (!toggle) return;
+      const item = merchItems.find((entry) => entry.id === toggle.dataset.merchStockToggle);
+      if (!item) return;
+      const nextStatus = toggle.checked ? "in" : "out";
+      toggle.disabled = true;
+      try {
+        status("Сохраняю наличие товара...");
+        await cms.bulkUpdateMerchStock([item.id], nextStatus);
+        await loadContent();
+        status(`Наличие «${item.titleRu || item.titleEn}» сохранено.`);
+      } catch (error) {
+        toggle.checked = !toggle.checked;
+        toggle.disabled = false;
+        status(error.message || "Не удалось сохранить наличие", true);
       }
     });
 

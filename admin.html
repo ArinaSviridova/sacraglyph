@@ -6,6 +6,18 @@
     <title>Админка | bazookatattoo</title>
     <link rel="icon" href="/favicon.png" />
     <link rel="stylesheet" href="/assets/css/styles.css" />
+    <style>
+      .adminStockSwitch {display:inline-flex;align-items:center;gap:9px;cursor:pointer;white-space:nowrap;font-size:12px;user-select:none}
+      .adminStockSwitch input {position:absolute;opacity:0;width:1px;height:1px}
+      .adminStockSwitchTrack {position:relative;display:inline-block;width:42px;height:24px;min-width:42px;border-radius:999px;background:#656772;border:1px solid #85858b;transition:background .18s}
+      .adminStockSwitchTrack::before {content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .18s;box-shadow:0 1px 3px #0005}
+      .adminStockSwitch input:checked + .adminStockSwitchTrack {background:#2d936b;border-color:#2d936b}
+      .adminStockSwitch input:checked + .adminStockSwitchTrack::before {transform:translateX(18px)}
+      .adminStockSwitch input:focus-visible + .adminStockSwitchTrack {outline:3px solid #88b4ff;outline-offset:2px}
+      .adminStockSwitch input:disabled + .adminStockSwitchTrack {opacity:.5}
+      .adminStockSwitchText {min-width:87px}
+      @media(max-width:700px){.adminStockSwitch{width:100%;margin:6px 0}.adminStockSwitchText{min-width:0}}
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="/assets/js/supabase-config.js" defer></script>
     <script src="/assets/js/supabase-cms.js" defer></script>

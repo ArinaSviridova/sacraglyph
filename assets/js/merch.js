@@ -707,7 +707,23 @@
     merchCollections = cms.merchCollections.map(normalizeCmsCollection).filter((collection) => collection.items.length);
   }
 
+  function prioritizeAvailableMerch() {
+    // Sort only what visitors see. Admin's manually assigned order remains stored in Supabase.
+    // Stable sorting keeps the existing order within each availability group.
+    const rank = (item) => {
+      const value = item.stockStatus || (item.inStock === false || /нет в наличии|out of stock/i.test(item.priceRu || "") ? "out" : "in");
+      return value === "in" ? 0 : value === "preorder" ? 1 : 2;
+    };
+    merchCollections.forEach((collection) => {
+      collection.items = collection.items
+        .map((item, index) => ({ item, index }))
+        .sort((a, b) => rank(a.item) - rank(b.item) || a.index - b.index)
+        .map(({ item }) => item);
+    });
+  }
+
   function renderCollections() {
+    prioritizeAvailableMerch();
     root.className = "merchCollections";
 
     root.innerHTML = merchCollections
