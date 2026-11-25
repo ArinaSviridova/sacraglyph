@@ -44,7 +44,7 @@ The normal website uses the production Supabase project. The **shop pages intent
 
 ## PayPal caveat for Georgia
 
-PayPal officially lists Georgia as a country with send, receive, withdraw capabilities, but **only cross-border** transfers are supported in the referenced feature table. Treat PayPal as an option for international customers. For **domestic Georgian** customer checkout, add a Georgian gateway, such as TBC E-Commerce or Bank of Georgia iPay, before promising local card support. Verify merchant status, applicable commissions, currencies, legal entity, and settlement method with the provider.
+PayPal lists Georgia as a country with send, receive and withdraw capabilities. Its official payouts country table does **not** apply a cross-border-only footnote to Georgia. However, the exact domestic checkout, card acceptance and settlement capabilities of a particular Georgian Business account must be confirmed in the live merchant dashboard. PayPal Orders REST currencies include USD but not GEL, therefore this Sandbox implementation uses USD prices. For convenient **domestic Georgian** card checkout in GEL, consider a second gateway such as TBC E-Commerce or Bank of Georgia iPay. Confirm account approval, commissions, supported methods, currencies, legal entity and settlement method with each provider.
 
 - PayPal country features: https://developer.paypal.com/payouts/supported-features
 - PayPal Orders v2: https://developer.paypal.com/api/orders/v2
