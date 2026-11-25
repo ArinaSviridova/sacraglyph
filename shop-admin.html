@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TEST Shop Admin | bazookatattoo</title>
+    <link rel="icon" href="/favicon.png" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <style>
+      .adminStockSwitch {display:inline-flex;align-items:center;gap:9px;cursor:pointer;white-space:nowrap;font-size:12px;user-select:none}
+      .adminStockSwitch input {position:absolute;opacity:0;width:1px;height:1px}
+      .adminStockSwitchTrack {position:relative;display:inline-block;width:42px;height:24px;min-width:42px;border-radius:999px;background:#656772;border:1px solid #85858b;transition:background .18s}
+      .adminStockSwitchTrack::before {content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .18s;box-shadow:0 1px 3px #0005}
+      .adminStockSwitch input:checked + .adminStockSwitchTrack {background:#2d936b;border-color:#2d936b}
+      .adminStockSwitch input:checked + .adminStockSwitchTrack::before {transform:translateX(18px)}
+      .adminStockSwitch input:focus-visible + .adminStockSwitchTrack {outline:3px solid #88b4ff;outline-offset:2px}
+      .adminStockSwitch input:disabled + .adminStockSwitchTrack {opacity:.5}
+      .adminStockSwitchText {min-width:87px}
+      @media(max-width:700px){.adminStockSwitch{width:100%;margin:6px 0}.adminStockSwitchText{min-width:0}}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="/assets/js/shop-test-config.js" defer></script>
+    <script src="/assets/js/supabase-cms.js" defer></script>
+    <script src="/assets/data/seed-content.js" defer></script>
+    <script src="/assets/js/admin.js" defer></script>
+  </head>
+  <body class="adminBody">
+    <main class="adminShell">
+      <section class="adminTop">
+        <div>
+          <p class="kicker">Supabase CMS</p>
+          <h1>Тестовая админка магазина</h1>
+          <p class="adminTiny">Только тестовый Supabase. Управление мерчом и остатками без изменений на рабочем сайте.</p>
+          <p class="adminStatus" id="adminStatus">Проверяю подключение...</p>
+        </div>
+        <div class="adminActions">
+          <a class="adminButton" href="/shop.html">Тестовый магазин</a>
+          <a class="adminButton" href="/shop.html">Мерч (тест)</a>
+          <button class="adminButton adminDanger" type="button" id="logoutBtn" hidden>Выйти</button>
+        </div>
+      </section>
+
+      <section class="adminPanel active" id="loginPanel">
+        <h2>Вход</h2>
+        <form class="adminForm" id="loginForm">
+          <div class="adminTwo">
+            <div class="adminField"><label>Email</label><input class="adminInput" id="loginEmail" type="email" autocomplete="email" required /></div>
+            <div class="adminField"><label>Пароль</label><input class="adminInput" id="loginPassword" type="password" autocomplete="current-password" required /></div>
+          </div>
+          <button class="adminButton primary" type="submit">Войти в админку</button>
+        </form>
+      </section>
+
+      <section class="adminGrid" id="adminApp" hidden>
+        <nav class="adminNav" aria-label="Разделы админки">
+          <button type="button" class="active" data-admin-tab="merch">Мерч</button>
+          <button type="button" data-admin-tab="tattoo">Тату-работы</button>
+          <button type="button" data-admin-tab="seed">Перенос старого контента</button>
+        </nav>
+
+        <div>
+          <section class="adminPanel active" data-admin-panel="merch">
+            <h2>Мерч</h2>
+
+            <form class="adminForm adminSubPanel" id="collectionForm">
+              <input type="hidden" id="collectionEditId" />
+              <h3>Линейки / коллекции мерча</h3>
+              <p class="adminTiny">Создай коллекцию, задай ей номер отображения, а потом выбирай её у товара. На сайте каждая коллекция будет отдельной лентой вправо-влево.</p>
+              <div class="adminTwo">
+                <div class="adminField"><label>Коллекция RU</label><input class="adminInput" id="collectionTitleRu" placeholder="Например: Yugen" required /></div>
+                <div class="adminField"><label>Collection EN</label><input class="adminInput" id="collectionTitleEn" placeholder="For example: Yugen" required /></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Описание коллекции RU</label><textarea class="adminTextarea" id="collectionTextRu"></textarea></div>
+                <div class="adminField"><label>Collection text EN</label><textarea class="adminTextarea" id="collectionTextEn"></textarea></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Номер коллекции на сайте</label><input class="adminInput" id="collectionSortOrder" inputmode="numeric" placeholder="0" /></div>
+                <div class="adminField"><label>Опубликовано</label><select class="adminSelect" id="collectionPublished"><option value="true">Да</option><option value="false">Нет</option></select></div>
+              </div>
+              <div class="adminActions">
+                <button class="adminButton primary" type="submit">Сохранить коллекцию</button>
+                <button class="adminButton" type="button" id="clearCollectionForm">Очистить коллекцию</button>
+              </div>
+            </form>
+
+            <form class="adminForm" id="merchForm">
+              <input type="hidden" id="merchEditId" />
+              <h3>Товар</h3>
+              <div class="adminTwo">
+                <div class="adminField"><label>Название RU</label><input class="adminInput" id="merchTitleRu" required /></div>
+                <div class="adminField"><label>Название EN</label><input class="adminInput" id="merchTitleEn" required /></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Коллекция</label><select class="adminSelect" id="merchCollectionId" required></select></div>
+                <div class="adminField"><label>Номер товара внутри коллекции</label><input class="adminInput" id="merchSortOrder" inputmode="numeric" placeholder="0" /><small>Можно не трогать: ниже товары можно перетаскивать мышкой или пальцем.</small></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Категория RU</label><input class="adminInput" id="merchCategoryRu" placeholder="Футболка" /></div>
+                <div class="adminField"><label>Категория EN</label><input class="adminInput" id="merchCategoryEn" placeholder="T-shirt" /></div>
+              </div>
+              <div class="adminThree">
+                <div class="adminField"><label>Цена GEL</label><input class="adminInput" id="priceGel" inputmode="decimal" /></div>
+                <div class="adminField"><label>Цена USD</label><input class="adminInput" id="priceUsd" inputmode="decimal" /></div>
+                <div class="adminField"><label>Цена EUR</label><input class="adminInput" id="priceEur" inputmode="decimal" /></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Наличие</label><select class="adminSelect" id="merchStock"><option value="in">В наличии</option><option value="preorder">Под заказ</option><option value="out">Нет в наличии</option></select></div>
+                <div class="adminField"><label>Опубликовано</label><select class="adminSelect" id="merchPublished"><option value="true">Да</option><option value="false">Нет</option></select></div>
+              </div>
+              <div class="adminField">
+                <label>Ссылка Etsy для кнопки “Купить на Etsy”</label>
+                <input class="adminInput" id="merchEtsyUrl" type="url" placeholder="https://www.etsy.com/listing/..." />
+                <small>Можно вставить ссылку на конкретный товар Etsy. Если оставить пустым, кнопка откроет общий магазин Yugen.</small>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Описание RU</label><textarea class="adminTextarea" id="merchDescriptionRu"></textarea></div>
+                <div class="adminField"><label>Описание EN</label><textarea class="adminTextarea" id="merchDescriptionEn"></textarea></div>
+              </div>
+              <div class="adminField">
+                <label>Фото товара, можно несколько</label>
+                <input class="adminInput" id="merchImages" type="file" accept="image/*,.heic,.heif" multiple />
+                <div class="adminTiny">Можно загрузить JPG, PNG, WEBP, AVIF, HEIC/HEIF. Админка сама сожмёт фото и отправит на сайт уже в .webp. Если браузер не умеет прочитать HEIC, он попросит пересохранить фото в JPG/PNG, потому что браузеры тоже иногда делают вид, что 2026 год не наступил.</div>
+              </div>
+              <div class="adminImageManager" id="merchImageManager"></div>
+              <div class="adminTiny adminSeoNote"><b>SEO фото:</b> <code>alt</code> - главное описание для Google, Яндекс и скринридеров. <code>title</code> - короткая подпись, которую браузер может показать при наведении. На странице это не выглядит как отдельный текст, поэтому не надо паниковать и искать его глазами.</div>
+              <div class="adminActions">
+                <button class="adminButton primary" type="submit">Сохранить товар</button>
+                <button class="adminButton" type="button" id="clearMerchForm">Очистить форму</button>
+              </div>
+            </form>
+            <div class="adminList" id="merchList"></div>
+          </section>
+
+          <section class="adminPanel" data-admin-panel="tattoo">
+            <h2>Тату-работы</h2>
+            <form class="adminForm" id="tattooForm">
+              <input type="hidden" id="tattooEditId" />
+              <div class="adminTwo">
+                <div class="adminField"><label>Описание RU</label><textarea class="adminTextarea" id="tattooDescriptionRu" required></textarea></div>
+                <div class="adminField"><label>Description EN</label><textarea class="adminTextarea" id="tattooDescriptionEn" required></textarea></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Опубликовано</label><select class="adminSelect" id="tattooPublished"><option value="true">Да</option><option value="false">Нет</option></select></div>
+                <div class="adminField"><label>Номер работы на сайте</label><input class="adminInput" id="tattooSortOrder" inputmode="numeric" placeholder="0" /><small>Можно не трогать: ниже работы можно перетаскивать мышкой или пальцем.</small></div>
+              </div>
+              <div class="adminField">
+                <label>Фото работы, можно несколько</label>
+                <input class="adminInput" id="tattooImages" type="file" accept="image/*,.heic,.heif" multiple />
+                <div class="adminTiny">Можно загрузить JPG, PNG, WEBP, AVIF, HEIC/HEIF. Админка автоматически уменьшит фото, сконвертирует в .webp и загрузит в Supabase Storage. Первое/выбранное фото - заглавное в галерее работ.</div>
+              </div>
+              <div class="adminImageManager" id="tattooImageManager"></div>
+              <div class="adminTiny adminSeoNote"><b>SEO фото работы:</b> в <code>alt</code> пиши что изображено: стиль, часть тела, техника, настроение. Например: “Абстрактная blackwork-татуировка на предплечье”. Это помогает поисковикам понять фото, а людям со скринридерами - сайт.</div>
+              <div class="adminActions">
+                <button class="adminButton primary" type="submit">Сохранить работу</button>
+                <button class="adminButton" type="button" id="clearTattooForm">Очистить форму</button>
+              </div>
+            </form>
+            <div class="adminList" id="tattooList"></div>
+          </section>
+
+          <section class="adminPanel" data-admin-panel="seed">
+            <h2>Перенос старого контента</h2>
+            <p class="adminTiny">
+              Кнопки ниже перенесут старые тату-работы и мерч в Supabase. Фото будут скопированы из текущих папок сайта в Supabase Storage, а в базу запишутся уже новые ссылки. Да, это тот редкий случай, когда кнопка правда делает полезное дело.
+            </p>
+            <p class="adminTiny">
+              Для новых загрузок можно использовать JPG, PNG, WEBP, AVIF, HEIC/HEIF. Перед отправкой админка сама делает сжатый .webp. Старые фото можно удалять из проекта только после успешного переноса и проверки сайта.
+            </p>
+            <div class="adminActions">
+              <button class="adminButton primary" type="button" id="seedTattooWorks">Перенести старые тату-работы</button>
+              <button class="adminButton primary" type="button" id="seedMerchItems">Перенести старый мерч</button>
+              <button class="adminButton" type="button" id="reloadContent">Обновить список</button>
+            </div>
+            <div class="adminField" style="margin-top:18px">
+              <label>Памятка</label>
+              <textarea class="adminTextarea" readonly style="min-height:220px">1. Создай таблицы и политики SQL из файла /supabase/schema.sql.
+2. Создай пользователя в Supabase Auth.
+3. Добавь его user_id в таблицу admin_users.
+4. Вставь Project URL и anon key в /assets/js/supabase-config.js.
+5. Открой /admin.html и войди.
+6. В разделе переноса сначала перенеси тату-работы и мерч.
+7. Старые коллекции мерча создадутся автоматически.
+8. После проверки можно удалить старые фото из /assets/img/works и /assets/img/merch.</textarea>
+            </div>
+          </section>
+        </div>
+      </section>
+      <button class="adminLoveButton" type="button" id="adminLoveButton" aria-label="Открыть пасхалку">
+        <img src="/assets/img/dark_lettering_heart_transparent.webp" alt="" />
+      </button>
+      <div class="adminLoveModal" id="adminLoveModal" aria-hidden="true">
+        <div class="adminLoveCard">
+          <button class="adminLoveClose" type="button" id="adminLoveClose" aria-label="Закрыть">×</button>
+          <img src="/assets/img/dark_lettering_heart_transparent.webp" alt="" />
+          <p>Не забывай, я тебя очень сильно люблю! (с) Твоя любимая разработчица</p>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
