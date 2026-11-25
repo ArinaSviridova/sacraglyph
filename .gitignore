@@ -5,3 +5,8 @@
 node_modules/
 .netlify/
 .DS_Store
+
+# Generated test-only local configuration; no real project credentials
+assets/js/shop-test-config.local.js
+supabase/.temp/
+supabase/.branches/
