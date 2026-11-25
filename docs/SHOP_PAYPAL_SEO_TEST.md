@@ -5,11 +5,12 @@
 
 ## What was added
 
+- `/shop-admin.html`: isolated copy of existing merch admin, uses TEST Supabase configuration only, so editing test stock will not change the live store.
 - `/shop.html` and `/en/shop.html`: mobile + desktop storefront, catalog sourced from Supabase, availability-first sorting, size selection for clothing, local cart, customer login/registration, Georgian shipping address, order history.
 - `/merch.html` and `/en/merch.html`: branch-only store links and initial Georgia-focused store metadata. Etsy remains.
 - `/assets/js/shop.js`: authenticated customer UI and PayPal Sandbox checkout.
 - `/supabase/shop-orders-migration.sql`: RLS-protected customer profiles and orders.
-- `/netlify/functions/shop-config.mjs`: publishes only public sandbox client ID to the browser.
+- `/netlify/functions/shop-config.mjs`: publishes only public sandbox client ID to the browser; checkout uses PayPal JavaScript SDK v6.
 - `/netlify/functions/shop-create-order.mjs`: authenticates customer, reloads prices and availability from Supabase, computes USD total and configured delivery charge on server, creates pending order and PayPal Sandbox order.
 - `/netlify/functions/shop-capture-order.mjs`: captures Sandbox payment and verifies amount/currency before marking order paid.
 - `/netlify/functions/shop-paypal-webhook.mjs`: verifies PayPal webhook signature, reconciles completed captures.
@@ -22,7 +23,7 @@ The normal website uses the production Supabase project. The **shop pages intent
 ## Setup (locally only)
 
 1. Disable Netlify Branch Deploys for this branch and do not open a preview PR if previews are enabled. GitHub branch creation does not itself issue a deploy command.
-2. Create a **separate Supabase test project**. Run the existing `supabase/schema.sql` in its SQL Editor to create the catalog, auth/admin policies and bucket. Then run `supabase/shop-orders-migration.sql`. Copy a few published test items / collections / their images into the test project (do not copy customer data). Configure email/password auth for testing.
+2. Create a **separate Supabase test project**. Run the existing `supabase/schema.sql` in its SQL Editor to create the catalog, auth/admin policies and bucket. Then run `supabase/shop-orders-migration.sql`. Copy a few published test items / collections / their images into the test project (do not copy customer data). Configure email/password auth for testing. In Authentication > Users create the test shop admin user and add its UUID to the test project's `public.admin_users` table. Open `/shop-admin.html` on your local server to edit test stock, images and prices.
 3. In your local checkout ONLY, edit `assets/js/shop-test-config.js`: set its `url` and **publishable/anon** key of the test project. These values are public; do not insert a `service_role` key.
 4. Create a PayPal Business account with checkout eligibility for your merchant country and verify settlement/withdrawal. In [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/applications/sandbox) create a **Sandbox REST app**, which provides **Client ID** (public) and **Secret** (server-only). Create a separate sandbox buyer account.
 5. Copy `.env.example` to local `.env` (gitignored) and enter all sandbox values. `SHOP_SUPABASE_URL` must be the **test** project. `SHOP_SUPABASE_SERVICE_ROLE_KEY` must only exist on the server, never in JS served to customers.
@@ -78,3 +79,9 @@ This is an initial **functional Sandbox prototype**, not a finished shop. Before
 - Enforce rate limits, antifraud controls, sandbox-to-live credential transition, alerting and audit logging. Verify webhook handling and recoverability under failure.
 - Add accessible account recovery, address editing/deletion, GDPR/privacy handling, support processes.
 - Real PayPal Business account approval, payout currency, eligibility and transaction fee confirmation are prerequisites.
+
+## What a full buyer account should include after the prototype
+
+- **MVP (present in test):** email account, password sign-in, shipping address in Georgia, cart, order history, PayPal Sandbox status.
+- **Before launch:** password reset/verification UI, addresses book, per-SKU clothing sizes and stock, shipment tracking and status emails, order cancellation and returns workflow, delete account/export data, customer support page, order receipts.
+- **Merchant/admin:** paid/pending/refunded order queue, packing/shipping statuses, fulfilment and tracking, return/refund actions, invoices and reporting, anti-overselling stock management. Existing merch admin already has per-product availability toggle, but not real per-size inventory.
