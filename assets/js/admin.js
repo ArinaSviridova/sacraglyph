@@ -791,6 +791,7 @@
     $("#adminApp").hidden = false;
     $("#logoutBtn").hidden = false;
     await loadContent();
+    window.dispatchEvent(new CustomEvent("bazooka:admin-ready"));
   }
 
   async function init() {
