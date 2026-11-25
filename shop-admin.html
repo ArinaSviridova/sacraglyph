@@ -6,6 +6,7 @@
     <title>TEST Shop Admin | bazookatattoo</title>
     <link rel="icon" href="/favicon.png" />
     <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="/assets/css/shop-crm.css" />
     <style>
       .adminStockSwitch {display:inline-flex;align-items:center;gap:9px;cursor:pointer;white-space:nowrap;font-size:12px;user-select:none}
       .adminStockSwitch input {position:absolute;opacity:0;width:1px;height:1px}
@@ -23,6 +24,7 @@
     <script src="/assets/js/supabase-cms.js" defer></script>
     <script src="/assets/data/seed-content.js" defer></script>
     <script src="/assets/js/admin.js" defer></script>
+    <script src="/assets/js/shop-admin-crm.js" defer></script>
   </head>
   <body class="adminBody">
     <main class="adminShell">
@@ -54,6 +56,10 @@
       <section class="adminGrid" id="adminApp" hidden>
         <nav class="adminNav" aria-label="Разделы админки">
           <button type="button" class="active" data-admin-tab="merch">Мерч</button>
+          <button type="button" data-admin-tab="messages">Сообщения</button>
+          <button type="button" data-admin-tab="orders">Заказы</button>
+          <button type="button" data-admin-tab="coupons">Промокоды</button>
+          <button type="button" data-admin-tab="reviews">Отзывы</button>
           <button type="button" data-admin-tab="tattoo">Тату-работы</button>
           <button type="button" data-admin-tab="seed">Перенос старого контента</button>
         </nav>
@@ -132,6 +138,63 @@
             <div class="adminList" id="merchList"></div>
           </section>
 
+
+          <section class="adminPanel" data-admin-panel="messages">
+            <h2>Сообщения покупателей</h2>
+            <p class="adminTiny">Как на Etsy: слева переписки, справа выбранный диалог. Каждое новое сообщение отправляет уведомление в Telegram (если бот настроен).</p>
+            <div class="adminActions">
+              <button class="adminButton" id="crmRefreshMessages" type="button">Обновить</button>
+              <button class="adminButton" id="crmTestTelegram" type="button">Проверить Telegram-уведомление</button>
+            </div>
+            <p class="adminStatus" id="crmMessageStatus" role="status"></p>
+            <div class="crmInboxLayout">
+              <div class="crmThreadList" id="crmThreadList"></div>
+              <div class="crmMessagesBox">
+                <h3 id="crmThreadHeading">Выберите переписку</h3>
+                <div class="crmHistory" id="crmHistory"></div>
+                <form id="crmReplyForm" class="adminForm">
+                  <textarea id="crmReplyBody" class="adminTextarea" rows="3" maxlength="2000" placeholder="Ответить покупателю" required></textarea>
+                  <button class="adminButton primary" type="submit">Отправить ответ</button>
+                </form>
+              </div>
+            </div>
+          </section>
+          <section class="adminPanel" data-admin-panel="orders">
+            <h2>Заказы и отправления</h2>
+            <p class="adminTiny">Статус оплаты проверяется PayPal Sandbox. Меняем только статус выполнения, не выдаём оплаченный заказ за неоплаченный.</p>
+            <div class="adminActions"><button class="adminButton" id="crmRefreshOrders" type="button">Обновить заказы</button></div>
+            <p class="adminStatus" id="crmOrderStatus" role="status"></p>
+            <div id="crmOrderList" class="crmAdminList"></div>
+          </section>
+          <section class="adminPanel" data-admin-panel="coupons">
+            <h2>Промокоды</h2>
+            <p class="adminTiny">Скидка рассчитывается только сервером. Для фиксированной скидки указываем USD; покупателю показывается цена после применения при оплате.</p>
+            <form id="crmCouponForm" class="adminForm">
+              <div class="adminTwo">
+                <div class="adminField"><label>Код</label><input id="crmCouponCode" class="adminInput" maxlength="30" placeholder="WELCOME10" required></div>
+                <div class="adminField"><label>Тип</label><select id="crmCouponType" class="adminSelect"><option value="percent">Процент</option><option value="fixed">Фиксированная сумма (USD)</option></select></div>
+              </div>
+              <div class="adminThree">
+                <div class="adminField"><label>Скидка (% или USD)</label><input id="crmCouponValue" class="adminInput" type="number" min="0.01" step="0.01" required></div>
+                <div class="adminField"><label>Минимальный заказ (USD)</label><input id="crmCouponMin" class="adminInput" type="number" min="0" step="0.01" value="0"></div>
+                <div class="adminField"><label>Макс. использований</label><input id="crmCouponLimit" class="adminInput" type="number" min="1" step="1" placeholder="Без ограничений"></div>
+              </div>
+              <div class="adminTwo">
+                <div class="adminField"><label>Истекает (необязательно)</label><input id="crmCouponExpiry" type="datetime-local" class="adminInput"></div>
+                <div class="adminField"><label>Активен</label><select id="crmCouponActive" class="adminSelect"><option value="true">Да</option><option value="false">Нет</option></select></div>
+              </div>
+              <button class="adminButton primary" type="submit">Сохранить промокод</button>
+            </form>
+            <p class="adminStatus" id="crmCouponStatus" role="status"></p>
+            <div class="crmAdminList" id="crmCouponList"></div>
+          </section>
+          <section class="adminPanel" data-admin-panel="reviews">
+            <h2>Отзывы на товары</h2>
+            <p class="adminTiny">Покупатель может оставить отзыв только после оплаченной доставки. Отзыв и фото будут публичными лишь после одобрения.</p>
+            <div class="adminActions"><button class="adminButton" id="crmRefreshReviews" type="button">Обновить отзывы</button></div>
+            <p class="adminStatus" id="crmReviewStatus" role="status"></p>
+            <div class="crmAdminList" id="crmReviewList"></div>
+          </section>
           <section class="adminPanel" data-admin-panel="tattoo">
             <h2>Тату-работы</h2>
             <form class="adminForm" id="tattooForm">
