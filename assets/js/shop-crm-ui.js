@@ -138,7 +138,11 @@
       if(!subset.length){root.innerHTML="";return;}
       const avg=(subset.reduce((n,r)=>n+r.rating,0)/subset.length).toFixed(1);
       root.innerHTML=`<button data-review-filter="${esc(item.id)}" class="shopSecondary" type="button">
-        ★ ${avg} · ${subset.length} ${t("отзывов","reviews")}</button>`;
+        ★ ${avg} · ${subset.length} ${t("отзывов","reviews")}</button>
+        ${subset.slice(0,2).map(r=>`<div class="shopReviewMini">
+          <span>${"★".repeat(r.rating)}</span> ${esc((r.body||t("Подтверждённая покупка","Verified purchase")).slice(0,110))}
+          ${r.signedUrl?`<img src="${esc(r.signedUrl)}" loading="lazy" alt="${t("Фото отзыва","Review photo")}">`:""}
+        </div>`).join("")}`;
     });
   }
   function renderReviews(){
@@ -269,7 +273,8 @@
     // Light polling, so both parties see replies without a webhook or a deploy.
     setInterval(()=>{
       if(!loggedIn||document.hidden||polling)return;
-      polling=true;listThreads().catch(e=>console.warn("Inbox poll",e)).finally(()=>polling=false);
+      polling=true;
+      Promise.allSettled([listThreads(),shop()?.reloadOrders?.()]).finally(()=>polling=false);
     },9000);
     cms?.client?.auth.getSession().then(({data})=>{
       if(data?.session)onSession({detail:{signedIn:true}});
