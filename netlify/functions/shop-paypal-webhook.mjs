@@ -1,3 +1,4 @@
+import {telegram} from '../lib/shop-crm-server.mjs';
 import {db,fail,money,paypal,reply,settings} from '../lib/shop-server.mjs';
 export async function handler(event) {
   if(event.httpMethod!=='POST') return reply(405,{error:'Method not allowed'});
@@ -29,9 +30,10 @@ export async function handler(event) {
     if(order.status!=='pending' || resource.amount?.currency_code!=='USD'
        || resource.amount?.value!==money(order.total_usd_cents))
       return reply(409,{error:'Capture did not match expected order'});
-    await db('shop_orders?'+new URLSearchParams({id:'eq.'+order.id,status:'eq.pending'}),{
+    const updated=await db('shop_orders?'+new URLSearchParams({id:'eq.'+order.id,status:'eq.pending'}),{
       method:'PATCH',body:{status:'paid',paypal_capture_id:resource.id,paid_at:new Date().toISOString()}
     });
+    if(updated?.length)await telegram('🛍 Оплаченный заказ (PayPal Sandbox webhook)\nЗаказ: '+order.id+'\nСумма: '+money(order.total_usd_cents)+' USD\nОткрыть: /shop-admin.html#orders');
     return reply(200,{received:true,paid:true});
   } catch(error){return fail(error);}
 }
