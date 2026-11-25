@@ -154,6 +154,7 @@
       <strong>${esc(o.id.slice(0,8))}</strong> · ${esc(new Date(o.created_at).toLocaleDateString(en?'en-US':'ru-RU'))}
       <div class="shopLineMeta">${esc(paymentLabels[o.status]||o.status)} · ${cash(o.total_usd_cents/100)} · ${Array.isArray(o.items)?o.items.length:0} ${t('позиций','items')}</div>
       <div class="shopLineMeta">${t('Доставка: ','Delivery: ')}${esc(deliveryLabels[o.fulfillment_status]||deliveryLabels.new)} ${o.tracking_number?'· '+t('трек: ','tracking: ')+esc(o.tracking_number):''}</div>
+      <button class="shopSecondary" data-contact-order="${esc(o.id)}" type="button">${t('Написать по заказу','Ask about this order')}</button>
     </div>`).join(''):t('Заказов пока нет.','No orders yet.');
     window.dispatchEvent(new CustomEvent('bazooka:orders',{detail:{orders:data||[]}}));
   }
