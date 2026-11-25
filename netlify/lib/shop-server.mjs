@@ -9,7 +9,15 @@ export function settings() {
   const clientId=env.PAYPAL_CLIENT_ID, secret=env.PAYPAL_CLIENT_SECRET;
   const supabaseUrl=env.SHOP_SUPABASE_URL, serviceKey=env.SHOP_SUPABASE_SERVICE_ROLE_KEY;
   if (!clientId || !secret || !supabaseUrl || !serviceKey) throw new Error('Missing sandbox payment or server-only Supabase configuration');
-  if (!/^https:\/\/[-a-z0-9]+\.supabase\.co\/?$/i.test(supabaseUrl)) throw new Error('Invalid Supabase URL');
+  let parsed;
+  try { parsed=new URL(supabaseUrl); } catch { throw new Error('Invalid Supabase URL'); }
+  const hosted=parsed.protocol==='https:' && /^[-a-z0-9]+\.supabase\.co$/i.test(parsed.hostname)
+    && (parsed.pathname==='/' || parsed.pathname==='');
+  const local=env.SHOP_ALLOW_LOCAL_SUPABASE==='1' && env.SHOP_CRM_TEST_MODE==='1'
+    && parsed.protocol==='http:' && ['127.0.0.1','localhost'].includes(parsed.hostname)
+    && parsed.port==='54321' && (parsed.pathname==='/' || parsed.pathname==='');
+  if(env.SHOP_REQUIRE_LOCAL_DB==='1' && !local) throw new Error('Local-only test refuses remote database');
+  if(!(hosted||local)) throw new Error('Invalid Supabase URL');
   return { clientId, secret, supabaseUrl:supabaseUrl.replace(/\/$/,''), serviceKey };
 }
 export async function requireUser(event) {
