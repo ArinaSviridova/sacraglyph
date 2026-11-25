@@ -7,7 +7,7 @@
     .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
   const cms=window.BazookaCMS;
   let loggedIn=false,threads=[],currentThread=null,contextProduct=null,contextSubject="",
-    preorderTarget=null,orders=[],reviews=[],reviewFilter=null,polling=false;
+    preorderTarget=null,contextOrder=null,orders=[],reviews=[],reviewFilter=null,polling=false;
   const shop=()=>window.BazookaShop;
   const notice=(s,target="#shopMessageNotice")=>{const el=$(target);if(el)el.textContent=s;};
   const uuid=/^[a-zA-Z0-9_-]{1,128}$/;
@@ -29,10 +29,12 @@
       "Sign in or register to message the artist. Your draft will remain."));
     location.hash="#account";
   }
-  function beginConversation(item){
+  function beginConversation(item,orderId=null){
     currentThread=null;
     contextProduct=item?.id||null;
-    contextSubject=item?t("Вопрос о товаре: ","Question about: ")+productTitle(item):t("Вопрос в магазин","Shop question");
+    contextOrder=orderId;
+    contextSubject=orderId?t("Вопрос по заказу ","Question about order ")+orderId.slice(0,8):
+      item?t("Вопрос о товаре: ","Question about: ")+productTitle(item):t("Вопрос в магазин","Shop question");
     $("#shopThreadTitle").textContent=contextSubject;
     $("#shopChatMessages").innerHTML='<p class="shopSmall">'+t(
       "Напиши первое сообщение, мы получим уведомление и ответим здесь.","Send your first message. We will be notified and reply here.")+'</p>';
@@ -80,7 +82,7 @@
     if(mark){await api("mark-read",{threadId:id});await listThreads();}
   }
   async function openThread(id){
-    currentThread=id;contextProduct=null;contextSubject="";
+    currentThread=id;contextProduct=null;contextSubject="";contextOrder=null;
     await loadMessages(id,true);
     for(const el of document.querySelectorAll("[data-open-thread]"))
       el.classList.toggle("selected",el.dataset.openThread===id);
@@ -96,8 +98,8 @@
       if(currentThread)await api("send-message",{threadId:currentThread,body});
       else{
         const result=await api("new-thread",{subject:contextSubject||t("Вопрос в магазин","Shop question"),
-          productId:contextProduct,body});
-        currentThread=result.threadId;contextProduct=null;contextSubject="";
+          productId:contextProduct,orderId:contextOrder,body});
+        currentThread=result.threadId;contextProduct=null;contextSubject="";contextOrder=null;
         if(!result.notified)notice(t("Сообщение сохранено. Уведомления в Telegram пока не настроены либо недоступны.",
           "Message saved. Telegram notification is not configured or unavailable."));
       }
@@ -244,6 +246,8 @@
     });
     $("#shopCancelPreorder").addEventListener("click",()=>{closePreorder();preorderTarget=null;});
     document.addEventListener("click",event=>{
+      const orderContact=event.target.closest("[data-contact-order]");
+      if(orderContact){beginConversation(null,orderContact.dataset.contactOrder);return;}
       const contact=event.target.closest("[data-contact-product]");
       if(contact){const item=shop()?.getProducts().find(i=>i.id===contact.dataset.contactProduct);
         if(item)beginConversation(item);return;}
