@@ -1,0 +1,48 @@
+/* CRM extension shared by test storefront and isolated test admin only */
+.shopPromoLabel{display:grid;gap:5px;font-size:13px;color:var(--sub);margin-top:20px}
+.shopPromoLabel input{width:100%}.shopProductReviewSummary{margin-top:15px}
+.shopProductReviewSummary button{font-size:12px;padding:7px 11px}
+.shopInbox,.shopReviewPanel{border-top:1px solid var(--border);padding-top:20px;margin-top:30px;scroll-margin-top:85px}
+.shopInboxGrid{display:grid;grid-template-columns:minmax(170px,.72fr) minmax(0,1.6fr);gap:16px}
+.shopThreadList{display:flex;flex-direction:column;gap:7px;margin-top:10px;max-height:400px;overflow:auto}
+.shopThread{border:1px solid var(--border);border-radius:9px;padding:11px;background:#252528;color:var(--ink);
+ display:flex;align-items:center;justify-content:space-between;gap:7px;text-align:left;font-size:13px}
+.shopThread.selected{border-color:#d7c8ae;background:#3c3530}
+.shopThread small{font-size:10px;color:var(--sub)}.shopUnread{color:#ffb38d}
+.shopChatMessages{display:flex;flex-direction:column;gap:12px;overflow:auto;height:310px;padding:14px;background:#101012;border-radius:9px}
+.shopBubble{padding:11px 13px;border-radius:13px;max-width:85%;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.shopBubble.customer{background:#40404c;align-self:flex-end;border-bottom-right-radius:2px}
+.shopBubble.staff{background:#2c4438;align-self:flex-start;border-bottom-left-radius:2px}
+.shopBubble time{display:block;font-size:10px;opacity:.7;margin-top:7px}
+.shopChatForm{margin-top:10px;display:flex;gap:9px;align-items:stretch}
+.shopChatForm textarea,.shopReviewPanel textarea{width:100%;resize:vertical;background:#242429;border:1px solid #67676d;color:var(--ink);padding:11px;border-radius:7px;font:inherit}
+.shopChatForm button{min-width:95px}
+.shopReviewPanel input[type=file]{border:0;background:transparent;padding:7px}
+.shopPublicReviews{margin:40px 0 65px;scroll-margin-top:100px}
+#shopPublicReviews{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:13px}
+.shopReviewCard{border:1px solid var(--border);border-radius:12px;background:var(--card);padding:18px}
+.shopReviewCard h3{margin:0 0 8px}.shopReviewCard p{white-space:pre-wrap;overflow-wrap:anywhere}
+.shopReviewCard time,.shopReviewCard small{display:block;color:var(--sub);font-size:12px}
+.shopReviewCard img{width:100%;max-height:220px;object-fit:contain;border-radius:7px}
+.shopReviewStars{letter-spacing:.03em;color:#ffc885}
+.shopDialog{border:1px solid #76706b;border-radius:15px;background:#201f21;color:#fff;max-width:min(94vw,530px);
+ padding:25px;box-shadow:0 18px 80px #000b}
+.shopDialog::backdrop{background:#000b;backdrop-filter:blur(5px)}
+.shopDialog h2{margin-top:0}.shopDialog p{color:#ded9d1}
+/* Existing admin uses its own styles; override only inside CRM panels */
+.crmInboxLayout{display:grid;grid-template-columns:minmax(180px,1fr) minmax(0,2fr);gap:16px}
+.crmThreadList{max-height:520px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.crmThread{border:1px solid #4c4b50;border-radius:8px;background:#18181b;color:#fafafa;padding:12px;text-align:left;cursor:pointer}
+.crmThread.active{border-color:#f3c990}.crmThread strong,.crmThread small{display:block}.crmThread small{opacity:.7}
+.crmHistory{display:flex;flex-direction:column;gap:10px;min-height:300px;max-height:440px;overflow:auto;padding:14px;background:#121214;border:1px solid #333;border-radius:9px}
+.crmMessage{max-width:85%;padding:11px 14px;white-space:pre-wrap;overflow-wrap:anywhere;border-radius:12px;background:#383841}
+.crmMessage.customer{align-self:flex-start}.crmMessage.staff{align-self:flex-end;background:#294238}
+.crmMessage time{display:block;color:#c7c6c6;font-size:11px;margin-top:5px}
+.crmMessagesBox #crmReplyForm{margin-top:14px}.crmAdminList{display:flex;flex-direction:column;gap:13px;margin-top:18px}
+.crmAdminCard{border:1px solid #4d4d52;border-radius:9px;background:#1b1b20;padding:16px;overflow-wrap:anywhere}
+.crmAdminCard h3{margin:0 0 10px}.crmAdminCard p{margin:7px 0}.crmControls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.crmControls select,.crmControls input{background:#242429;color:#fff;border:1px solid #6d6d72;border-radius:6px;padding:9px;min-width:130px}
+.crmReviewPhoto{max-width:250px;width:100%;max-height:220px;object-fit:contain;border-radius:7px}
+@media(max-width:740px){.shopInboxGrid,.crmInboxLayout{grid-template-columns:1fr}
+.shopChatForm{flex-direction:column}.shopChatMessages{height:265px}.crmHistory{max-height:270px}
+.shopDialog{padding:18px}}
