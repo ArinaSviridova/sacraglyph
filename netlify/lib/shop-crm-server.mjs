@@ -10,7 +10,15 @@ export function config(){
   if(env.SHOP_CRM_TEST_MODE!=='1') throw problem(503,'CRM test mode is disabled');
   const url=String(env.SHOP_SUPABASE_URL||'').replace(/\/$/,'');
   const key=env.SHOP_SUPABASE_SERVICE_ROLE_KEY;
-  if(!/^https:\/\/[-a-z0-9]+\.supabase\.co$/i.test(url)||!key) throw problem(503,'Test Supabase is not configured');
+  let parsed;
+  try { parsed=new URL(url); } catch { throw problem(503,'Invalid Supabase URL'); }
+  const hosted=parsed.protocol==='https:' && /^[-a-z0-9]+\.supabase\.co$/i.test(parsed.hostname)
+    && (parsed.pathname==='/' || parsed.pathname==='');
+  const local=env.SHOP_ALLOW_LOCAL_SUPABASE==='1' && env.SHOP_CRM_TEST_MODE==='1'
+    && parsed.protocol==='http:' && ['127.0.0.1','localhost'].includes(parsed.hostname)
+    && parsed.port==='54321' && (parsed.pathname==='/' || parsed.pathname==='');
+  if(env.SHOP_REQUIRE_LOCAL_DB==='1' && !local) throw problem(503,'Local-only test refuses remote database');
+  if(!(hosted||local)||!key) throw problem(503,'Test Supabase is not configured');
   return {url,key};
 }
 export async function db(path,{method='GET',body,headers={}}={}){
