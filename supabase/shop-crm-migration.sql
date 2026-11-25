@@ -120,6 +120,7 @@ create policy "Read own or approved review photos" on storage.objects
    bucket_id='shop-review-photos'
    and (
      (auth.uid() is not null and (storage.foldername(name))[1]=auth.uid()::text)
+     or exists (select 1 from public.admin_users a where a.user_id=auth.uid())
      or exists (select 1 from public.shop_reviews r where
         r.photo_path=storage.objects.name and r.moderation='approved')
    )
