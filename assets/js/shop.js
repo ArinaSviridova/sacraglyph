@@ -155,7 +155,7 @@
         notify(t('PayPal Sandbox не настроен. Добавь переменные окружения и запусти Netlify Dev.','PayPal Sandbox is not configured. Set server environment variables and run Netlify Dev.'),'#shopCheckoutNotice');
         return;
       }
-      if(!/^A[A-Za-z0-9_-]{8,200}$/.test(config.clientId)) throw new Error('Invalid public PayPal client ID');
+      if(!/^[A-Za-z0-9_-]{8,200}$/.test(config.clientId)) throw new Error('Invalid public PayPal client ID');
       const script=document.createElement('script');
       script.src='https://www.paypal.com/sdk/js?'+new URLSearchParams({
         'client-id':config.clientId,currency:'USD',intent:'capture',components:'buttons'
