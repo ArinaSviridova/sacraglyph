@@ -14,6 +14,7 @@
   <script src="/assets/js/shop-test-config.js" defer></script>
   <script src="/assets/js/supabase-cms.js" defer></script>
   <script src="/assets/js/shop.js" defer></script>
+  <script src="/assets/js/shop-crm-ui.js" defer></script>
 </head>
 <body>
   <header class="shopHeader">
@@ -24,6 +25,7 @@
         <a href="#catalog">Catalog</a>
         <a href="#cart">Cart</a>
         <a href="#account">Account</a>
+        <a href="#messages">Messages</a>
         <a href="/shop.html" hreflang="ru">RU</a>
       </nav>
     </div>
@@ -46,6 +48,7 @@
         <div id="shopCart"></div>
         <div id="cartTotal"></div>
         <p class="shopSmall">Shipping is calculated on the server. Sandbox uses a separately configured shipping rate.</p>
+        <label class="shopPromoLabel">Promo code <input id="shopPromoCode" maxlength="30" placeholder="e.g. HELLO10" autocomplete="off"></label>
         <a class="shopJump" href="#account">Proceed to checkout</a>
       </aside>
     </div>
@@ -84,9 +87,51 @@
         </div>
         <h3>My orders</h3>
         <div id="shopOrders">No orders yet.</div>
+        <section id="messages" class="shopInbox" aria-labelledby="inboxTitle">
+          <h3 id="inboxTitle">Messages with the artist</h3>
+          <p class="shopSmall">Ask about orders, sizing, production times and delivery. Replies will appear here.</p>
+          <div class="shopInboxGrid">
+            <div><button class="shopSecondary" id="shopNewThread" type="button">New conversation</button><div id="shopThreads" class="shopThreadList"></div></div>
+            <div><h4 id="shopThreadTitle">Select a conversation</h4>
+            <div id="shopChatMessages" class="shopChatMessages" aria-live="polite"></div>
+            <form id="shopChatForm" class="shopChatForm"><textarea id="shopChatInput" maxlength="2000" placeholder="Write a message..." rows="3" required></textarea>
+            <button type="submit">Send</button></form></div>
+          </div>
+          <p id="shopMessageNotice" class="shopNotice" role="status"></p>
+        </section>
+        <section id="shopReviewFormSection" class="shopReviewPanel">
+          <h3>Review your purchase</h3>
+          <p class="shopSmall">Reviews are available after a paid order is marked delivered. Photos are moderated before publishing.</p>
+          <form id="shopReviewForm" class="shopForm">
+            <label>Product from delivered order
+              <select id="shopReviewProduct" required><option value="">Choose a product</option></select>
+            </label>
+            <label>Rating <select id="shopReviewRating" required>
+              <option value="5">★★★★★ (5)</option><option value="4">★★★★☆ (4)</option>
+              <option value="3">★★★☆☆ (3)</option><option value="2">★★☆☆☆ (2)</option><option value="1">★☆☆☆☆ (1)</option>
+            </select></label>
+            <label>Your review <textarea id="shopReviewBody" rows="4" maxlength="1500" placeholder="What did you think?"></textarea></label>
+            <label>Photo (optional, up to 5 MB)
+              <input id="shopReviewPhoto" type="file" accept="image/jpeg,image/png,image/webp"></label>
+            <button type="submit">Send review for approval</button>
+          </form>
+          <p id="shopReviewNotice" role="status" class="shopNotice"></p>
+        </section>
       </div>
     </section>
+    <section id="publicReviews" class="shopPublicReviews" aria-labelledby="publicReviewsTitle"><h2 id="publicReviewsTitle">Customer reviews</h2><div id="shopPublicReviews"></div></section>
   </main>
+
+  <dialog id="shopPreorderDialog" class="shopDialog" aria-labelledby="shopPreorderTitle">
+    <h2 id="shopPreorderTitle">Made-to-order item</h2>
+    <p>Each T-shirt is created individually and cannot be reproduced exactly. Ask the artist about production times and details before paying.</p>
+    <p id="shopPreorderProduct"></p>
+    <div class="shopButtons">
+      <button type="button" id="shopAcceptPreorder">Understood, place preorder</button>
+      <button type="button" id="shopContactArtist" class="shopSecondary">Contact the artist</button>
+      <button type="button" id="shopCancelPreorder" class="shopSecondary">Cancel</button>
+    </div>
+  </dialog>
   <footer class="shopFooter"><div class="shopWrap">© bazookatattoo · Tbilisi, Georgia · <a href="/en/merch.html">Back to merch</a></div></footer>
 </body>
 </html>
