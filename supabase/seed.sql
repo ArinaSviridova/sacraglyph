@@ -35,7 +35,7 @@ on conflict (id) do nothing;
 
 insert into public.merch_images(id,item_id,image_url,sort_order)
 values
-  ('shop-demo-img-1','shop-demo-in','/assets/img/merch/Black1.jpg',0),
-  ('shop-demo-img-2','shop-demo-preorder','/assets/img/merch/Black2.jpg',0),
-  ('shop-demo-img-3','shop-demo-out','/assets/img/merch/Black3.jpg',0)
+  ('shop-demo-img-1','shop-demo-in','/assets/img/price-placeholder.jpg',0),
+  ('shop-demo-img-2','shop-demo-preorder','/assets/img/price-placeholder.jpg',0),
+  ('shop-demo-img-3','shop-demo-out','/assets/img/price-placeholder.jpg',0)
 on conflict (id) do nothing;
