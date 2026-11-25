@@ -14,7 +14,7 @@
   try {
     const saved = JSON.parse(localStorage.getItem(store) || '[]');
     if(Array.isArray(saved)) cart = saved.filter(i => i && typeof i.id==='string'
-      && Number.isInteger(i.qty) && i.qty>=1 && i.qty<=10 && typeof i.size==='string').slice(0,30);
+      && Number.isInteger(i.qty) && i.qty>=1 && i.qty<=10 && typeof i.size==='string').map(i=>({...i,preorderAccepted:i.preorderAccepted===true})).slice(0,30);
   } catch { /* ignore stale cart */ }
   function notify(message, target='#shopNotice') { const el=$(target); if(el) el.textContent=message; }
   function saveCart() {localStorage.setItem(store, JSON.stringify(cart));renderCart();}
@@ -41,7 +41,7 @@
     if(!products.length) {root.innerHTML='<p>'+t('Опубликованных товаров пока нет.','No published products yet.')+'</p>';return;}
     root.innerHTML=products.map(item => {
       const st=status(item), price=usd(item), sizes=clothing(item);
-      const disabled=st!==0||price===null||price<=0;
+      const disabled=st===2||price===null||price<=0;
       return `<article class="shopProduct">
         ${image(item)?`<img src="${esc(image(item))}" alt="${esc(title(item))}" loading="lazy">`:''}
         <div class="shopProductBody">
@@ -50,8 +50,10 @@
           <p class="shopPrice">${price?cash(price):t('Цена USD пока не указана','USD price not set')}</p>
           <div class="shopProductControl">
             ${sizes?`<label>${t('Размер','Size')} <select data-size-for="${esc(item.id)}"><option value="">-</option>${['XS','S','M','L','XL','XXL'].map(s=>`<option value="${s}">${s}</option>`).join('')}</select></label>`:''}
-            <button data-shop-add="${esc(item.id)}" ${disabled?'disabled':''} type="button">${t('В корзину','Add to cart')}</button>
+            <button data-shop-add="${esc(item.id)}" ${disabled?'disabled':''} type="button">${st===1?t('Оформить предзаказ','Preorder'):t('В корзину','Add to cart')}</button>
+            <button class="shopSecondary" data-contact-product="${esc(item.id)}" type="button">${t('Написать мастеру','Message artist')}</button>
           </div>
+          <div class="shopProductReviewSummary" data-review-summary-for="${esc(item.id)}"></div>
         </div>
       </article>`;
     }).join('');
@@ -64,7 +66,7 @@
     $('#cartCount').textContent=String(cart.reduce((n,i)=>n+i.qty,0));
     if(!lines.length) {el.innerHTML='<p>'+t('Корзина пуста.','Your cart is empty.')+'</p>';total.innerHTML='';return;}
     el.innerHTML=lines.map(({entry,item})=>`
-      <div class="shopLine"><div class="shopLineTitle">${esc(title(item))}</div>
+      <div class="shopLine"><div class="shopLineTitle">${esc(title(item))} ${entry.preorderAccepted?'<small>· '+t('предзаказ','preorder')+'</small>':''}</div>
         <div class="shopLineMeta">${esc(entry.size||t('Один размер','One size'))} · ${usd(item)===null?t('Цена не указана','No price'):cash(usd(item))}</div>
         <div class="shopLineActions">
           <button data-qty="-1" data-id="${esc(entry.id)}" data-size="${esc(entry.size)}" type="button" aria-label="Remove one">−</button>
@@ -83,6 +85,7 @@
       products=(content?.merchCollections||[]).flatMap(c=>c.items||[])
         .filter(i=>i && i.id).sort((a,b)=>status(a)-status(b));
       renderProducts();renderCart();
+      window.dispatchEvent(new CustomEvent('bazooka:products',{detail:{products}}));
     } catch(error) {notify(t('Не удалось загрузить товары: ','Could not load products: ')+error.message);}
   }
 
@@ -137,13 +140,15 @@
     if(!session) return;
     const target=$('#shopOrders');
     const {data,error}=await cms.client.from('shop_orders')
-      .select('id,status,currency,total_usd_cents,items,created_at')
+      .select('id,status,currency,total_usd_cents,items,created_at,fulfillment_status,tracking_number,promo_code,discount_usd_cents')
       .order('created_at',{ascending:false}).limit(30);
     if(error) {target.textContent=error.message;return;}
     target.innerHTML=(data||[]).length?(data||[]).map(o=>`<div class="shopOrder">
       <strong>${esc(o.id.slice(0,8))}</strong> · ${esc(new Date(o.created_at).toLocaleDateString(en?'en-US':'ru-RU'))}
       <div class="shopLineMeta">${esc(o.status)} · ${cash(o.total_usd_cents/100)} · ${Array.isArray(o.items)?o.items.length:0} ${t('позиций','items')}</div>
+      <div class="shopLineMeta">${t('Доставка: ','Delivery: ')}${esc(o.fulfillment_status||'new')} ${o.tracking_number?'· '+t('трек: ','tracking: ')+esc(o.tracking_number):''}</div>
     </div>`).join(''):t('Заказов пока нет.','No orders yet.');
+    window.dispatchEvent(new CustomEvent('bazooka:orders',{detail:{orders:data||[]}}));
   }
   async function initPaypal() {
     if(paypalInitialized||!session) return;
@@ -185,7 +190,8 @@
             if(!validCheckout()) return;
             try {
               const orderPromise=backend('shop-create-order',{
-                items:cart.map(i=>({id:i.id,qty:i.qty,size:i.size})),delivery:delivery()
+                items:cart.map(i=>({id:i.id,qty:i.qty,size:i.size,preorderAccepted:i.preorderAccepted===true})),
+                promoCode:$('#shopPromoCode')?.value||'',delivery:delivery()
               }).then(result=>{lastOrderId=result.orderId;return {orderId:result.paypalOrderId};});
               await paymentSession.start({presentationMode:'auto'},orderPromise);
             } catch(error) {
@@ -209,6 +215,7 @@
     $('#shopUserEmail').textContent=session?.user?.email||'';
     if(session) {await Promise.all([loadProfile(),loadOrders()]);await initPaypal();}
     else {paypalInitialized=false;$('#shopPaypalButtons').innerHTML='';}
+    window.dispatchEvent(new CustomEvent('bazooka:session',{detail:{signedIn:Boolean(session)}}));
   }
   async function authenticate(signUp) {
     const f=$('#shopAuthForm');if(!f.reportValidity()) return;
@@ -220,21 +227,35 @@
       :t('Вход выполнен.','Signed in.'),'#shopAuthNotice');
     await refreshSession();
   }
+  function addCartLine(id,size,preorderAccepted=false) {
+    const item=products.find(p=>p.id===id), st=item?status(item):2;
+    if(!item||st===2||usd(item)===null)return;
+    if(st===1&&!preorderAccepted)return;
+    if(clothing(item)&&!size){notify(t('Сначала выбери размер.','Choose a size first.'));return;}
+    const found=cart.find(i=>i.id===id&&i.size===size);
+    if(found){if(found.qty>=10)return;found.qty+=1;found.preorderAccepted=found.preorderAccepted||preorderAccepted;}
+    else cart.push({id,size,qty:1,preorderAccepted});
+    saveCart();
+    notify(st===1?t('Предзаказ добавлен в корзину.','Preorder added to cart.'):t('Товар добавлен в корзину.','Added to cart.'));
+  }
+  window.BazookaShop={getProducts:()=>products.slice(),getCart:()=>cart.slice(),
+    addPreorder:(id,size)=>addCartLine(id,size,true),reloadOrders:loadOrders,refreshSession};
   document.addEventListener('click',event=>{
     const add=event.target.closest('[data-shop-add]');
-    if(add) {
+    if(add){
       const id=add.dataset.shopAdd,item=products.find(p=>p.id===id);
-      if(!item||status(item)!==0||usd(item)===null) return;
+      if(!item)return;
       const size=$('[data-size-for="'+CSS.escape(id)+'"]')?.value||'';
-      if(clothing(item)&&!size) {notify(t('Сначала выбери размер.','Choose a size first.'));return;}
-      const found=cart.find(i=>i.id===id&&i.size===size);
-      if(found) {if(found.qty>=10) return;found.qty+=1;} else cart.push({id,size,qty:1});
-      saveCart();notify(t('Товар добавлен в корзину.','Added to cart.'));return;
+      if(clothing(item)&&!size){notify(t('Сначала выбери размер.','Choose a size first.'));return;}
+      if(status(item)===1){
+        window.dispatchEvent(new CustomEvent('bazooka:preorder',{detail:{id,size}}));return;
+      }
+      addCartLine(id,size,false);return;
     }
     const change=event.target.closest('[data-qty]'),remove=event.target.closest('[data-remove-item]');
-    if(change||remove) {
+    if(change||remove){
       const button=change||remove,entry=cart.find(i=>i.id===button.dataset.id&&i.size===button.dataset.size);
-      if(!entry) return;
+      if(!entry)return;
       if(remove)cart=cart.filter(i=>i!==entry);
       else entry.qty=Math.max(0,Math.min(10,entry.qty+Number(button.dataset.qty)));
       cart=cart.filter(i=>i.qty>0);saveCart();
