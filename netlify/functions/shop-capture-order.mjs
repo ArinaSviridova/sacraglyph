@@ -1,3 +1,4 @@
+import {telegram} from '../lib/shop-crm-server.mjs';
 import {db,fail,money,paypal,reply,requireUser,settings} from '../lib/shop-server.mjs';
 export async function handler(event) {
   if(event.httpMethod!=='POST') return reply(405,{error:'Method not allowed'});
@@ -22,8 +23,9 @@ export async function handler(event) {
       && captures[0].amount?.value===money(local.total_usd_cents)
       && result.purchase_units?.[0]?.reference_id===orderId;
     if(!valid) return reply(409,{error:'Payment was not verified. Contact support with the order ID.'});
-    await db('shop_orders?id=eq.'+encodeURIComponent(orderId)+'&status=eq.pending',{method:'PATCH',
+    const updated=await db('shop_orders?id=eq.'+encodeURIComponent(orderId)+'&status=eq.pending',{method:'PATCH',
       body:{status:'paid',paypal_capture_id:captures[0].id,paid_at:new Date().toISOString()}});
+    if(updated?.length)await telegram('🛍 Новый оплаченный заказ (Sandbox)\nЗаказ: '+orderId+'\nСумма: '+money(local.total_usd_cents)+' USD\nОткрыть: /shop-admin.html#orders');
     return reply(200,{paid:true,orderId});
   } catch(error){return fail(error);}
 }
