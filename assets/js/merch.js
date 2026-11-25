@@ -878,10 +878,18 @@
           <a class="btn" href="${contactUrl}">${t("Связаться с мастером","Contact the artist")}</a>
         </div>`;
     }
-    if (etsyBtn) {
-      etsyBtn.href = langPath + "?product=" + paramId + "#catalog";
-      etsyBtn.textContent = preorder ? t("Перейти к предзаказу (тест)","Preorder on site (test)") :
-        t("Купить на сайте (тест)","Buy on site (test)");
+    // Keep existing Etsy checkout. Test shop is a separate option, not a replacement.
+    let testShopLink = document.getElementById("merchTestShopLink");
+    if (!testShopLink && etsyBtn) {
+      testShopLink = document.createElement("a");
+      testShopLink.id = "merchTestShopLink";
+      testShopLink.className = "btn";
+      etsyBtn.insertAdjacentElement("afterend", testShopLink);
+    }
+    if (testShopLink) {
+      testShopLink.href = langPath + "?product=" + paramId + "#catalog";
+      testShopLink.textContent = t("Купить на сайте (тест)","Buy on site (test)");
+      testShopLink.hidden = currentItem.stockStatus === "out";
     }
   }
 
