@@ -252,7 +252,20 @@
     window.addEventListener("bazooka:preorder",event=>setPreorder(event.detail));
     window.addEventListener("bazooka:session",event=>onSession(event));
     window.addEventListener("bazooka:orders",updateReviewOrders);
-    window.addEventListener("bazooka:products",()=>loadPublicReviews());
+    let routed=false;
+    window.addEventListener("bazooka:products",()=>{
+      loadPublicReviews();
+      if(routed)return;
+      routed=true;
+      const params=new URLSearchParams(location.search);
+      const contact=params.get("contactProduct"),preorder=params.get("preorder");
+      const selected=shop()?.getProducts().find(item=>item.id===(contact||preorder));
+      if(contact)beginConversation(selected||null);
+      if(preorder && selected){
+        const size=document.querySelector('[data-size-for="'+CSS.escape(preorder)+'"]')?.value||"";
+        setPreorder({id:preorder,size});
+      }
+    });
     // Light polling, so both parties see replies without a webhook or a deploy.
     setInterval(()=>{
       if(!loggedIn||document.hidden||polling)return;
