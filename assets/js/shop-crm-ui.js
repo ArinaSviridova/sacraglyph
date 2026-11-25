@@ -113,6 +113,10 @@
     preorderTarget=detail;
     const item=shop()?.getProducts().find(p=>p.id===detail.id);
     $("#shopPreorderProduct").textContent=item?productTitle(item):"";
+    const needsSize=item && /футбол|худи|толстов|свитшот|t-shirt|shirt|hoodie|sweatshirt/i.test(
+      [item.titleRu,item.titleEn,item.categoryRu,item.categoryEn].join(" "));
+    $("#shopPreorderSizeWrap").hidden=!needsSize;
+    $("#shopPreorderSize").value=detail.size||"";
     $("#shopPreorderDialog").showModal();
   }
   function closePreorder(){$("#shopPreorderDialog").close();}
@@ -234,8 +238,14 @@
     $("#shopChatForm").addEventListener("submit",sendMessage);
     $("#shopReviewForm").addEventListener("submit",submitReview);
     $("#shopAcceptPreorder").addEventListener("click",()=>{
-      const item=preorderTarget;closePreorder();
-      if(item)shop()?.addPreorder(item.id,item.size);
+      const item=preorderTarget;
+      const size=$("#shopPreorderSizeWrap").hidden?(item?.size||""):$("#shopPreorderSize").value;
+      if(!$("#shopPreorderSizeWrap").hidden&&!size){
+        notice(t("Выбери размер для индивидуального предзаказа.","Choose a size for this custom preorder."));
+        $("#shopPreorderSize").focus();return;
+      }
+      closePreorder();
+      if(item)shop()?.addPreorder(item.id,size);
       preorderTarget=null;
       location.hash="#cart";
     });
