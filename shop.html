@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Магазин мерча в Тбилиси | bazookatattoo</title>
+  <meta name="description" content="Авторский мерч bazookatattoo в Тбилиси, Грузия. Смотрите наличие, выбирайте размер и тестируйте оформление заказа.">
+  <!-- Prototype is not for indexing. Remove noindex ONLY during a reviewed public launch. -->
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="/favicon.png">
+  <link rel="stylesheet" href="/assets/css/shop.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="/assets/js/supabase-config.js" defer></script>
+  <script src="/assets/js/supabase-cms.js" defer></script>
+  <script src="/assets/js/shop.js" defer></script>
+</head>
+<body>
+  <header class="shopHeader">
+    <div class="shopWrap shopHeaderRow">
+      <a class="shopLogo" href="/"><img src="/favicon.png" alt="" width="36" height="36"> <span>bazookatattoo</span></a>
+      <nav aria-label="Навигация">
+        <a href="/merch.html">Мерч</a>
+        <a href="#catalog">Каталог</a>
+        <a href="#cart">Корзина</a>
+        <a href="#account">Кабинет</a>
+        <a href="/en/shop.html" hreflang="en">EN</a>
+      </nav>
+    </div>
+  </header>
+  <main class="shopWrap">
+    <section class="shopIntro" aria-labelledby="shopTitle">
+      <p class="shopEyebrow">bazookatattoo / Tbilisi, Georgia</p>
+      <h1 id="shopTitle">Магазин мерча</h1>
+      <p>Авторские вещи, наличие и оформление заказа. Пока работает только тестовая оплата PayPal Sandbox, настоящие деньги не списываются.</p>
+      <div class="shopTag">ТЕСТОВЫЙ МАГАЗИН - БЕЗ РЕАЛЬНЫХ ПЛАТЕЖЕЙ</div>
+    </section>
+    <div class="shopLayout">
+      <section id="catalog" aria-labelledby="catalogTitle">
+        <h2 id="catalogTitle">Каталог</h2>
+        <p id="shopNotice" class="shopNotice" role="status"></p>
+        <div id="shopProducts" class="shopProducts"><p>Загружаем товары...</p></div>
+      </section>
+      <aside id="cart" class="shopCartPanel" aria-labelledby="cartTitle">
+        <h2 id="cartTitle">Корзина <span id="cartCount">0</span></h2>
+        <div id="shopCart"></div>
+        <div id="cartTotal"></div>
+        <p class="shopSmall">Сумма доставки рассчитывается сервером. Для тестов используется цена, отдельно заданная в настройках.</p>
+        <a class="shopJump" href="#account">Перейти к оформлению</a>
+      </aside>
+    </div>
+    <section id="account" class="shopAccountPanel" aria-labelledby="accountTitle">
+      <h2 id="accountTitle">Личный кабинет и оформление</h2>
+      <p>Для тестовой покупки нужен аккаунт, чтобы сохранить историю заказов.</p>
+      <form id="shopAuthForm" class="shopForm">
+        <label>Электронная почта <input id="shopEmail" type="email" autocomplete="email" required></label>
+        <label>Пароль (не менее 8 символов) <input id="shopPassword" type="password" autocomplete="current-password" minlength="8" required></label>
+        <div class="shopButtons">
+          <button type="submit">Войти</button>
+          <button type="button" id="shopSignup" class="shopSecondary">Зарегистрироваться</button>
+        </div>
+      </form>
+      <p id="shopAuthNotice" class="shopNotice" role="status"></p>
+      <div id="shopAccountContent" hidden>
+        <div class="shopAccountTop"><strong id="shopUserEmail"></strong> <button id="shopLogout" class="shopSecondary" type="button">Выйти</button></div>
+        <h3>Адрес доставки по Грузии</h3>
+        <form id="shopAddressForm" class="shopForm">
+          <div class="shopFormGrid">
+            <label>Имя и фамилия <input name="name" autocomplete="name" maxlength="120" required></label>
+            <label>Телефон <input name="phone" autocomplete="tel" maxlength="40" required></label>
+            <label>Город <input name="city" autocomplete="address-level2" maxlength="100" required></label>
+            <label>Индекс <input name="postal" autocomplete="postal-code" maxlength="24" required></label>
+          </div>
+          <label>Улица, дом, квартира <input name="street" autocomplete="street-address" maxlength="240" required></label>
+          <input name="country" type="hidden" value="GE">
+          <button type="submit" class="shopSecondary">Сохранить адрес</button>
+        </form>
+        <div class="shopCheckout">
+          <h3>Оплата PayPal Sandbox</h3>
+          <p class="shopSmall">Оплата тестовая. PayPal может быть ограничен для внутренних платежей по Грузии. Для реальных местных продаж понадобится отдельный способ оплаты.</p>
+          <label class="shopConsent"><input type="checkbox" id="shopAcceptTerms"> Подтверждаю тестовую покупку и корректность адреса.</label>
+          <div id="shopPaypalButtons"></div>
+          <p id="shopCheckoutNotice" class="shopNotice" role="status"></p>
+        </div>
+        <h3>Мои заказы</h3>
+        <div id="shopOrders">Пока нет заказов.</div>
+      </div>
+    </section>
+  </main>
+  <footer class="shopFooter"><div class="shopWrap">© bazookatattoo · Tbilisi, Georgia · <a href="/merch.html">Вернуться к мерчу</a></div></footer>
+</body>
+</html>
