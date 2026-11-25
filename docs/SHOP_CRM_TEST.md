@@ -1,5 +1,7 @@
 # Bazookatattoo shop CRM - no-deploy test branch
 
+> **Новый бесплатный вариант:** полностью локальная изолированная база на Windows через Docker, без создания облачного проекта и без деплоя. См. [SHOP_LOCAL_SETUP.md](SHOP_LOCAL_SETUP.md). Остальные шаги ниже описывают альтернативу с отдельным облачным тестовым проектом.
+
 Branch: `experiment/merch-shop-paypal-georgia`. This experiment is **NOT** deployed and must use its own Supabase TEST project. Do not run migrations against production.
 
 ## Implemented in this branch
