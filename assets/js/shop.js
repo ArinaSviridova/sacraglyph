@@ -157,31 +157,45 @@
       }
       if(!/^[A-Za-z0-9_-]{8,200}$/.test(config.clientId)) throw new Error('Invalid public PayPal client ID');
       const script=document.createElement('script');
-      script.src='https://www.paypal.com/sdk/js?'+new URLSearchParams({
-        'client-id':config.clientId,currency:'USD',intent:'capture',components:'buttons'
-      }).toString();
-      script.onload=() => {
-        if(!window.paypal?.Buttons) {notify('PayPal SDK unavailable','#shopCheckoutNotice');return;}
-        const btn=window.paypal.Buttons({
-          style:{layout:'vertical',shape:'rect'},
-          onClick:(_data,actions)=>validCheckout()?actions.resolve():actions.reject(),
-          createOrder:async () => {
-            const result=await backend('shop-create-order',{items:cart.map(i=>({id:i.id,qty:i.qty,size:i.size})),delivery:delivery()});
-            lastOrderId=result.orderId;
-            return result.paypalOrderId;
-          },
-          onApprove:async data => {
-            const captured=await backend('shop-capture-order',{orderId:lastOrderId,paypalOrderId:data.orderID});
-            if(!captured.paid) throw new Error('Payment not completed');
-            cart=[];saveCart();await loadOrders();
-            notify(t('Тестовая оплата успешна. Заказ сохранён!','Sandbox payment completed. Order saved!'),'#shopCheckoutNotice');
-            location.hash='#account';
-          },
-          onCancel:()=>notify(t('Тестовая оплата отменена.','Test payment cancelled.'),'#shopCheckoutNotice'),
-          onError:error=>notify(t('Ошибка PayPal Sandbox: ','PayPal Sandbox error: ')+error.message,'#shopCheckoutNotice')
-        });
-        btn.render('#shopPaypalButtons').catch(e=>notify(e.message,'#shopCheckoutNotice'));
-        paypalInitialized=true;
+      script.src='https://www.sandbox.paypal.com/web-sdk/v6/core';
+      script.onload=async () => {
+        try {
+          const sdk=await window.paypal.createInstance({
+            clientId:config.clientId,components:['paypal-payments'],pageType:'checkout'
+          });
+          const eligible=await sdk.findEligibleMethods({currencyCode:'USD'});
+          if(!eligible.isEligible('paypal')) {
+            notify(t('PayPal недоступен для этого тестового покупателя.','PayPal is not eligible for this sandbox buyer.'),'#shopCheckoutNotice');
+            return;
+          }
+          const paymentSession=sdk.createPayPalOneTimePaymentSession({
+            onApprove:async ({orderId}) => {
+              const captured=await backend('shop-capture-order',{orderId:lastOrderId,paypalOrderId:orderId});
+              if(!captured.paid) throw new Error('Payment not completed');
+              cart=[];saveCart();await loadOrders();
+              notify(t('Тестовая оплата успешна. Заказ сохранён!','Sandbox payment completed. Order saved!'),'#shopCheckoutNotice');
+              location.hash='#account';
+            },
+            onCancel:()=>notify(t('Тестовая оплата отменена.','Test payment cancelled.'),'#shopCheckoutNotice'),
+            onError:error=>notify(t('Ошибка PayPal Sandbox: ','PayPal Sandbox error: ')+error.message,'#shopCheckoutNotice')
+          });
+          const container=$('#shopPaypalButtons');
+          container.innerHTML='<paypal-button type="pay"></paypal-button>';
+          container.querySelector('paypal-button').addEventListener('click',async () => {
+            if(!validCheckout()) return;
+            try {
+              const orderPromise=backend('shop-create-order',{
+                items:cart.map(i=>({id:i.id,qty:i.qty,size:i.size})),delivery:delivery()
+              }).then(result=>{lastOrderId=result.orderId;return {orderId:result.paypalOrderId};});
+              await paymentSession.start({presentationMode:'auto'},orderPromise);
+            } catch(error) {
+              notify(t('Не удалось создать заказ: ','Could not create an order: ')+error.message,'#shopCheckoutNotice');
+            }
+          });
+          paypalInitialized=true;
+        } catch(error) {
+          notify(t('Не удалось инициализировать PayPal SDK: ','Could not initialize PayPal SDK: ')+error.message,'#shopCheckoutNotice');
+        }
       };
       script.onerror=()=>notify(t('PayPal SDK не загрузился.','PayPal SDK failed to load.'),'#shopCheckoutNotice');
       document.head.append(script);
