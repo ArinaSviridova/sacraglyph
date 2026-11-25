@@ -1,3 +1,4 @@
+import {telegram} from '../lib/shop-crm-server.mjs';
 import {db,fail,money,paypal,reply,requireUser,settings,usdCents} from '../lib/shop-server.mjs';
 export async function handler(event) {
   if(event.httpMethod!=='POST') return reply(405,{error:'Method not allowed'});
@@ -73,16 +74,17 @@ export async function handler(event) {
       purchase_units:[{reference_id:local.id,custom_id:local.id,
         amount:{currency_code:'USD',value:money(subtotal+shipping-discount),
           breakdown:{item_total:{currency_code:'USD',value:money(subtotal)},
-            shipping:{currency_code:'USD',value:money(shipping)},discount:{currency_code:'USD',value:money(discount)}}},
+            shipping:{currency_code:'USD',value:money(shipping)},...(discount?{discount:{currency_code:'USD',value:money(discount)}}:{})}},
         items:snapshots.map(i=>({name:i.name.slice(0,127),
           quantity:String(i.quantity),category:'PHYSICAL_GOODS',
           unit_amount:{currency_code:'USD',value:money(i.unit_usd_cents)},
-          description:(i.preorder?'Made to order; ':'')+(i.size?'Size '+i.size:'Standard')}))
+           description:((i.preorder?'Made to order; ':'')+(i.size?'Size '+i.size:'Standard')).slice(0,127)}))
       }]
     }});
     if(!result.id) throw new Error('No PayPal order ID');
     await db('shop_orders?id=eq.'+encodeURIComponent(local.id),{method:'PATCH',
       body:{paypal_order_id:result.id}});
+    await telegram('🧾 Новый заказ (PayPal Sandbox, ожидает оплату)\nЗаказ: '+local.id+'\nПозиций: '+snapshots.length+'\nСумма: '+money(subtotal+shipping-discount)+' USD'+(promo?'\nПромокод: '+promo:''));
     return reply(200,{orderId:local.id,paypalOrderId:result.id});
   } catch(error){return fail(error);}
 }
