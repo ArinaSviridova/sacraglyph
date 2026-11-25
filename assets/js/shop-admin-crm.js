@@ -99,6 +99,12 @@
           <button class="adminButton primary" data-save-order type="button">Сохранить статус</button>
           <button class="adminButton" data-message-order="${esc(o.id)}" type="button">Диалоги по заказу</button>
         </div>
+        <details class="crmOrderCompose">
+          <summary>Написать клиенту первым</summary>
+          <textarea class="adminTextarea" data-order-first-message rows="2" maxlength="2000"
+            placeholder="Здравствуйте! Пишем по вашему заказу..." aria-label="Первое сообщение клиенту"></textarea>
+          <button class="adminButton" type="button" data-start-order-thread="${esc(o.id)}">Начать переписку</button>
+        </details>
         <small>Перед статусом «Доставлен» проверьте фактическое вручение. После него открываются отзывы.</small>
       </article>
     `).join(""):"<p>Заказов пока нет.</p>";
@@ -195,6 +201,19 @@
       if(thread)openThread(thread.dataset.crmThread).catch(e=>feedback("#crmMessageStatus",e.message));
       const save=event.target.closest("[data-save-order]");
       if(save)updateOrder(save);
+      const first=event.target.closest("[data-start-order-thread]");
+      if(first){
+        const wrap=first.closest("[data-crm-order]"),body=wrap?.querySelector("[data-order-first-message]")?.value.trim();
+        if(!body){feedback("#crmOrderStatus","Напишите первое сообщение.");return;}
+        first.disabled=true;
+        api("new-order-thread",{orderId:first.dataset.startOrderThread,body}).then(async result=>{
+          await loadThreads();
+          document.querySelector('[data-admin-tab="messages"]')?.click();
+          await openThread(result.threadId);
+          feedback("#crmMessageStatus","Новый диалог создан. Покупатель увидит сообщение в кабинете.");
+        }).catch(e=>feedback("#crmOrderStatus",e.message)).finally(()=>{first.disabled=false;});
+        return;
+      }
       const msg=event.target.closest("[data-message-order]");
       if(msg){
         document.querySelector('[data-admin-tab="messages"]')?.click();
