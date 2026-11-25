@@ -854,6 +854,35 @@
     if (instagramBtn) instagramBtn.href = currentItem.instagram;
     if (telegramBtn) telegramBtn.href = currentItem.telegram;
     if (etsyBtn) etsyBtn.href = currentItem.etsyUrl || "https://yugenmagazart.etsy.com";
+    const preorder = currentItem.stockStatus === "preorder";
+    let info = document.getElementById("merchPreorderInfo");
+    if (!info) {
+      info = document.createElement("div");
+      info.id = "merchPreorderInfo";
+      info.className = "merchPreorderInfo";
+      const place = document.querySelector("#merchDescription");
+      place?.insertAdjacentElement("afterend", info);
+    }
+    const langPath = document.documentElement.lang === "en" ? "/en/shop.html" : "/shop.html";
+    const paramId = encodeURIComponent(currentItem.id);
+    const shopUrl = langPath + "?preorder=" + paramId + "#catalog";
+    const contactUrl = langPath + "?contactProduct=" + paramId + "#messages";
+    if (info) {
+      info.hidden = !preorder;
+      if (preorder) info.innerHTML = `
+        <strong>${t("Изготавливается индивидуально","Individually made")}</strong>
+        <p>${t("Каждая футболка создаётся индивидуально и не может быть повторена точь-в-точь.",
+          "Each T-shirt is made individually and cannot be reproduced exactly.")}</p>
+        <div class="merchPreorderActions">
+          <a class="btn primary" href="${shopUrl}">${t("Всё понял, делаю заказ","Understood, preorder")}</a>
+          <a class="btn" href="${contactUrl}">${t("Связаться с мастером","Contact the artist")}</a>
+        </div>`;
+    }
+    if (etsyBtn) {
+      etsyBtn.href = langPath + "?product=" + paramId + "#catalog";
+      etsyBtn.textContent = preorder ? t("Перейти к предзаказу (тест)","Preorder on site (test)") :
+        t("Купить на сайте (тест)","Buy on site (test)");
+    }
   }
 
   function openModalByIds(collectionId, itemId) {
