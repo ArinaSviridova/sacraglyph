@@ -143,10 +143,17 @@
       .select('id,status,currency,total_usd_cents,items,created_at,fulfillment_status,tracking_number,promo_code,discount_usd_cents')
       .order('created_at',{ascending:false}).limit(30);
     if(error) {target.textContent=error.message;return;}
+    const deliveryLabels={
+      new:t('Новый','New'),accepted:t('Принят','Accepted'),making:t('В изготовлении','In production'),
+      packed:t('Собран','Packed'),shipped:t('В доставке','Shipped'),
+      delivered:t('Доставлен','Delivered'),cancelled:t('Отменён','Cancelled')
+    };
+    const paymentLabels={pending:t('Ожидает оплаты','Payment pending'),paid:t('Оплачено','Paid'),
+      cancelled:t('Отменено','Cancelled'),refunded:t('Возврат','Refunded')};
     target.innerHTML=(data||[]).length?(data||[]).map(o=>`<div class="shopOrder">
       <strong>${esc(o.id.slice(0,8))}</strong> · ${esc(new Date(o.created_at).toLocaleDateString(en?'en-US':'ru-RU'))}
-      <div class="shopLineMeta">${esc(o.status)} · ${cash(o.total_usd_cents/100)} · ${Array.isArray(o.items)?o.items.length:0} ${t('позиций','items')}</div>
-      <div class="shopLineMeta">${t('Доставка: ','Delivery: ')}${esc(o.fulfillment_status||'new')} ${o.tracking_number?'· '+t('трек: ','tracking: ')+esc(o.tracking_number):''}</div>
+      <div class="shopLineMeta">${esc(paymentLabels[o.status]||o.status)} · ${cash(o.total_usd_cents/100)} · ${Array.isArray(o.items)?o.items.length:0} ${t('позиций','items')}</div>
+      <div class="shopLineMeta">${t('Доставка: ','Delivery: ')}${esc(deliveryLabels[o.fulfillment_status]||deliveryLabels.new)} ${o.tracking_number?'· '+t('трек: ','tracking: ')+esc(o.tracking_number):''}</div>
     </div>`).join(''):t('Заказов пока нет.','No orders yet.');
     window.dispatchEvent(new CustomEvent('bazooka:orders',{detail:{orders:data||[]}}));
   }
