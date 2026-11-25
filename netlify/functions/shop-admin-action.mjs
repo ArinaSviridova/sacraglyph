@@ -11,6 +11,24 @@ export async function handler(event){
       const result=await telegram('🧪 Тестовое уведомление Bazookatattoo CRM\nИсточник: локальный Netlify Dev\nНикаких реальных заказов.');
       return respond(200,result);
     }
+    if(input.action==='new-order-thread'){
+      const orderId=uuid(input.orderId),body=cleaned(input.body);
+      const orders=await db('shop_orders?'+new URLSearchParams({select:'id,user_id',id:'eq.'+orderId}));
+      const order=orders?.[0];
+      if(!order)throw problem(404,'Order not found');
+      const subject=String(input.subject||'Вопрос по заказу '+orderId.slice(0,8)).trim().slice(0,160);
+      if(!subject)throw problem(400,'Subject required');
+      const rows=await db('shop_threads',{method:'POST',body:{
+        user_id:order.user_id,order_id:orderId,subject,
+        last_message_at:now(),staff_read_at:now()
+      }});
+      const threadId=rows?.[0]?.id;
+      if(!threadId)throw new Error('Thread creation failed');
+      await db('shop_messages',{method:'POST',body:{
+        thread_id:threadId,sender_role:'staff',sender_user_id:user.id,body
+      }});
+      return respond(200,{threadId});
+    }
     if(input.action==='reply'){
       const threadId=uuid(input.threadId),body=cleaned(input.body);
       const found=await db('shop_threads?'+new URLSearchParams({select:'id',id:'eq.'+threadId}));
