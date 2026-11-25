@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tattoo merch shop in Tbilisi | bazookatattoo</title>
+  <meta name="description" content="Original bazookatattoo merch in Tbilisi, Georgia. Check availability, choose sizes and explore secure checkout.">
+  <!-- Prototype is not for indexing. Remove noindex ONLY during a reviewed public launch. -->
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="/favicon.png">
+  <link rel="stylesheet" href="/assets/css/shop.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="/assets/js/supabase-config.js" defer></script>
+  <script src="/assets/js/supabase-cms.js" defer></script>
+  <script src="/assets/js/shop.js" defer></script>
+</head>
+<body>
+  <header class="shopHeader">
+    <div class="shopWrap shopHeaderRow">
+      <a class="shopLogo" href="/en/"><img src="/favicon.png" alt="" width="36" height="36"> <span>bazookatattoo</span></a>
+      <nav aria-label="Navigation">
+        <a href="/en/merch.html">Merch</a>
+        <a href="#catalog">Catalog</a>
+        <a href="#cart">Cart</a>
+        <a href="#account">Account</a>
+        <a href="/shop.html" hreflang="ru">RU</a>
+      </nav>
+    </div>
+  </header>
+  <main class="shopWrap">
+    <section class="shopIntro" aria-labelledby="shopTitle">
+      <p class="shopEyebrow">bazookatattoo / Tbilisi, Georgia</p>
+      <h1 id="shopTitle">Merch store</h1>
+      <p>Original pieces, availability and checkout. Only PayPal Sandbox test payments are supported here, no real money is charged.</p>
+      <div class="shopTag">TEST SHOP - NO REAL PAYMENTS</div>
+    </section>
+    <div class="shopLayout">
+      <section id="catalog" aria-labelledby="catalogTitle">
+        <h2 id="catalogTitle">Catalog</h2>
+        <p id="shopNotice" class="shopNotice" role="status"></p>
+        <div id="shopProducts" class="shopProducts"><p>Loading products...</p></div>
+      </section>
+      <aside id="cart" class="shopCartPanel" aria-labelledby="cartTitle">
+        <h2 id="cartTitle">Cart <span id="cartCount">0</span></h2>
+        <div id="shopCart"></div>
+        <div id="cartTotal"></div>
+        <p class="shopSmall">Shipping is calculated on the server. Sandbox uses a separately configured shipping rate.</p>
+        <a class="shopJump" href="#account">Proceed to checkout</a>
+      </aside>
+    </div>
+    <section id="account" class="shopAccountPanel" aria-labelledby="accountTitle">
+      <h2 id="accountTitle">Your account & checkout</h2>
+      <p>Sign in to keep your test orders and shipping details together.</p>
+      <form id="shopAuthForm" class="shopForm">
+        <label>Email <input id="shopEmail" type="email" autocomplete="email" required></label>
+        <label>Password (at least 8 characters) <input id="shopPassword" type="password" autocomplete="current-password" minlength="8" required></label>
+        <div class="shopButtons">
+          <button type="submit">Sign in</button>
+          <button type="button" id="shopSignup" class="shopSecondary">Create account</button>
+        </div>
+      </form>
+      <p id="shopAuthNotice" class="shopNotice" role="status"></p>
+      <div id="shopAccountContent" hidden>
+        <div class="shopAccountTop"><strong id="shopUserEmail"></strong> <button id="shopLogout" class="shopSecondary" type="button">Sign out</button></div>
+        <h3>Delivery address in Georgia</h3>
+        <form id="shopAddressForm" class="shopForm">
+          <div class="shopFormGrid">
+            <label>Full name <input name="name" autocomplete="name" maxlength="120" required></label>
+            <label>Phone <input name="phone" autocomplete="tel" maxlength="40" required></label>
+            <label>City <input name="city" autocomplete="address-level2" maxlength="100" required></label>
+            <label>Postal code <input name="postal" autocomplete="postal-code" maxlength="24" required></label>
+          </div>
+          <label>Street, building, apartment <input name="street" autocomplete="street-address" maxlength="240" required></label>
+          <input name="country" type="hidden" value="GE">
+          <button type="submit" class="shopSecondary">Save address</button>
+        </form>
+        <div class="shopCheckout">
+          <h3>PayPal Sandbox checkout</h3>
+          <p class="shopSmall">Test payments only. PayPal may be restricted for domestic Georgian transactions. Local payment processing will need its own integration.</p>
+          <label class="shopConsent"><input type="checkbox" id="shopAcceptTerms"> I confirm the test checkout and my address details.</label>
+          <div id="shopPaypalButtons"></div>
+          <p id="shopCheckoutNotice" class="shopNotice" role="status"></p>
+        </div>
+        <h3>My orders</h3>
+        <div id="shopOrders">No orders yet.</div>
+      </div>
+    </section>
+  </main>
+  <footer class="shopFooter"><div class="shopWrap">© bazookatattoo · Tbilisi, Georgia · <a href="/en/merch.html">Back to merch</a></div></footer>
+</body>
+</html>
