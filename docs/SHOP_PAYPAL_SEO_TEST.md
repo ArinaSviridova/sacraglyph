@@ -1,5 +1,7 @@
 # Bazookatattoo merch shop experiment
 
+> **Новый бесплатный вариант:** полностью локальная изолированная база на Windows через Docker, без создания облачного проекта и без деплоя. См. [SHOP_LOCAL_SETUP.md](SHOP_LOCAL_SETUP.md). Остальные шаги ниже описывают альтернативу с отдельным облачным тестовым проектом.
+
 **Branch:** `experiment/merch-shop-paypal-georgia`  
 **Status:** isolated prototype; no deploy, no live payments, no migrations executed.
 
