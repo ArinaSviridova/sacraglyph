@@ -52,3 +52,7 @@
 .merchPreorderInfo strong{display:block;font-size:17px;margin-bottom:8px}
 .merchPreorderInfo p{line-height:1.55;font-size:14px;margin:0 0 12px}
 .merchPreorderActions{display:flex;flex-wrap:wrap;gap:8px}
+
+.shopReviewMini{margin-top:10px;color:#d8d6d4;font-size:12px;border-top:1px solid #3c3c40;padding-top:10px}
+.shopReviewMini span{color:#ffc885}
+.shopReviewMini img{max-width:95px;max-height:75px;display:block;margin-top:7px;object-fit:contain}
