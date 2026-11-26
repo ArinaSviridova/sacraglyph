@@ -23,3 +23,6 @@ button:hover,.shopJump:hover{filter:brightness(.86)}.shopSecondary{color:var(--i
 .shopFooter{border-top:1px solid var(--border);padding:30px 0;color:var(--sub);font-size:13px}
 @media(max-width:900px){.shopLayout{grid-template-columns:1fr}.shopCartPanel{position:static;order:2}.shopProducts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:590px){.shopWrap{padding:0 15px}.shopHeaderRow{justify-content:center}.shopLogo{width:100%;justify-content:center}.shopHeader nav{justify-content:center;gap:10px;font-size:12px}.shopIntro{padding:35px 0 25px}.shopProducts{grid-template-columns:1fr}.shopProduct img{height:auto;aspect-ratio:4/3}.shopFormGrid{grid-template-columns:1fr}.shopCartPanel,.shopAccountPanel{padding:17px}}
+
+[hidden]{display:none!important}
+.shopThumbs{display:flex;gap:4px;overflow-x:auto}.shopThumbs button{padding:2px}.shopThumbs button img{height:48px;width:48px;object-fit:cover}

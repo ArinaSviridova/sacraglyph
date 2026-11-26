@@ -71,13 +71,13 @@
   }
 
   function merchStockStatus(item) {
-    return item?.stockStatus || (item?.inStock === false ? "out" : "in");
+    return item?.inStock === false || (item?.stockStatus && item.stockStatus !== "in") ? "out" : "in";
   }
 
   function stockLabel(statusValue) {
     const value = statusValue || "in";
     if (value === "out") return "нет в наличии";
-    if (value === "preorder") return "под заказ";
+
     return "в наличии";
   }
 
@@ -273,7 +273,6 @@
           <div class="adminBulkBar">
             <label class="adminCheck"><input type="checkbox" data-select-all-merch="${escapeHtml(collection.id)}"> выбрать всё в коллекции</label>
             <button class="adminButton" type="button" data-bulk-stock="in" data-bulk-collection="${escapeHtml(collection.id)}">В наличии</button>
-            <button class="adminButton" type="button" data-bulk-stock="preorder" data-bulk-collection="${escapeHtml(collection.id)}">Под заказ</button>
             <button class="adminButton" type="button" data-bulk-stock="out" data-bulk-collection="${escapeHtml(collection.id)}">Нет в наличии</button>
           </div>
           <div class="adminList compactList adminSortable" data-sortable="merch" data-collection-id="${escapeHtml(collection.id)}">
@@ -300,7 +299,6 @@
       <div class="adminBulkBar global">
         <label class="adminCheck"><input type="checkbox" id="selectAllMerchGlobal"> выбрать все товары</label>
         <button class="adminButton" type="button" data-bulk-stock="in">Все выбранные: в наличии</button>
-        <button class="adminButton" type="button" data-bulk-stock="preorder">Все выбранные: под заказ</button>
         <button class="adminButton" type="button" data-bulk-stock="out">Все выбранные: нет в наличии</button>
         <span class="adminTiny">Очередность меняется перетаскиванием за ☰. В мерче номер считается отдельно внутри каждой коллекции.</span>
       </div>
@@ -324,7 +322,7 @@
         <label class="adminStockSwitch" title="Наличие товара: включено = в наличии, выключено = нет в наличии">
           <input type="checkbox" data-merch-stock-toggle="${escapeHtml(item.id)}" ${merchStockStatus(item) === "in" ? "checked" : ""} aria-label="В наличии: ${escapeHtml(item.titleRu || item.titleEn || "товар")}">
           <span class="adminStockSwitchTrack" aria-hidden="true"></span>
-          <span class="adminStockSwitchText">${merchStockStatus(item) === "in" ? "В наличии" : (merchStockStatus(item) === "preorder" ? "Под заказ" : "Нет в наличии")}</span>
+          <span class="adminStockSwitchText">${merchStockStatus(item) === "in" ? "В наличии" : "Нет в наличии"}</span>
         </label>
         <button class="adminButton" type="button" data-edit-merch="${escapeHtml(item.id)}">Редактировать</button>
         <button class="adminButton adminDanger" type="button" data-delete-merch="${escapeHtml(item.id)}">Удалить</button>
@@ -664,7 +662,7 @@
           descriptionRu: item.descriptionRu,
           descriptionEn: item.descriptionEn,
           prices: item.prices || [],
-          stockStatus: item.stockStatus || (item.inStock === false ? "out" : "in"),
+          stockStatus: merchStockStatus(item),
           inStock: item.inStock !== false,
           isPublished: item.isPublished !== false,
           instagram: item.instagram,

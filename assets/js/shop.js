@@ -14,13 +14,13 @@
   try {
     const saved = JSON.parse(localStorage.getItem(store) || '[]');
     if(Array.isArray(saved)) cart = saved.filter(i => i && typeof i.id==='string'
-      && Number.isInteger(i.qty) && i.qty>=1 && i.qty<=10 && typeof i.size==='string').map(i=>({...i,preorderAccepted:i.preorderAccepted===true})).slice(0,30);
+      && Number.isInteger(i.qty) && i.qty>=1 && i.qty<=10 && typeof i.size==='string').slice(0,30);
   } catch { /* ignore stale cart */ }
   function notify(message, target='#shopNotice') { const el=$(target); if(el) el.textContent=message; }
   function saveCart() {localStorage.setItem(store, JSON.stringify(cart));renderCart();}
   function status(item) {
     const st = item.stockStatus || (item.inStock === false ? 'out' : 'in');
-    return st === 'in' ? 0 : st === 'preorder' ? 1 : 2;
+    return st === 'in' && item.inStock !== false ? 0 : 2;
   }
   function usd(item) {
     const entry=(item.prices||[]).find(p => String(p.currency||'').toUpperCase()==='USD');
@@ -31,7 +31,7 @@
   }
   const cash = n => new Intl.NumberFormat(en?'en-US':'ru-RU',{style:'currency',currency:'USD'}).format(n);
   function title(item) { return en ? (item.titleEn || item.titleRu) : (item.titleRu || item.titleEn); }
-  function image(item) { return url(item.images?.[0]?.url || item.images?.[0]?.jpg || item.image || ''); }
+  function image(item) { const src=item.images?.[0]?.url || item.images?.[0]?.jpg || item.image; return src ? url(src) : ''; }
   function clothing(item) {return /футбол|худи|толстов|свитшот|t-shirt|shirt|hoodie|sweatshirt/i.test(
     [item.titleRu,item.titleEn,item.categoryRu,item.categoryEn].join(' '));}
 
@@ -44,13 +44,16 @@
       const disabled=st===2||price===null||price<=0;
       return `<article class="shopProduct">
         ${image(item)?`<img src="${esc(image(item))}" alt="${esc(title(item))}" loading="lazy">`:''}
+        ${(item.images||[]).length>1?`<div class="shopThumbs">${item.images.map((im,i)=>`<button type="button" data-gallery-src="${esc(url(im.url||im.jpg))}" aria-label="${t('Фото','Photo')} ${i+1}"><img src="${esc(url(im.url||im.jpg))}" alt="" loading="lazy"></button>`).join('')}</div>`:''}
         <div class="shopProductBody">
-          <p class="shopStatus">${st===0?t('В наличии','In stock'):st===1?t('Под заказ','Made to order'):t('Нет в наличии','Out of stock')}</p>
+          <small>${esc(en?item.collectionEn:item.collectionRu)}</small>
+          <p class="shopStatus">${st===0?t('В наличии','In stock'):t('Нет в наличии','Out of stock')}</p>
           <h3>${esc(title(item))}</h3>
+          <p>${esc(en ? item.descriptionEn : item.descriptionRu)}</p>
           <p class="shopPrice">${price?cash(price):t('Цена USD пока не указана','USD price not set')}</p>
           <div class="shopProductControl">
             ${sizes?`<label>${t('Размер','Size')} <select data-size-for="${esc(item.id)}"><option value="">-</option>${['XS','S','M','L','XL','XXL'].map(s=>`<option value="${s}">${s}</option>`).join('')}</select></label>`:''}
-            <button data-shop-add="${esc(item.id)}" ${disabled?'disabled':''} type="button">${st===1?t('Оформить предзаказ','Preorder'):t('В корзину','Add to cart')}</button>
+            <button data-shop-add="${esc(item.id)}" ${disabled?'disabled':''} type="button">${t('В корзину','Add to cart')}</button>
             <button class="shopSecondary" data-contact-product="${esc(item.id)}" type="button">${t('Написать мастеру','Message artist')}</button>
           </div>
           <div class="shopProductReviewSummary" data-review-summary-for="${esc(item.id)}"></div>
@@ -66,7 +69,7 @@
     $('#cartCount').textContent=String(cart.reduce((n,i)=>n+i.qty,0));
     if(!lines.length) {el.innerHTML='<p>'+t('Корзина пуста.','Your cart is empty.')+'</p>';total.innerHTML='';return;}
     el.innerHTML=lines.map(({entry,item})=>`
-      <div class="shopLine"><div class="shopLineTitle">${esc(title(item))} ${entry.preorderAccepted?'<small>· '+t('предзаказ','preorder')+'</small>':''}</div>
+      <div class="shopLine"><div class="shopLineTitle">${esc(title(item))}</div>
         <div class="shopLineMeta">${esc(entry.size||t('Один размер','One size'))} · ${usd(item)===null?t('Цена не указана','No price'):cash(usd(item))}</div>
         <div class="shopLineActions">
           <button data-qty="-1" data-id="${esc(entry.id)}" data-size="${esc(entry.size)}" type="button" aria-label="Remove one">−</button>
@@ -84,7 +87,8 @@
       const content=await cms.getPublicContent();
       products=(content?.merchCollections||[]).flatMap(c=>c.items||[])
         .filter(i=>i && i.id).sort((a,b)=>status(a)-status(b));
-      renderProducts();renderCart();
+      cart=cart.filter(line=>products.some(item=>item.id===line.id && status(item)===0));
+      renderProducts();saveCart();
       window.dispatchEvent(new CustomEvent('bazooka:products',{detail:{products}}));
     } catch(error) {notify(t('Не удалось загрузить товары: ','Could not load products: ')+error.message);}
   }
@@ -93,7 +97,7 @@
     const f=$('#shopAddressForm');
     const get = name => String(f.elements.namedItem(name)?.value||'').trim();
     return { name:get('name'),phone:get('phone'),city:get('city'),street:get('street'),
-      postal:get('postal'),country:'GE'};
+      postal:get('postal'),country:get('country')};
   }
   function validCheckout() {
     if(!session) {notify(t('Сначала войди в аккаунт.','Please sign in first.'),'#shopCheckoutNotice');return false;}
@@ -120,7 +124,7 @@
     const addr=delivery();
     const {error}=await cms.client.from('shop_customer_profiles').upsert({
       user_id:session.user.id,display_name:addr.name,phone:addr.phone,
-      address:{city:addr.city,street:addr.street,postal:addr.postal,country:'GE'},
+      address:{city:addr.city,street:addr.street,postal:addr.postal,country:addr.country},
       updated_at:new Date().toISOString()
     });
     notify(error?t('Не удалось сохранить адрес: ','Could not save address: ')+error.message:t('Адрес сохранён.','Address saved.'),'#shopCheckoutNotice');
@@ -133,7 +137,7 @@
     const f=$('#shopAddressForm');
     for(const [key,value] of Object.entries({
       name:data.display_name||'',phone:data.phone||'',city:data.address?.city||'',
-      street:data.address?.street||'',postal:data.address?.postal||''
+      street:data.address?.street||'',postal:data.address?.postal||'',country:data.address?.country||'GE'
     })) {const field=f.elements.namedItem(key);if(field) field.value=value;}
   }
   async function loadOrders() {
@@ -141,7 +145,7 @@
     const target=$('#shopOrders');
     const {data,error}=await cms.client.from('shop_orders')
       .select('id,status,currency,total_usd_cents,items,created_at,fulfillment_status,tracking_number,promo_code,discount_usd_cents')
-      .order('created_at',{ascending:false}).limit(30);
+      .eq('user_id',session.user.id).order('created_at',{ascending:false}).limit(30);
     if(error) {target.textContent=error.message;return;}
     const deliveryLabels={
       new:t('Новый','New'),accepted:t('Принят','Accepted'),making:t('В изготовлении','In production'),
@@ -164,7 +168,9 @@
       const response=await fetch('/.netlify/functions/shop-config',{cache:'no-store'});
       if(!response.ok) throw new Error('Sandbox functions unavailable');
       config=await response.json();
+      $('#shopDemoOrder').hidden=!config.localDemo;
       if(!config.ready||!config.clientId) {
+        if(config.localDemo)return;
         notify(t('PayPal Sandbox не настроен. Добавь переменные окружения и запусти Netlify Dev.','PayPal Sandbox is not configured. Set server environment variables and run Netlify Dev.'),'#shopCheckoutNotice');
         return;
       }
@@ -198,8 +204,8 @@
             if(!validCheckout()) return;
             try {
               const orderPromise=backend('shop-create-order',{
-                items:cart.map(i=>({id:i.id,qty:i.qty,size:i.size,preorderAccepted:i.preorderAccepted===true})),
-                promoCode:$('#shopPromoCode')?.value||'',delivery:delivery()
+                items:cart.map(i=>({id:i.id,qty:i.qty,size:i.size})),
+                language:en?'en':'ru',promoCode:$('#shopPromoCode')?.value||'',delivery:delivery()
               }).then(result=>{lastOrderId=result.orderId;return {orderId:result.paypalOrderId};});
               await paymentSession.start({presentationMode:'auto'},orderPromise);
             } catch(error) {
@@ -235,30 +241,28 @@
       :t('Вход выполнен.','Signed in.'),'#shopAuthNotice');
     await refreshSession();
   }
-  function addCartLine(id,size,preorderAccepted=false) {
+  function addCartLine(id,size) {
     const item=products.find(p=>p.id===id), st=item?status(item):2;
     if(!item||st===2||usd(item)===null)return;
-    if(st===1&&!preorderAccepted)return;
     if(clothing(item)&&!size){notify(t('Сначала выбери размер.','Choose a size first.'));return;}
     const found=cart.find(i=>i.id===id&&i.size===size);
-    if(found){if(found.qty>=10)return;found.qty+=1;found.preorderAccepted=found.preorderAccepted||preorderAccepted;}
-    else cart.push({id,size,qty:1,preorderAccepted});
+    if(found){if(found.qty>=10)return;found.qty+=1;}
+    else cart.push({id,size,qty:1});
     saveCart();
-    notify(st===1?t('Предзаказ добавлен в корзину.','Preorder added to cart.'):t('Товар добавлен в корзину.','Added to cart.'));
+    notify(t('Товар добавлен в корзину.','Added to cart.'));
   }
   window.BazookaShop={getProducts:()=>products.slice(),getCart:()=>cart.slice(),
-    addPreorder:(id,size)=>addCartLine(id,size,true),reloadOrders:loadOrders,refreshSession};
+    reloadOrders:loadOrders,refreshSession};
   document.addEventListener('click',event=>{
+    const thumb=event.target.closest('[data-gallery-src]');
+    if(thumb){thumb.closest('article').querySelector('img').src=thumb.dataset.gallerySrc;return;}
     const add=event.target.closest('[data-shop-add]');
     if(add){
       const id=add.dataset.shopAdd,item=products.find(p=>p.id===id);
       if(!item)return;
       const size=$('[data-size-for="'+CSS.escape(id)+'"]')?.value||'';
       if(clothing(item)&&!size){notify(t('Сначала выбери размер.','Choose a size first.'));return;}
-      if(status(item)===1){
-        window.dispatchEvent(new CustomEvent('bazooka:preorder',{detail:{id,size}}));return;
-      }
-      addCartLine(id,size,false);return;
+      addCartLine(id,size);return;
     }
     const change=event.target.closest('[data-qty]'),remove=event.target.closest('[data-remove-item]');
     if(change||remove){
@@ -268,6 +272,22 @@
       else entry.qty=Math.max(0,Math.min(10,entry.qty+Number(button.dataset.qty)));
       cart=cart.filter(i=>i.qty>0);saveCart();
     }
+  });
+  let demoAttempt=null;
+  $('#shopDemoOrder').addEventListener('click',async event=>{
+    if(!validCheckout())return;
+    const button=event.currentTarget;
+    button.disabled=true;
+    try {
+      const payload={localDemo:true,items:cart,delivery:delivery(),language:en?'en':'ru',promoCode:$('#shopPromoCode').value};
+      const signature=JSON.stringify([session.user.id,payload]);
+      if(demoAttempt?.signature!==signature)demoAttempt={signature,key:crypto.randomUUID()};
+      const result=await backend('shop-create-order',{...payload,requestId:demoAttempt.key});
+      demoAttempt=null;
+      cart=[];saveCart();await loadOrders();
+      notify(t('Тестовый заказ создан.','Test order placed.')+' '+result.orderId,'#shopCheckoutNotice');
+    } catch(error){notify(error.message,'#shopCheckoutNotice');}
+    finally{button.disabled=false;}
   });
   $('#shopAuthForm').addEventListener('submit',event=>{event.preventDefault();
     authenticate(false).catch(e=>notify(e.message,'#shopAuthNotice'));});
@@ -279,6 +299,13 @@
   $('#shopAddressForm').addEventListener('submit',event=>saveProfile(event).catch(e=>notify(e.message,'#shopCheckoutNotice')));
   async function init() {
     if(!cms?.isReady()) {notify(t('Supabase не настроен.','Supabase not configured.'));return;}
+    const {countryCodes: codes}=await import('/assets/js/shop-countries.mjs');
+    const regions=new Intl.DisplayNames([en?'en':'ru'],{type:'region'});
+    const country=$('[name=country]');
+    for(const [code,label] of codes.map(code=>[code,regions.of(code)]).sort((a,b)=>a[1].localeCompare(b[1],en?'en':'ru'))) {
+      country.add(new Option(label,code));
+    }
+    country.value='GE';
     await fetchProducts();await refreshSession();
   }
   init().catch(e=>notify(e.message));

@@ -36,7 +36,7 @@ export async function db(path, {method='GET', body, headers={}}={}) {
   const response=await fetch(c.supabaseUrl + '/rest/v1/' + path, {
     method,
     headers:{apikey:c.serviceKey,Authorization:'Bearer '+c.serviceKey,'Content-Type':'application/json',
-      Prefer:method==='POST'?'return=representation':'return=minimal', ...headers},
+      Prefer:method==='POST'||method==='PATCH'?'return=representation':'return=minimal', ...headers},
     body:body===undefined?undefined:JSON.stringify(body)
   });
   if(!response.ok) throw new Error('Database error ('+response.status+'): '+(await response.text()).slice(0,300));

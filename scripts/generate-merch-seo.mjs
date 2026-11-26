@@ -28,7 +28,7 @@ for(const p of products) {
   const image=safeImg(pictures[0]?.image_url);
   const dollars=(p.prices||[]).find(x=>String(x.currency||'').toUpperCase()==='USD');
   const price=dollars?money(dollars.amount):null;
-  const availability=p.stock_status==='preorder'?'PreOrder':p.stock_status==='out'||p.in_stock===false?'OutOfStock':'InStock';
+  const availability=(p.stock_status && p.stock_status!=='in')||p.in_stock===false?'OutOfStock':'InStock';
   for(const en of [false,true]) {
     const root=en?'en/products':'products';
     const filename=path.join(root,slug+'.html');
@@ -63,14 +63,14 @@ ${image?`<meta property="og:image" content="${xml(image)}">`:''}
 <body><header class="shopHeader"><div class="shopWrap shopHeaderRow">
 <a class="shopLogo" href="/${en?'en/':''}merch.html">bazookatattoo</a><nav>
 <a href="/${en?'en/':''}merch.html">${en?'Merch':'Мерч'}</a>
-<a href="/${en?'en/':''}shop.html">${en?'Shop':'Магазин'}</a>
+<a href="/${en?'en/':''}merch.html">${en?'Shop':'Магазин'}</a>
 <a href="${xml(alternate)}">${en?'RU':'EN'}</a></nav></div></header>
 <main class="shopWrap"><section class="shopIntro"><p class="shopEyebrow">bazookatattoo · Tbilisi, Georgia</p>
 <h1>${esc(name)}</h1><p>${esc(category)}</p></section>
 ${image?`<img src="${xml(image)}" alt="${esc(pictures[0]?.[en?'alt_en':'alt_ru']||name)}" style="max-width:620px;width:100%;border-radius:10px">`:''}
 <p style="max-width:740px;white-space:pre-line">${esc(description||summary)}</p>
-<p>${price!==null&&price>0?price.toFixed(2)+' USD · ':''}${en?availability==='InStock'?'In stock':availability==='PreOrder'?'Made to order':'Out of stock':availability==='InStock'?'В наличии':availability==='PreOrder'?'Под заказ':'Нет в наличии'}</p>
-<a class="shopJump" href="/${en?'en/':''}shop.html?product=${encodeURIComponent(slug)}#catalog" style="max-width:350px">${en?'View in shop':'Перейти в магазин'}</a>
+<p>${price!==null&&price>0?price.toFixed(2)+' USD · ':''}${en?availability==='InStock'?'In stock':'Out of stock':availability==='InStock'?'В наличии':'Нет в наличии'}</p>
+<a class="shopJump" href="/${en?'en/':''}merch.html?product=${encodeURIComponent(slug)}#catalog" style="max-width:350px">${en?'View in shop':'Перейти в магазин'}</a>
 </main><footer class="shopFooter"><div class="shopWrap">© bazookatattoo · Tbilisi, Georgia</div></footer></body></html>`;
     await mkdir(root,{recursive:true});await writeFile(filename,html,'utf8');
     if(live) out.push(url);

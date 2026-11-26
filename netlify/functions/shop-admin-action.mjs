@@ -1,3 +1,4 @@
+import {sendReceipt} from '../lib/shop-receipt.mjs';
 import {cleaned,config,db,fail,now,problem,requireAdmin,respond,telegram,userFrom,uuid} from '../lib/shop-crm-server.mjs';
 const allowed=['new','accepted','making','packed','shipped','delivered','cancelled'];
 export async function handler(event){
@@ -7,6 +8,10 @@ export async function handler(event){
     const user=await userFrom(event);
     await requireAdmin(user);
     const input=JSON.parse(event.body||'{}');
+    if(input.action==='retry-receipt'){
+      await sendReceipt(uuid(input.orderId));
+      return respond(200,{ok:true});
+    }
     if(input.action==='test-telegram'){
       const result=await telegram('🧪 Тестовое уведомление Bazookatattoo CRM\nИсточник: локальный Netlify Dev\nНикаких реальных заказов.');
       return respond(200,result);

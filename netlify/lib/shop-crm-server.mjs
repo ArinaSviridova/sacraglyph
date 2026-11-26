@@ -57,11 +57,11 @@ export function productId(value){
 }
 export function cleaned(value,max=2000){const result=String(value||'').trim();if(!result||result.length>max)throw problem(400,'Invalid text length');return result;}
 export async function telegram(text){
-  const token=env.SHOP_TG_BOT_TOKEN,chat=env.SHOP_TG_CHAT_ID;
+  const token=env.SHOP_TG_BOT_TOKEN||env.TG_BOT_TOKEN,chat=env.SHOP_TG_CHAT_ID;
   if(!token||!chat)return {configured:false,delivered:false};
   // No browser access to this function or the token. Outgoing requests work from Netlify Dev.
   try {
-    const data={chat_id:chat,text:String(text).slice(0,3500),disable_web_page_preview:true};
+    const data={chat_id:chat,text:('[TEST Sacra Glyph] '+text).slice(0,3500),disable_web_page_preview:true};
     if(env.SHOP_TG_TOPIC_ID)data.message_thread_id=Number(env.SHOP_TG_TOPIC_ID);
     const res=await fetch('https://api.telegram.org/bot'+token+'/sendMessage',{
       method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)

@@ -80,7 +80,7 @@
   }
   async function loadOrders(){
     const {data,error}=await cms.client.from("shop_orders")
-      .select("id,user_id,email,status,fulfillment_status,tracking_number,items,total_usd_cents,discount_usd_cents,promo_code,created_at,paid_at")
+      .select("id,user_id,email,status,fulfillment_status,tracking_number,items,total_usd_cents,discount_usd_cents,promo_code,created_at,paid_at,receipt_sent_at,shipping_address")
       .order("created_at",{ascending:false}).limit(100);
     if(error)throw error;
     $("#crmOrderList").innerHTML=(data||[]).length?(data||[]).map(o=>`
@@ -90,6 +90,8 @@
         ${o.promo_code?`<p>Промокод: ${esc(o.promo_code)} · Скидка ${money(o.discount_usd_cents||0)}</p>`:""}
         <p>${(o.items||[]).map(i=>esc(i.name||i.id)+" × "+Number(i.quantity||0)
           +(i.size?" ("+esc(i.size)+")":"")+(i.preorder?" · ПРЕДЗАКАЗ":"")).join("<br>")}</p>
+        <p>${esc(Object.values(o.shipping_address||{}).join(', '))}</p>
+        ${o.status==='paid'?(o.receipt_sent_at?'Письмо отправлено':'<button data-receipt="'+esc(o.id)+'" type="button">Отправить подтверждение на почту</button>'):''}
         <div class="crmControls">
           <label>Статус <select data-fulfillment>
             ${Object.entries(statusMap).map(([v,label])=>
@@ -192,11 +194,15 @@
     if(!cms?.isReady()||!(await cms.isAdmin()))return;
     isReady=true;
     await Promise.allSettled([loadThreads(),loadOrders(),loadCoupons(),loadReviews()]);
-    if(location.hash==="#messages")document.querySelector('[data-admin-tab="messages"]')?.click();
+    const tab=location.hash.slice(1);
+    if(tab)document.querySelector('[data-admin-tab="'+CSS.escape(tab)+'"]')?.click();
   }
   function wire(){
     window.addEventListener("bazooka:admin-ready",()=>authorized());
     document.addEventListener("click",event=>{
+      const receipt=event.target.closest("[data-receipt]");
+      if(receipt){receipt.disabled=true;api("retry-receipt",{orderId:receipt.dataset.receipt}).then(loadOrders)
+        .catch(error=>feedback("#crmOrderStatus",error.message)).finally(()=>receipt.disabled=false);return;}
       const thread=event.target.closest("[data-crm-thread]");
       if(thread)openThread(thread.dataset.crmThread).catch(e=>feedback("#crmMessageStatus",e.message));
       const save=event.target.closest("[data-save-order]");

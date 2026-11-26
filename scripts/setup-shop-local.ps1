@@ -30,7 +30,8 @@ try {
   $sources = @(
     @{ name = "shop_baseline"; source = "supabase/schema.sql" },
     @{ name = "shop_orders"; source = "supabase/shop-orders-migration.sql" },
-    @{ name = "shop_crm"; source = "supabase/shop-crm-migration.sql" }
+    @{ name = "shop_crm"; source = "supabase/shop-crm-migration.sql" },
+    @{ name = "shop_receipts"; source = "supabase/shop-receipts-migration.sql" }
   )
   foreach ($step in $sources) {
     $pattern = "*_$($step.name).sql"
@@ -42,10 +43,13 @@ try {
       Sort-Object Name -Descending | Select-Object -First 1
     if (-not $newFile) { throw "Migration file missing: $($step.name)" }
     Copy-Item $step.source $newFile.FullName -Force
+    Start-Sleep -Seconds 1
   }
 
   & npx --yes supabase start
   if ($LASTEXITCODE -ne 0) { throw "Local Supabase startup failed" }
+  & npx --yes supabase migration up --local
+  if ($LASTEXITCODE -ne 0) { throw "Local migration upgrade failed" }
   if ($Reset) {
     Write-Warning "Reset erases LOCAL test accounts, messages and orders."
     & npx --yes supabase db reset
@@ -113,7 +117,7 @@ try {
   Write-Host "LOCAL SHOP READY. Production Supabase was not accessed."
   Write-Host "Studio: http://127.0.0.1:54323"
   Write-Host "Next: npx --yes netlify-cli dev"
-  Write-Host "Store: http://localhost:8888/shop.html"
+  Write-Host "Store: http://localhost:8888/merch.html"
   Write-Host "Admin: http://localhost:8888/shop-admin.html"
   Write-Host "See docs/SHOP_LOCAL_SETUP.md"
 } finally {

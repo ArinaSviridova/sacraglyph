@@ -7,7 +7,7 @@
     .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
   const cms=window.BazookaCMS;
   let loggedIn=false,threads=[],currentThread=null,contextProduct=null,contextSubject="",
-    preorderTarget=null,contextOrder=null,orders=[],reviews=[],reviewFilter=null,polling=false;
+    contextOrder=null,orders=[],reviews=[],reviewFilter=null,polling=false;
   const shop=()=>window.BazookaShop;
   const notice=(s,target="#shopMessageNotice")=>{const el=$(target);if(el)el.textContent=s;};
   const uuid=/^[a-zA-Z0-9_-]{1,128}$/;
@@ -109,17 +109,6 @@
     }catch(error){notice(error.message);}
     finally{btn.disabled=false;}
   }
-  function setPreorder(detail){
-    preorderTarget=detail;
-    const item=shop()?.getProducts().find(p=>p.id===detail.id);
-    $("#shopPreorderProduct").textContent=item?productTitle(item):"";
-    const needsSize=item && /футбол|худи|толстов|свитшот|t-shirt|shirt|hoodie|sweatshirt/i.test(
-      [item.titleRu,item.titleEn,item.categoryRu,item.categoryEn].join(" "));
-    $("#shopPreorderSizeWrap").hidden=!needsSize;
-    $("#shopPreorderSize").value=detail.size||"";
-    $("#shopPreorderDialog").showModal();
-  }
-  function closePreorder(){$("#shopPreorderDialog").close();}
   async function loadPublicReviews(){
     if(!cms?.isReady())return;
     const {data,error}=await cms.client.from("shop_reviews")
@@ -188,6 +177,7 @@
         opts.push({value:o.id+"|"+i.id,label:name+" · "+o.id.slice(0,8)});
       });
     });
+    $("#shopReviewForm").hidden=!opts.length;
     select.innerHTML='<option value="">'+t("Выбери товар","Choose a product")+'</option>'+opts.map(x=>
       `<option value="${esc(x.value)}">${esc(x.label)}</option>`).join("");
   }
@@ -237,24 +227,6 @@
     $("#shopNewThread").addEventListener("click",()=>beginConversation(null));
     $("#shopChatForm").addEventListener("submit",sendMessage);
     $("#shopReviewForm").addEventListener("submit",submitReview);
-    $("#shopAcceptPreorder").addEventListener("click",()=>{
-      const item=preorderTarget;
-      const size=$("#shopPreorderSizeWrap").hidden?(item?.size||""):$("#shopPreorderSize").value;
-      if(!$("#shopPreorderSizeWrap").hidden&&!size){
-        notice(t("Выбери размер для индивидуального предзаказа.","Choose a size for this custom preorder."));
-        $("#shopPreorderSize").focus();return;
-      }
-      closePreorder();
-      if(item)shop()?.addPreorder(item.id,size);
-      preorderTarget=null;
-      location.hash="#cart";
-    });
-    $("#shopContactArtist").addEventListener("click",()=>{
-      const item=shop()?.getProducts().find(p=>p.id===preorderTarget?.id);
-      closePreorder();preorderTarget=null;
-      beginConversation(item);
-    });
-    $("#shopCancelPreorder").addEventListener("click",()=>{closePreorder();preorderTarget=null;});
     document.addEventListener("click",event=>{
       const orderContact=event.target.closest("[data-contact-order]");
       if(orderContact){beginConversation(null,orderContact.dataset.contactOrder);return;}
@@ -267,7 +239,6 @@
       if(filter){reviewFilter=filter.dataset.reviewFilter==="all"?null:filter.dataset.reviewFilter;
         renderReviews();location.hash="#publicReviews";}
     });
-    window.addEventListener("bazooka:preorder",event=>setPreorder(event.detail));
     window.addEventListener("bazooka:session",event=>onSession(event));
     window.addEventListener("bazooka:orders",updateReviewOrders);
     let routed=false;
@@ -276,13 +247,10 @@
       if(routed)return;
       routed=true;
       const params=new URLSearchParams(location.search);
-      const contact=params.get("contactProduct"),preorder=params.get("preorder");
-      const selected=shop()?.getProducts().find(item=>item.id===(contact||preorder));
+      const contact=params.get("contactProduct");
+      const selected=shop()?.getProducts().find(item=>item.id===contact);
       if(contact)beginConversation(selected||null);
-      if(preorder && selected){
-        const size=document.querySelector('[data-size-for="'+CSS.escape(preorder)+'"]')?.value||"";
-        setPreorder({id:preorder,size});
-      }
+
     });
     // Light polling, so both parties see replies without a webhook or a deploy.
     setInterval(()=>{
