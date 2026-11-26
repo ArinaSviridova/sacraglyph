@@ -35,31 +35,38 @@
   function clothing(item) {return /футбол|худи|толстов|свитшот|t-shirt|shirt|hoodie|sweatshirt/i.test(
     [item.titleRu,item.titleEn,item.categoryRu,item.categoryEn].join(' '));}
 
-  function renderProducts() {
-    const root=$('#shopProducts');
+  function renderProducts(collections) {
+    const root=$('#merchCollections');
     if(!root) return;
     if(!products.length) {root.innerHTML='<p>'+t('Опубликованных товаров пока нет.','No published products yet.')+'</p>';return;}
-    root.innerHTML=products.map(item => {
+    root.innerHTML=collections.filter(c=>c.items?.length).map(collection=>`
+      <section class="merchCollection">
+        <div class="merchCollectionHead">
+          <h2 class="merchCollectionTitle">${esc(en?collection.titleEn||collection.titleRu:collection.titleRu||collection.titleEn)}</h2>
+          <p class="merchCollectionText">${esc(en?collection.textEn:collection.textRu)}</p>
+        </div>
+        <div class="merchRow" data-merch-row>${collection.items.filter(i=>i?.id).slice().sort((a,b)=>status(a)-status(b)).map(productCard).join('')}</div>
+      </section>`).join('');
+  }
+  function productCard(item) {
       const st=status(item), price=usd(item), sizes=clothing(item);
       const disabled=st===2||price===null||price<=0;
-      return `<article class="shopProduct">
-        ${image(item)?`<img src="${esc(image(item))}" alt="${esc(title(item))}" loading="lazy">`:''}
+      return `<article class="merchItem"><div class="merchCard">
+        <div class="merchMedia">${image(item)?`<img class="merchCardImg" src="${esc(image(item))}" alt="${esc(title(item))}" loading="lazy">`:''}</div>
         ${(item.images||[]).length>1?`<div class="shopThumbs">${item.images.map((im,i)=>`<button type="button" data-gallery-src="${esc(url(im.url||im.jpg))}" aria-label="${t('Фото','Photo')} ${i+1}"><img src="${esc(url(im.url||im.jpg))}" alt="" loading="lazy"></button>`).join('')}</div>`:''}
-        <div class="shopProductBody">
-          <small>${esc(en?item.collectionEn:item.collectionRu)}</small>
+        <div class="merchBody">
+          <h3 class="merchTitle">${esc(title(item))}</h3>
           <p class="shopStatus">${st===0?t('В наличии','In stock'):t('Нет в наличии','Out of stock')}</p>
-          <h3>${esc(title(item))}</h3>
-          <p>${esc(en ? item.descriptionEn : item.descriptionRu)}</p>
-          <p class="shopPrice">${price?cash(price):t('Цена USD пока не указана','USD price not set')}</p>
+          <p class="merchMeta merchMetaVisible">${price?cash(price):t('Цена USD пока не указана','USD price not set')}</p>
           <div class="shopProductControl">
             ${sizes?`<label>${t('Размер','Size')} <select data-size-for="${esc(item.id)}"><option value="">-</option>${['XS','S','M','L','XL','XXL'].map(s=>`<option value="${s}">${s}</option>`).join('')}</select></label>`:''}
             <button data-shop-add="${esc(item.id)}" ${disabled?'disabled':''} type="button">${t('В корзину','Add to cart')}</button>
             <button class="shopSecondary" data-contact-product="${esc(item.id)}" type="button">${t('Написать мастеру','Message artist')}</button>
           </div>
+          ${(item.descriptionRu || item.descriptionEn)?`<details><summary>${t('Описание','Description')}</summary><p>${esc(en?item.descriptionEn||item.descriptionRu:item.descriptionRu||item.descriptionEn)}</p></details>`:''}
           <div class="shopProductReviewSummary" data-review-summary-for="${esc(item.id)}"></div>
         </div>
-      </article>`;
-    }).join('');
+      </div></article>`;
   }
 
   function renderCart() {
@@ -88,7 +95,7 @@
       products=(content?.merchCollections||[]).flatMap(c=>c.items||[])
         .filter(i=>i && i.id).sort((a,b)=>status(a)-status(b));
       cart=cart.filter(line=>products.some(item=>item.id===line.id && status(item)===0));
-      renderProducts();saveCart();
+      renderProducts(content?.merchCollections||[]);saveCart();
       window.dispatchEvent(new CustomEvent('bazooka:products',{detail:{products}}));
     } catch(error) {notify(t('Не удалось загрузить товары: ','Could not load products: ')+error.message);}
   }

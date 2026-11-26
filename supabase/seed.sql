@@ -5,7 +5,7 @@ insert into public.merch_collections
 values
   ('shop-demo','Тестовая коллекция','Demo collection',
    'Демонстрационные товары для безопасной проверки магазина.',
-   'Demo products for safe local shop testing.',true,0)
+   'Demo products for safe local shop testing.',true,999)
 on conflict (id) do nothing;
 
 insert into public.merch_items

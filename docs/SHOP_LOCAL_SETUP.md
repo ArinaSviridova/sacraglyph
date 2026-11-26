@@ -7,6 +7,7 @@
 - `/shop-admin.html`: товары, переписки, статусы заказов, промокоды, модерация отзывов
 - Server-only Netlify Functions: сообщения, уведомления Telegram, PayPal Sandbox
 - SQL: `supabase/schema.sql`, `supabase/shop-orders-migration.sql`, `supabase/shop-crm-migration.sql`
+- `supabase/shop-local-collections.sql`: пять опубликованных коллекций для локальной витрины. Фотографии загружаются по публичным ссылкам. Для проверки оплаты позиции без USD-цены получают тестовую цену 29 USD.
 - `supabase/seed.sql`: три СИНТЕТИЧЕСКИХ товара с состояниями в наличии / нет в наличии; никаких существующих заказов и клиентов
 
 ## Установка без облака

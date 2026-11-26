@@ -26,3 +26,8 @@ button:hover,.shopJump:hover{filter:brightness(.86)}.shopSecondary{color:var(--i
 
 [hidden]{display:none!important}
 .shopThumbs{display:flex;gap:4px;overflow-x:auto}.shopThumbs button{padding:2px}.shopThumbs button img{height:48px;width:48px;object-fit:cover}
+
+.merchCheckout{--ink:#f7f4f1;--sub:#b9b7b8;--border:#34343a;--card:#171719;padding-bottom:3rem}
+.merchCheckout .shopCartPanel{position:static}
+.merchCollection{min-width:0}.merchItem .merchCard{cursor:default}
+.merchBody .shopProductControl{margin-bottom:12px}.merchBody details{font-size:.9rem}
