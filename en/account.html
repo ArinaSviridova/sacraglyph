@@ -30,10 +30,10 @@
   <script src="/assets/js/shop-test-config.js" defer></script>
   <!-- Created on your computer by scripts/setup-shop-local.ps1; never committed. -->
   <script src="/assets/js/shop-test-config.local.js" defer></script>
-  <script src="/assets/js/supabase-cms.js" defer></script>
+  <script src="/assets/js/supabase-cms.js?v=size-stock-1" defer></script>
   <script src="/assets/js/cart-count.js" defer></script>
   <script src="/assets/js/shop-history.js" defer></script>
-  <script src="/assets/js/shop.js" defer></script>
+  <script src="/assets/js/shop.js?v=size-stock-1" defer></script>
   <script src="/assets/js/shop-crm-ui.js" defer></script>
   </head>
   <body>
@@ -104,6 +104,7 @@
 
     <main class="container merchCheckout shopPage"><section class="shopAccountPanel"><h1>Account</h1><div data-auth-options><button type="button" data-provider="google">Google</button> <button type="button" data-provider="apple">Apple</button></div>
 <form id="shopAuthForm" class="shopForm">
+        <label>Name for registration <input id="shopFullName" autocomplete="name" maxlength="120"></label>
         <label>Email <input id="shopEmail" type="email" autocomplete="email" required></label>
         <label>Password (at least 8 characters) <input id="shopPassword" type="password" autocomplete="current-password" minlength="8" required></label>
         <div class="shopButtons">
@@ -112,7 +113,7 @@
         </div>
       </form>
       <p id="shopAuthNotice" class="shopNotice" role="status"></p>
-<div id="shopAccountContent" hidden><div class="shopAccountTop"><strong id="shopUserEmail"></strong> <button id="shopLogout" class="shopSecondary" type="button">Sign out</button></div><h3>My orders</h3>
+<div id="shopAccountContent" hidden><form class="shopForm" id="shopNameForm"><label>Your name <input id="shopProfileName" required maxlength="120" autocomplete="name"></label><button type="submit">Save name</button></form><div class="shopAccountTop"><strong id="shopUserEmail"></strong> <button id="shopLogout" class="shopSecondary" type="button">Sign out</button></div><h3>My orders</h3>
         <div id="shopOrders">No orders yet.</div>
         <section id="messages" class="shopInbox" aria-labelledby="inboxTitle">
           <h3 id="inboxTitle">Messages with the artist</h3>

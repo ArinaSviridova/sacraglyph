@@ -15,7 +15,9 @@ export async function handler(event) {
     const local=orders?.[0];
     if(!local||local.paypal_order_id!==paypalOrderId) return reply(404,{error:'Order not found'});
     if(local.status==='paid'){await tryReceipt(orderId);return reply(200,{paid:true,orderId,orderNumber:local.order_number});}
-    if(local.status!=='pending') return reply(409,{error:'Order cannot be paid'});
+    if(local.status!=='pending'||local.fulfillment_status==='cancelled') return reply(409,{error:'Order cannot be paid'});
+    const held=await db('shop_orders?'+new URLSearchParams({id:'eq.'+orderId,status:'eq.pending',fulfillment_status:'neq.cancelled'}),{method:'PATCH',body:{stock_held:true}});
+    if(!held?.length)return reply(409,{error:'Order no longer payable'});
     const result=await paypal('/v2/checkout/orders/'+encodeURIComponent(paypalOrderId)+'/capture',{
       requestId:orderId,body:{}
     });

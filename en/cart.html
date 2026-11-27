@@ -30,10 +30,10 @@
   <script src="/assets/js/shop-test-config.js" defer></script>
   <!-- Created on your computer by scripts/setup-shop-local.ps1; never committed. -->
   <script src="/assets/js/shop-test-config.local.js" defer></script>
-  <script src="/assets/js/supabase-cms.js" defer></script>
+  <script src="/assets/js/supabase-cms.js?v=size-stock-1" defer></script>
   <script src="/assets/js/cart-count.js" defer></script>
   <script src="/assets/js/shop-history.js" defer></script>
-  <script src="/assets/js/shop.js" defer></script>
+  <script src="/assets/js/shop.js?v=size-stock-1" defer></script>
   <script src="/assets/js/shop-crm-ui.js" defer></script>
   </head>
   <body>
@@ -111,6 +111,7 @@
 
       </aside><section id="checkout" class="shopAccountPanel"><h2>Checkout</h2><div id="guestInvite"><p>Check out as a guest, or sign in or register to keep this order and chat with the artist.</p><div data-auth-options><button type="button" data-provider="google">Google</button> <button type="button" data-provider="apple">Apple</button></div>
 <form id="shopAuthForm" class="shopForm">
+        <label>Name for registration <input id="shopFullName" autocomplete="name" maxlength="120"></label>
         <label>Email <input id="shopEmail" type="email" autocomplete="email" required></label>
         <label>Password (at least 8 characters) <input id="shopPassword" type="password" autocomplete="current-password" minlength="8" required></label>
         <div class="shopButtons">

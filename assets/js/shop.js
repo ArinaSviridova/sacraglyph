@@ -26,7 +26,7 @@
   function saveCart() {localStorage.setItem(store, JSON.stringify(cart));renderCart();window.dispatchEvent(new Event('shop:cart'));}
   function status(item) {
     const st = item.stockStatus || (item.inStock === false ? 'out' : 'in');
-    return st === 'in' && item.inStock !== false ? 0 : 2;
+    return st==='in' && item.inStock!==false && Object.values(inventory(item)).some(n=>n>0)?0:2;
   }
   function usd(item) {
     const entry=(item.prices||[]).find(p => String(p.currency||'').toUpperCase()==='USD');
@@ -38,9 +38,12 @@
   const cash = n => new Intl.NumberFormat(en?'en-US':'ru-RU',{style:'currency',currency:'USD'}).format(n);
   function title(item) { return en ? (item.titleEn || item.titleRu) : (item.titleRu || item.titleEn); }
   function image(item) { const src=item.images?.[0]?.url || item.images?.[0]?.jpg || item.image; return src ? url(src) : ''; }
-  function clothing(item) {return /футбол|худи|толстов|свитшот|t-shirt|shirt|hoodie|sweatshirt/i.test(
-    [item.titleRu,item.titleEn,item.categoryRu,item.categoryEn].join(' '));}
-
+  function inventory(item){return item?.sizeStock??{'':1};}
+  function available(item,size){
+    if(!item||status(item)!==0)return 0;
+    const count=inventory(item)[size];
+    return Number.isInteger(count)?count:0;
+  }
   function renderProducts(collections) {
     const root=$('#merchCollections');
     if(!root) return;
@@ -55,7 +58,7 @@
       </section>`).join('');
   }
   function productCard(item) {
-      const st=status(item), price=usd(item), sizes=clothing(item);
+      const st=status(item), price=usd(item), sizes=Object.entries(inventory(item)).filter(([,qty])=>qty>0);
       const disabled=st===2||price===null||price<=0;
       return `<article class="merchItem"><div class="merchCard">
         <div class="merchMedia">${image(item)?`<img class="merchCardImg" src="${esc(image(item))}" alt="${esc(title(item))}" loading="lazy">`:''}</div>
@@ -65,7 +68,7 @@
           <p class="shopStatus">${st===0?t('В наличии','In stock'):t('Нет в наличии','Out of stock')}</p>
           <p class="merchMeta merchMetaVisible">${price?cash(price):t('Цена USD пока не указана','USD price not set')}</p>
           <div class="shopProductControl">
-            ${sizes?`<label>${t('Размер','Size')} <select data-size-for="${esc(item.id)}"><option value="">-</option>${['XS','S','M','L','XL','XXL'].map(s=>`<option value="${s}">${s}</option>`).join('')}</select></label>`:''}
+            ${st===0&&sizes.length?`<label>${t('Размер','Size')} <select data-size-for="${esc(item.id)}">${sizes.map(([size,count])=>`<option value="${esc(size)}">${esc(size||t('Один размер','One size'))} · ${count} ${t('шт.','pcs')}</option>`).join('')}</select></label>`:''}
             <button data-shop-add="${esc(item.id)}" ${disabled?'disabled':''} type="button">${t('В корзину','Add to cart')}</button>
             <button class="shopSecondary" data-contact-product="${esc(item.id)}" type="button">${t('Написать мастеру','Message artist')}</button>
           </div>
@@ -87,7 +90,7 @@
         <div class="shopLineActions">
           <button data-qty="-1" data-id="${esc(entry.id)}" data-size="${esc(entry.size)}" type="button" aria-label="Remove one">−</button>
           <span>${entry.qty}</span>
-          <button data-qty="1" data-id="${esc(entry.id)}" data-size="${esc(entry.size)}" type="button" aria-label="Add one">+</button>
+          <button data-qty="1" ${entry.qty>=Math.min(10,available(item,entry.size))?"disabled":""} data-id="${esc(entry.id)}" data-size="${esc(entry.size)}" type="button" aria-label="Add one">+</button>
           <button class="shopSecondary" data-remove-item data-id="${esc(entry.id)}" data-size="${esc(entry.size)}" type="button">${t('Удалить','Remove')}</button>
         </div></div>`).join('');
     const sum=lines.reduce((n,{item,entry})=>n+(usd(item)||0)*entry.qty,0);
@@ -100,7 +103,9 @@
       const content=await cms.getPublicContent();
       products=(content?.merchCollections||[]).flatMap(c=>c.items||[])
         .filter(i=>i && i.id).sort((a,b)=>status(a)-status(b));
-      cart=cart.filter(line=>products.some(item=>item.id===line.id && status(item)===0));
+      const previous=JSON.stringify(cart);
+      cart=cart.map(line=>({...line,qty:Math.min(line.qty,available(products.find(item=>item.id===line.id),line.size))})).filter(line=>line.qty>0);
+      if(previous!==JSON.stringify(cart))notify(t('Корзина обновлена по текущим остаткам.','Cart updated to available stock.'),$('#shopCheckoutNotice')?'#shopCheckoutNotice':'#shopNotice');
       renderProducts(content?.merchCollections||[]);saveCart();
       window.dispatchEvent(new CustomEvent('bazooka:products',{detail:{products}}));
     } catch(error) {notify(t('Не удалось загрузить товары: ','Could not load products: ')+error.message);}
@@ -133,7 +138,7 @@
       body:JSON.stringify(body)
     });
     const result=await response.json().catch(()=>({}));
-    if(!response.ok) throw new Error(result.error||'Checkout error');
+    if(!response.ok){if(response.status===409)await fetchProducts();throw new Error(result.error||'Checkout error');}
     return result;
   }
   async function saveProfile(event) {
@@ -155,7 +160,7 @@
     if(!data) return;
     const f=$('#shopAddressForm');
     for(const [key,value] of Object.entries({
-      name:data.display_name||'',phone:data.phone||'',city:data.address?.city||'',
+      name:data.display_name||session?.user?.user_metadata?.full_name||'',phone:data.phone||'',city:data.address?.city||'',
       street:data.address?.street||'',postal:data.address?.postal||'',country:data.address?.country||'GE'
     })) {const field=f.elements.namedItem(key);if(field) field.value=value;}
   }
@@ -249,7 +254,10 @@
     session=result.data?.session||null;
     for(const el of document.querySelectorAll('#shopAuthForm,[data-auth-options],#guestInvite'))el.hidden=Boolean(session);
     for(const el of document.querySelectorAll('#shopAccountContent,.shopAccountTop,#saveProfile'))el.hidden=!session;
-    if($('#shopUserEmail'))$('#shopUserEmail').textContent=session?.user?.email||'';
+    const fullName=session?.user?.user_metadata?.full_name||session?.user?.user_metadata?.name||'';
+    if($('#shopProfileName'))$('#shopProfileName').value=fullName;
+    if($('#shopUserEmail'))$('#shopUserEmail').textContent=[fullName,session?.user?.email].filter(Boolean).join(' · ');
+    if(fullName && $('[name=name]') && !$('[name=name]').value)$('[name=name]').value=fullName;
     const email=$('[name=email]');
     if(email && session && !email.value)email.value=session.user.email||'';
     if(session && $('#shopAddressForm'))await loadProfile();
@@ -258,9 +266,12 @@
     window.dispatchEvent(new CustomEvent('bazooka:session',{detail:{signedIn:Boolean(session)}}));
   }
   async function authenticate(signUp) {
-    const f=$('#shopAuthForm');if(!f.reportValidity()) return;
+    const f=$('#shopAuthForm'),field=$('#shopFullName');
+    field.required=signUp;
+    if(signUp)field.value=field.value.trim();
+    if(!f.reportValidity())return;
     const email=$('#shopEmail').value.trim(),password=$('#shopPassword').value;
-    const result=signUp?await cms.client.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}})
+    const result=signUp?await cms.client.auth.signUp({email,password,options:{data:{full_name:field.value},emailRedirectTo:location.origin+location.pathname}})
       :await cms.client.auth.signInWithPassword({email,password});
     if(result.error) throw result.error;
     notify(signUp?t('Проверь почту: Supabase может запросить подтверждение регистрации.','Check your email to confirm registration if required.')
@@ -270,9 +281,10 @@
   function addCartLine(id,size) {
     const item=products.find(p=>p.id===id), st=item?status(item):2;
     if(!item||st===2||usd(item)===null)return;
-    if(clothing(item)&&!size){notify(t('Сначала выбери размер.','Choose a size first.'));return;}
+
     const found=cart.find(i=>i.id===id&&i.size===size);
-    if(found){if(found.qty>=10)return;found.qty+=1;}
+    if((found?.qty||0)>=Math.min(10,available(item,size))){notify(t('Весь доступный остаток уже в корзине.','All available units are in your cart.'));return;}
+    if(found){found.qty+=1;}
     else cart.push({id,size,qty:1});
     saveCart();
     notify(t('Товар добавлен в корзину.','Added to cart.'));
@@ -287,7 +299,7 @@
       const id=add.dataset.shopAdd,item=products.find(p=>p.id===id);
       if(!item)return;
       const size=$('[data-size-for="'+CSS.escape(id)+'"]')?.value||'';
-      if(clothing(item)&&!size){notify(t('Сначала выбери размер.','Choose a size first.'));return;}
+
       addCartLine(id,size);return;
     }
     const change=event.target.closest('[data-qty]'),remove=event.target.closest('[data-remove-item]');
@@ -295,7 +307,7 @@
       const button=change||remove,entry=cart.find(i=>i.id===button.dataset.id&&i.size===button.dataset.size);
       if(!entry)return;
       if(remove)cart=cart.filter(i=>i!==entry);
-      else entry.qty=Math.max(0,Math.min(10,entry.qty+Number(button.dataset.qty)));
+      else entry.qty=Math.max(0,Math.min(10,available(products.find(p=>p.id===entry.id),entry.size),entry.qty+Number(button.dataset.qty)));
       cart=cart.filter(i=>i.qty>0);saveCart();
     }
   });
@@ -307,6 +319,14 @@
   }));
   window.addEventListener('storage',event=>{
     if(event.key===store){try{cart=JSON.parse(event.newValue||'[]');renderCart();}catch{}}
+  });
+  $('#shopNameForm')?.addEventListener('submit',async event=>{
+    event.preventDefault();
+    const name=$('#shopProfileName').value.trim();
+    if(!name)return;
+    const {error}=await cms.client.auth.updateUser({data:{full_name:name}});
+    notify(error?error.message:t('Имя сохранено.','Name saved.'),'#shopAuthNotice');
+    if(!error)await refreshSession();
   });
   let demoAttempt=null;
   $('#shopDemoOrder')?.addEventListener('click',async event=>{
@@ -324,6 +344,7 @@
     } catch(error){notify(error.message,'#shopCheckoutNotice');}
     finally{button.disabled=false;}
   });
+  $('#shopAuthForm button[type=submit]')?.addEventListener('click',()=>{$('#shopFullName').required=false;});
   $('#shopAuthForm')?.addEventListener('submit',event=>{event.preventDefault();
     authenticate(false).catch(e=>notify(e.message,'#shopAuthNotice'));});
   $('#shopSignup')?.addEventListener('click',()=>authenticate(true).catch(e=>notify(e.message,'#shopAuthNotice')));

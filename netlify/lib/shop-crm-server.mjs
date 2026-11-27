@@ -29,6 +29,7 @@ export async function db(path,{method='GET',body,headers={}}={}){
     ...(body===undefined?{}:{body:JSON.stringify(body)})
   });
   const text=await response.text();
+  if(response.status===409 && text.includes('PT409'))throw problem(409,'Selected stock no longer available');
   if(!response.ok)throw new Error('Supabase REST error '+response.status+': '+text.slice(0,200));
   return text?JSON.parse(text):null;
 }
@@ -57,7 +58,7 @@ export function productId(value){
 }
 export function cleaned(value,max=2000){const result=String(value||'').trim();if(!result||result.length>max)throw problem(400,'Invalid text length');return result;}
 export async function telegram(text){
-  const token=env.SHOP_TG_BOT_TOKEN||env.TG_BOT_TOKEN,chat=env.SHOP_TG_CHAT_ID;
+  const token=env.SHOP_TG_BOT_TOKEN||env.TG_BOT_TOKEN,chat=env.SHOP_TG_CHAT_ID||env.TG_CHAT_ID;
   if(!token||!chat)return {configured:false,delivered:false};
   // No browser access to this function or the token. Outgoing requests work from Netlify Dev.
   try {

@@ -39,6 +39,7 @@ export async function db(path, {method='GET', body, headers={}}={}) {
       Prefer:method==='POST'||method==='PATCH'?'return=representation':'return=minimal', ...headers},
     body:body===undefined?undefined:JSON.stringify(body)
   });
+  if(response.status===409)throw Object.assign(new Error("Selected stock no longer available"),{status:409});
   if(!response.ok) throw new Error('Database error ('+response.status+'): '+(await response.text()).slice(0,300));
   if(response.status===204) return null;
   const data=await response.text();return data?JSON.parse(data):null;

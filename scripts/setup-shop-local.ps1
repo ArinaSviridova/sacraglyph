@@ -35,7 +35,8 @@ try {
     @{ name = "shop_crm"; source = "supabase/shop-crm-migration.sql" },
     @{ name = "shop_receipts"; source = "supabase/shop-receipts-migration.sql" },
     @{ name = "shop_local_collections"; source = "supabase/shop-local-collections.sql" },
-    @{ name = "shop_accounts"; source = "supabase/shop-account-migration.sql" }
+    @{ name = "shop_accounts"; source = "supabase/shop-account-migration.sql" },
+    @{ name = "shop_size_stock"; source = "supabase/shop-size-stock.sql" }
   )
   foreach ($step in $sources) {
     $pattern = "*_$($step.name).sql"

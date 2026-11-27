@@ -23,9 +23,9 @@
     <script src="/assets/js/shop-test-config.js" defer></script>
   <!-- Created on your computer by scripts/setup-shop-local.ps1; never committed. -->
   <script src="/assets/js/shop-test-config.local.js" defer></script>
-    <script src="/assets/js/supabase-cms.js" defer></script>
+    <script src="/assets/js/supabase-cms.js?v=size-stock-1" defer></script>
     <script src="/assets/data/seed-content.js" defer></script>
-    <script src="/assets/js/admin.js" defer></script>
+    <script src="/assets/js/admin.js?v=size-stock-1" defer></script>
     <script src="/assets/js/shop-history.js" defer></script>
     <script src="/assets/js/shop-admin-crm.js" defer></script>
   </head>
@@ -115,6 +115,9 @@
               </div>
               <div class="adminTwo">
                 <div class="adminField"><label>Наличие</label><select class="adminSelect" id="merchStock"><option value="in">В наличии</option><option value="out">Нет в наличии</option></select></div>
+                <div class="adminField"><label for="merchSizes">Размеры и остатки</label>
+                  <textarea id="merchSizes" class="adminTextarea" rows="3" placeholder="S: 2&#10;M: 3&#10;Oversize: 1"></textarea>
+                  <small>Каждый размер с новой строки. Одно число означает «Один размер». Пустое поле при создании: 1 шт.</small></div>
                 <div class="adminField"><label>Опубликовано</label><select class="adminSelect" id="merchPublished"><option value="true">Да</option><option value="false">Нет</option></select></div>
               </div>
               <div class="adminField">

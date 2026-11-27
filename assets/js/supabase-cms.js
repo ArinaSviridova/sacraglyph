@@ -96,6 +96,7 @@
       collectionRu: row.collection_ru || "Мерч",
       collectionEn: row.collection_en || "Merch",
       prices,
+      sizeStock: row.size_stock,
       stockStatus: row.stock_status || (row.in_stock === false ? "out" : "in"),
       inStock: row.in_stock !== false,
       descriptionRu: row.description_ru || "",
@@ -454,6 +455,7 @@
       description_ru: item.descriptionRu || "",
       description_en: item.descriptionEn || "",
       prices: pricesToDb(item.prices),
+      ...(item.sizeStock?{size_stock:item.sizeStock}:{}),
       stock_status: item.stockStatus || (item.inStock === false ? "out" : "in"),
       in_stock: (item.stockStatus || (item.inStock === false ? "out" : "in")) !== "out",
       is_published: item.isPublished !== false,
@@ -463,7 +465,15 @@
       sort_order: Number(item.sortOrder || 0),
     };
 
-    const { error } = await client.from("merch_items").upsert(row, { onConflict: "id" });
+    let result;
+    if(item.originalStock){
+      if(JSON.stringify(item.originalStock)===JSON.stringify(item.sizeStock))delete row.size_stock;
+      let update=client.from("merch_items").update(row).eq("id",row.id);
+      if(row.size_stock)update=update.eq("size_stock",JSON.stringify(item.originalStock));
+      result=await update.select("id").maybeSingle();
+      if(!result.error&&!result.data)throw new Error("Остаток изменился. Обновите товар перед сохранением.");
+    }else result=await client.from("merch_items").upsert(row,{onConflict:"id"});
+    const {error}=result;
     if (error) throw error;
 
     if (Array.isArray(imageUrls) && imageUrls.length) {

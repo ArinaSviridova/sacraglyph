@@ -403,6 +403,18 @@
     }
   }
 
+  function sizeInventory(value){
+    const stock=Object.create(null);
+    for(const raw of value.trim().split(/\r?\n/)){
+      if(!raw.trim())continue;
+      const match=raw.trim().match(/^(?:(.{1,32}?)\s*:\s*)?(0|[1-9]\d{0,5})$/);
+      if(!match)throw new Error("Укажите размер и количество, например M: 3.");
+      const size=(match[1]||"").trim();
+      if(Object.hasOwn(stock,size))throw new Error("Размер указан дважды: "+size);
+      stock[size]=Number(match[2]);
+    }
+    return Object.keys(stock).length?stock:{"":1};
+  }
   async function onMerchSubmit(event) {
     event.preventDefault();
     try {
@@ -427,6 +439,8 @@
         collectionRu: collection.titleRu,
         collectionEn: collection.titleEn,
         prices: pricesFromForm(),
+        sizeStock:sizeInventory($("#merchSizes").value),
+        originalStock:existing?JSON.parse($("#merchSizes").dataset.original):undefined,
         stockStatus: $("#merchStock").value,
         inStock: $("#merchStock").value !== "out",
         isPublished: $("#merchPublished").value === "true",
@@ -497,6 +511,9 @@
     setValue("#merchCategoryRu", item.categoryRu);
     setValue("#merchCategoryEn", item.categoryEn);
     fillPrices(item.prices);
+    const stock=item.sizeStock||{"":1};
+    $("#merchSizes").dataset.original=JSON.stringify(stock);
+    $("#merchSizes").value=Object.entries(stock).map(([size,qty])=>size?size+": "+qty:String(qty)).join("\n");
     $("#merchStock").value = merchStockStatus(item);
     $("#merchPublished").value = item.isPublished === false ? "false" : "true";
     setValue("#merchDescriptionRu", item.descriptionRu);

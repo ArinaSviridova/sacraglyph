@@ -16,7 +16,7 @@ export async function handler(event) {
     const items=input.items.map(({id,qty,size})=>({
       id:String(id||''),qty:Number(qty),size:String(size||'')
     }));
-    if(items.some(p=>!/^[\w-]{1,128}$/.test(p.id)||!Number.isInteger(p.qty)||p.qty<1||p.qty>10||p.size.length>15))
+    if(items.some(p=>!/^[\w-]{1,128}$/.test(p.id)||!Number.isInteger(p.qty)||p.qty<1||p.qty>10||p.size.length>32))
       return reply(400,{error:'Invalid cart item'});
     if(new Set(items.map(p=>p.id+'|'+p.size)).size!==items.length) return reply(400,{error:'Duplicate cart lines'});
     const delivery=input.delivery||{};
@@ -33,7 +33,7 @@ export async function handler(event) {
       return reply(400,{error:'Complete your international shipping address'});
     const shipping=0; // Sandbox charges merchandise only; postage is quoted separately.
     const ids=items.map(item=>item.id);
-    const params=new URLSearchParams({select:'id,title_ru,title_en,prices,in_stock,stock_status,is_published',
+    const params=new URLSearchParams({select:'id,title_ru,title_en,prices,in_stock,stock_status,is_published,size_stock',
       id:'in.('+ids.join(',')+')',is_published:'eq.true'});
     const rows=await db('merch_items?'+params.toString());
     const byId=new Map((rows||[]).map(row=>[row.id,row]));
@@ -41,6 +41,8 @@ export async function handler(event) {
     const snapshots=items.map(item=>{
       const row=byId.get(item.id);
       if(!row||!row.in_stock||row.stock_status!=='in') throw Object.assign(new Error('A selected item is not available'),{status:409});
+      const available=row.size_stock?.[item.size];
+      if(!demo && (!Number.isInteger(available)||available<item.qty))throw Object.assign(new Error('Size or quantity unavailable'),{status:409});
       const price=(row.prices||[]).find(p=>String(p.currency||'').toUpperCase()==='USD');
       if(!price) throw Object.assign(new Error('USD price missing for '+row.title_en),{status:409});
       const unit=usdCents(price.amount);
