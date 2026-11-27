@@ -46,7 +46,7 @@
     if(!root) return;
     if(!products.length) {root.innerHTML='<p>'+t('Опубликованных товаров пока нет.','No published products yet.')+'</p>';return;}
     root.innerHTML=collections.filter(c=>c.items?.length).map(collection=>`
-      <section class="merchCollection">
+      <section class="merchCollection" id="collection-${esc(collection.id)}">
         <div class="merchCollectionHead">
           <h2 class="merchCollectionTitle">${esc(en?collection.titleEn||collection.titleRu:collection.titleRu||collection.titleEn)}</h2>
           <p class="merchCollectionText">${esc(en?collection.textEn:collection.textRu)}</p>
