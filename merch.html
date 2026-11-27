@@ -73,6 +73,8 @@
   <!-- Created on your computer by scripts/setup-shop-local.ps1; never committed. -->
   <script src="/assets/js/shop-test-config.local.js" defer></script>
   <script src="/assets/js/supabase-cms.js" defer></script>
+  <script src="/assets/js/cart-count.js" defer></script>
+  <script src="/assets/js/shop-history.js" defer></script>
   <script src="/assets/js/shop.js" defer></script>
   <script src="/assets/js/shop-crm-ui.js" defer></script>
   </head>
@@ -98,8 +100,8 @@
           <a href="/#contacts">Контакты</a>
           <a href="/#contact-form">Форма обратной связи</a>
           <a href="/merch.html">Мерч</a>
-          <a href="#cart">Корзина</a>
-          <a href="#account">Кабинет</a>
+          <a href="/cart.html">Корзина (<span data-cart-count>0</span>)</a>
+          <a href="/account.html">Кабинет</a>
         </nav>
 
         <div class="headerActions">
@@ -136,8 +138,8 @@
         <a href="/#contacts">Контакты</a>
         <a href="/#contact-form">Форма обратной связи</a>
         <a href="/merch.html">Мерч</a>
-          <a href="#cart">Корзина</a>
-          <a href="#account">Кабинет</a>
+          <a href="/cart.html">Корзина (<span data-cart-count>0</span>)</a>
+          <a href="/account.html">Кабинет</a>
         <a class="langBtn" href="/en/merch.html" hreflang="en">EN</a>
       </nav>
     </header>
@@ -178,85 +180,6 @@
         </div>
       </section>
 
-      <div class="container merchCheckout">
-      <aside id="cart" class="shopCartPanel" aria-labelledby="cartTitle">
-        <h2 id="cartTitle">Корзина <span id="cartCount">0</span></h2>
-        <div id="shopCart"></div>
-        <div id="cartTotal"></div>
-        <p class="shopSmall">Отправляем из Грузии по миру. Стоимость доставки согласуем отдельно. В тестовую сумму она не входит.</p>
-        <label class="shopPromoLabel">Промокод <input id="shopPromoCode" maxlength="30" placeholder="Например, HELLO10" autocomplete="off"></label>
-        <a class="shopJump" href="#account">Перейти к оформлению</a>
-      </aside>
-    <section id="account" class="shopAccountPanel" aria-labelledby="accountTitle">
-      <h2 id="accountTitle">Личный кабинет и оформление</h2>
-      <p>Для тестовой покупки нужен аккаунт, чтобы сохранить историю заказов.</p>
-      <form id="shopAuthForm" class="shopForm">
-        <label>Электронная почта <input id="shopEmail" type="email" autocomplete="email" required></label>
-        <label>Пароль (не менее 8 символов) <input id="shopPassword" type="password" autocomplete="current-password" minlength="8" required></label>
-        <div class="shopButtons">
-          <button type="submit">Войти</button>
-          <button type="button" id="shopSignup" class="shopSecondary">Зарегистрироваться</button>
-        </div>
-      </form>
-      <p id="shopAuthNotice" class="shopNotice" role="status"></p>
-      <div id="shopAccountContent" hidden>
-        <div class="shopAccountTop"><strong id="shopUserEmail"></strong> <button id="shopLogout" class="shopSecondary" type="button">Выйти</button></div>
-        <h3>Адрес доставки по миру</h3>
-        <form id="shopAddressForm" class="shopForm">
-          <div class="shopFormGrid">
-            <label>Имя и фамилия <input name="name" autocomplete="name" maxlength="120" required></label>
-            <label>Телефон <input name="phone" autocomplete="tel" maxlength="40" required></label>
-            <label>Город <input name="city" autocomplete="address-level2" maxlength="100" required></label>
-            <label>Индекс <input name="postal" autocomplete="postal-code" maxlength="24"></label>
-          </div>
-          <label>Улица, дом, квартира <input name="street" autocomplete="street-address" maxlength="240" required></label>
-          <label>Страна или территория <select name="country" autocomplete="country" required></select></label>
-          <button type="submit" class="shopSecondary">Сохранить адрес</button>
-        </form>
-        <div class="shopCheckout">
-          <h3>Тестовое оформление</h3>
-          <p class="shopSmall">Локальный заказ позволяет проверить кабинет, письмо и статус доставки без списания денег.</p>
-          <label class="shopConsent"><input type="checkbox" id="shopAcceptTerms"> Подтверждаю тестовую покупку и корректность адреса.</label>
-          <button type="button" id="shopDemoOrder" hidden>Оформить локальный тестовый заказ</button>
-          <div id="shopPaypalButtons"></div>
-          <p id="shopCheckoutNotice" class="shopNotice" role="status"></p>
-        </div>
-        <h3>Мои заказы</h3>
-        <div id="shopOrders">Пока нет заказов.</div>
-        <section id="messages" class="shopInbox" aria-labelledby="inboxTitle">
-          <h3 id="inboxTitle">Сообщения с мастером</h3>
-          <p class="shopSmall">Вопросы по заказам, размерам, срокам изготовления и доставке. Ответы появятся прямо здесь.</p>
-          <div class="shopInboxGrid">
-            <div><button class="shopSecondary" id="shopNewThread" type="button">Новое сообщение</button><div id="shopThreads" class="shopThreadList"></div></div>
-            <div><h4 id="shopThreadTitle">Выбери переписку</h4>
-            <div id="shopChatMessages" class="shopChatMessages" aria-live="polite"></div>
-            <form id="shopChatForm" class="shopChatForm"><textarea id="shopChatInput" maxlength="2000" placeholder="Написать сообщение..." rows="3" required></textarea>
-            <button type="submit">Отправить</button></form></div>
-          </div>
-          <p id="shopMessageNotice" class="shopNotice" role="status"></p>
-        </section>
-        <section id="shopReviewFormSection" class="shopReviewPanel">
-          <h3>Оставить отзыв о покупке</h3>
-          <p class="shopSmall">Отзыв доступен только после того, как оплаченный заказ отмечен как доставленный. Фото проверяется перед публикацией.</p>
-          <form id="shopReviewForm" hidden class="shopForm">
-            <label>Товар из полученного заказа
-              <select id="shopReviewProduct" required><option value="">Выбери товар</option></select>
-            </label>
-            <label>Оценка <select id="shopReviewRating" required>
-              <option value="5">★★★★★ (5)</option><option value="4">★★★★☆ (4)</option>
-              <option value="3">★★★☆☆ (3)</option><option value="2">★★☆☆☆ (2)</option><option value="1">★☆☆☆☆ (1)</option>
-            </select></label>
-            <label>Текст отзыва <textarea id="shopReviewBody" rows="4" maxlength="1500" placeholder="Что понравилось?"></textarea></label>
-            <label>Фото товара (необязательно, до 5 МБ)
-              <input id="shopReviewPhoto" type="file" accept="image/jpeg,image/png,image/webp"></label>
-            <button type="submit">Отправить отзыв на модерацию</button>
-          </form>
-          <p id="shopReviewNotice" role="status" class="shopNotice"></p>
-        </section>
-      </div>
-    </section>
-    <section id="publicReviews" class="shopPublicReviews" aria-labelledby="publicReviewsTitle"><h2 id="publicReviewsTitle">Отзывы покупателей</h2><div id="shopPublicReviews"></div></section>
-      </div>
     </main>
 
     <footer class="footer">
@@ -277,8 +200,8 @@
         <div class="footerLinks">
           <a href="/">Главная</a>
           <a href="/merch.html">Мерч</a>
-          <a href="#cart">Корзина</a>
-          <a href="#account">Кабинет</a>
+          <a href="/cart.html">Корзина (<span data-cart-count>0</span>)</a>
+          <a href="/account.html">Кабинет</a>
           <a href="/privacy-policy.html">Политика конфиденциальности</a>
         </div>
       </div>

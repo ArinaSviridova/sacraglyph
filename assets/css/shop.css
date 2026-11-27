@@ -31,3 +31,4 @@ button:hover,.shopJump:hover{filter:brightness(.86)}.shopSecondary{color:var(--i
 .merchCheckout .shopCartPanel{position:static}
 .merchCollection{min-width:0}.merchItem .merchCard{cursor:default}
 .merchBody .shopProductControl{margin-bottom:12px}.merchBody details{font-size:.9rem}
+.shopPage{padding-top:100px}.shopPage [data-auth-options]{display:flex;gap:10px;margin-bottom:14px}.shopPage .shopOrder summary{cursor:pointer}

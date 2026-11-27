@@ -30,49 +30,36 @@
     location.hash="#account";
   }
   function beginConversation(item,orderId=null){
-    currentThread=null;
     contextProduct=item?.id||null;
     contextOrder=orderId;
-    contextSubject=orderId?t("Вопрос по заказу ","Question about order ")+orderId.slice(0,8):
+    contextSubject=orderId?t("Вопрос по заказу","Order question"):
       item?t("Вопрос о товаре: ","Question about: ")+productTitle(item):t("Вопрос в магазин","Shop question");
-    $("#shopThreadTitle").textContent=contextSubject;
-    $("#shopChatMessages").innerHTML='<p class="shopSmall">'+t(
-      "Напиши первое сообщение, мы получим уведомление и ответим здесь.","Send your first message. We will be notified and reply here.")+'</p>';
-    $("#shopChatInput").value=item?t("Здравствуйте! Хочу уточнить по товару «","Hello! I have a question about “")+productTitle(item)+(en?'”.':'».'):"";
+
     if(!loggedIn){setLoginReminder();return;}
-    notice(t("Новый диалог. Напиши и нажми «Отправить».","New conversation. Write your message and send it."));
+    const order=orders.find(o=>o.id===orderId);
+    $("#shopChatInput").value=item?t("Вопрос о товаре: ","Question about: ")+productTitle(item):order?t("Вопрос о заказе №","Question about order #")+order.order_number:"";
     location.hash="#messages";
     $("#shopChatInput").focus();
   }
   async function listThreads() {
     if(!loggedIn)return;
-    const {data,error}=await cms.client.from("shop_threads")
-      .select("id,subject,product_id,order_id,last_message_at,customer_read_at,staff_read_at")
-      .order("last_message_at",{ascending:false}).limit(80);
+    const {data:auth}=await cms.client.auth.getUser();
+    if(!auth.user)return;
+    const {data,error}=await cms.client.from("shop_threads").select("id,subject").eq("user_id",auth.user.id).limit(1);
     if(error)throw error;
     threads=data||[];
-    const root=$("#shopThreads");
-    root.innerHTML=threads.length?threads.map(thread=>{
-      const unread=thread.staff_read_at && (!thread.customer_read_at ||
-        Date.parse(thread.staff_read_at)>Date.parse(thread.customer_read_at));
-      return `<button class="shopThread ${thread.id===currentThread?"selected":""}"
-        data-open-thread="${esc(thread.id)}" type="button">
-        <span>${esc(thread.subject)}</span>
-        <small>${esc(new Date(thread.last_message_at).toLocaleDateString(en?"en-US":"ru-RU"))}</small>
-        ${unread?'<b class="shopUnread">●</b>':""}
-      </button>`;
-    }).join(""):'<p class="shopSmall">'+t("Переписок пока нет.","No conversations yet.")+"</p>";
-    if(currentThread && threads.some(q=>q.id===currentThread))await loadMessages(currentThread,false);
+    currentThread=threads[0]?.id||null;
+    if(currentThread)await loadMessages(currentThread,false);
   }
   async function loadMessages(id,mark=true){
     if(!loggedIn)return;
     const thread=threads.find(t=>t.id===id);
     if(!thread)return;
-    const {data,error}=await cms.client.from("shop_messages")
+    const {data,error}=await window.shopHistory(()=>cms.client.from("shop_messages")
       .select("id,thread_id,sender_role,body,created_at")
-      .eq("thread_id",id).order("created_at",{ascending:true}).limit(200);
+      .eq("thread_id",id).order("created_at",{ascending:true}).order("id"));
     if(error)throw error;
-    $("#shopThreadTitle").textContent=thread.subject;
+
     const box=$("#shopChatMessages"),atBottom=box.scrollHeight-box.scrollTop-box.clientHeight<85;
     box.innerHTML=(data||[]).map(m=>`<article class="shopBubble ${m.sender_role==="staff"?"staff":"customer"}">
       <div>${esc(m.body)}</div>
@@ -132,12 +119,12 @@
       const subset=reviews.filter(x=>x.product_id===item.id);
       if(!subset.length){root.innerHTML="";return;}
       const avg=(subset.reduce((n,r)=>n+r.rating,0)/subset.length).toFixed(1);
-      root.innerHTML=`<button data-review-filter="${esc(item.id)}" class="shopSecondary" type="button">
-        ★ ${avg} · ${subset.length} ${t("отзывов","reviews")}</button>
-        ${subset.slice(0,2).map(r=>`<div class="shopReviewMini">
+      root.innerHTML=`<details><summary>
+        ★ ${avg} · ${subset.length} ${t("отзывов","reviews")}</summary>
+        ${subset.map(r=>`<div class="shopReviewMini">
           <span>${"★".repeat(r.rating)}</span> ${esc((r.body||t("Подтверждённая покупка","Verified purchase")).slice(0,110))}
           ${r.signedUrl?`<img src="${esc(r.signedUrl)}" loading="lazy" alt="${t("Фото отзыва","Review photo")}">`:""}
-        </div>`).join("")}`;
+        </div>`).join("")}</details>`;
     });
   }
   function renderReviews(){
@@ -174,7 +161,7 @@
         if(existing.has(o.id+"|"+i.id))return;
         const item=shop()?.getProducts().find(p=>p.id===i.id);
         const name=item?productTitle(item):i.name||i.id;
-        opts.push({value:o.id+"|"+i.id,label:name+" · "+o.id.slice(0,8)});
+        opts.push({value:o.id+"|"+i.id,label:name+" · "+o.order_number});
       });
     });
     $("#shopReviewForm").hidden=!opts.length;
@@ -218,19 +205,27 @@
     if(loggedIn)loadReviewEligibility().catch(e=>notice(e.message,"#shopReviewNotice"));
   }
   async function onSession(event){
+    if(!$("#shopChatForm"))return;
     loggedIn=Boolean(event.detail?.signedIn);
-    if(!loggedIn){threads=[];currentThread=null;$("#shopThreads").innerHTML="";
+    if(!loggedIn){threads=[];currentThread=null;
       $("#shopChatMessages").innerHTML="";return;}
+    const draft=sessionStorage.getItem("shopChatProduct");
+    if(draft){sessionStorage.removeItem("shopChatProduct");const product=JSON.parse(draft);
+      contextProduct=product.id;$("#shopChatInput").value=t("Вопрос о товаре: ","Question about: ")+product.name;
+    }
     try{await listThreads();await loadReviewEligibility();}catch(error){notice(error.message);}
   }
   function bind(){
-    $("#shopNewThread").addEventListener("click",()=>beginConversation(null));
-    $("#shopChatForm").addEventListener("submit",sendMessage);
-    $("#shopReviewForm").addEventListener("submit",submitReview);
+
+    $("#shopChatForm")?.addEventListener("submit",sendMessage);
+    $("#shopReviewForm")?.addEventListener("submit",submitReview);
     document.addEventListener("click",event=>{
       const orderContact=event.target.closest("[data-contact-order]");
       if(orderContact){beginConversation(null,orderContact.dataset.contactOrder);return;}
       const contact=event.target.closest("[data-contact-product]");
+      if(contact&&!$("#shopChatForm")){const product=shop()?.getProducts().find(i=>i.id===contact.dataset.contactProduct);
+        if(product)sessionStorage.setItem("shopChatProduct",JSON.stringify({id:product.id,name:productTitle(product)}));
+        location.assign("account.html#messages");return;}
       if(contact){const item=shop()?.getProducts().find(i=>i.id===contact.dataset.contactProduct);
         if(item)beginConversation(item);return;}
       const thread=event.target.closest("[data-open-thread]");
@@ -249,7 +244,7 @@
       const params=new URLSearchParams(location.search);
       const contact=params.get("contactProduct");
       const selected=shop()?.getProducts().find(item=>item.id===contact);
-      if(contact)beginConversation(selected||null);
+      if(contact && $("#shopChatForm") && loggedIn)beginConversation(selected||null);
 
     });
     // Light polling, so both parties see replies without a webhook or a deploy.

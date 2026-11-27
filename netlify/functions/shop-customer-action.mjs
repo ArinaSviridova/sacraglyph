@@ -20,8 +20,8 @@ export async function handler(event){
         const owned=await db('shop_orders?'+new URLSearchParams({select:'id',id:'eq.'+order,user_id:'eq.'+user.id}));
         if(!owned?.length)throw problem(403,'Order not found');
       }
-      const threads=await db('shop_threads',{method:'POST',body:{
-        user_id:user.id,subject,product_id:product,order_id:order,
+      const threads=await db('shop_threads?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=representation'},body:{
+        user_id:user.id,subject:user.email.slice(0,160),product_id:product,order_id:order,
         last_message_at:now(),customer_read_at:now()
       }});
       const thread=threads?.[0];

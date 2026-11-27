@@ -24,6 +24,8 @@ try {
     & npx --yes supabase init --yes
     if ($LASTEXITCODE -ne 0) { throw "supabase init failed" }
   }
+  & node scripts/shop-local-auth.mjs
+  if ($LASTEXITCODE -ne 0) { throw "Local Auth setup failed" }
   if (-not (Test-Path "supabase/migrations")) {
     New-Item -ItemType Directory -Path "supabase/migrations" | Out-Null
   }
@@ -32,7 +34,8 @@ try {
     @{ name = "shop_orders"; source = "supabase/shop-orders-migration.sql" },
     @{ name = "shop_crm"; source = "supabase/shop-crm-migration.sql" },
     @{ name = "shop_receipts"; source = "supabase/shop-receipts-migration.sql" },
-    @{ name = "shop_local_collections"; source = "supabase/shop-local-collections.sql" }
+    @{ name = "shop_local_collections"; source = "supabase/shop-local-collections.sql" },
+    @{ name = "shop_accounts"; source = "supabase/shop-account-migration.sql" }
   )
   foreach ($step in $sources) {
     $pattern = "*_$($step.name).sql"

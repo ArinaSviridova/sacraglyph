@@ -23,16 +23,16 @@
   }
   async function loadThreads(){
     if(!isReady)return;
-    const {data,error}=await cms.client.from("shop_threads")
+    const {data,error}=await window.shopHistory(()=>cms.client.from("shop_threads")
       .select("id,subject,user_id,product_id,order_id,last_message_at,customer_read_at,staff_read_at")
-      .order("last_message_at",{ascending:false}).limit(100);
+      .order("last_message_at",{ascending:false}).order("id"));
     if(error)throw error;
     threads=data||[];
     $("#crmThreadList").innerHTML=threads.length?threads.map(th=>{
       const unread=!th.staff_read_at || (Date.parse(th.last_message_at)>Date.parse(th.staff_read_at));
       return `<button class="crmThread ${currentThread===th.id?"active":""}" type="button" data-crm-thread="${esc(th.id)}">
         <strong>${unread?"● ":""}${esc(th.subject)}</strong>
-        <small>${esc(th.id.slice(0,8))} · ${esc(date(th.last_message_at))}</small>
+        <small>${esc(date(th.last_message_at))}</small>
       </button>`;
     }).join(""):"<p>Входящих сообщений пока нет.</p>";
     if(currentThread&&threads.some(th=>th.id===currentThread))await loadThreadMessages(currentThread,false);
@@ -40,12 +40,12 @@
   async function loadThreadMessages(id,mark=true){
     const th=threads.find(t=>t.id===id);
     if(!th)return;
-    const {data,error}=await cms.client.from("shop_messages")
+    const {data,error}=await window.shopHistory(()=>cms.client.from("shop_messages")
       .select("id,thread_id,sender_role,body,created_at")
-      .eq("thread_id",id).order("created_at",{ascending:true}).limit(200);
+      .eq("thread_id",id).order("created_at",{ascending:true}).order("id"));
     if(error)throw error;
     const items=data||[];
-    $("#crmThreadHeading").textContent=th.subject+(th.order_id?" · заказ "+th.order_id.slice(0,8):"");
+    $("#crmThreadHeading").textContent=th.subject;
     const history=$("#crmHistory"),wasBottom=history.scrollHeight-history.clientHeight-history.scrollTop<70;
     const sig=JSON.stringify(items.map(m=>m.id));
     if(sig!==lastMessages){
@@ -78,14 +78,21 @@
     }catch(error){feedback("#crmMessageStatus",error.message);}
     finally{button.disabled=false;}
   }
+  let orderRows=[];
   async function loadOrders(){
-    const {data,error}=await cms.client.from("shop_orders")
-      .select("id,user_id,email,status,fulfillment_status,tracking_number,items,total_usd_cents,discount_usd_cents,promo_code,created_at,paid_at,receipt_sent_at,shipping_address")
-      .order("created_at",{ascending:false}).limit(100);
+    const {data,error}=await window.shopHistory(()=>cms.client.from("shop_orders")
+      .select("id,order_number,phone_digits,user_id,email,status,fulfillment_status,tracking_number,items,total_usd_cents,discount_usd_cents,promo_code,created_at,paid_at,receipt_sent_at,shipping_address")
+      .order("created_at",{ascending:false}).order("id"));
     if(error)throw error;
+    orderRows=data;renderOrderList();
+  }
+  function renderOrderList(){
+    const term=$("#crmOrderSearch").value.trim().toLowerCase().replace(/^[№#]\s*/, "");
+    const digits=/^[+()0-9. -]+$/.test(term)?term.replace(/\D/g,""):"";
+    const data=orderRows.filter(o=>o.email.toLowerCase().includes(term)||String(o.order_number).includes(term)||(digits&&o.phone_digits?.includes(digits)));
     $("#crmOrderList").innerHTML=(data||[]).length?(data||[]).map(o=>`
       <article class="crmAdminCard" data-crm-order="${esc(o.id)}">
-        <h3>Заказ ${esc(o.id.slice(0,8))} · ${esc(date(o.created_at))}</h3>
+        <h3>Заказ №${esc(o.order_number)} · ${esc(date(o.created_at))}</h3>
         <p>${esc(o.email)} · ${money(o.total_usd_cents)} · ${esc(o.status==="paid"?"✅ Оплачен":"Оплата: "+o.status)}</p>
         ${o.promo_code?`<p>Промокод: ${esc(o.promo_code)} · Скидка ${money(o.discount_usd_cents||0)}</p>`:""}
         <p>${(o.items||[]).map(i=>esc(i.name||i.id)+" × "+Number(i.quantity||0)
@@ -99,9 +106,9 @@
           </select></label>
           <label>Трек-номер <input data-tracking maxlength="120" value="${esc(o.tracking_number||"")}" placeholder="Для клиента"></label>
           <button class="adminButton primary" data-save-order type="button">Сохранить статус</button>
-          <button class="adminButton" data-message-order="${esc(o.id)}" type="button">Диалоги по заказу</button>
+          ${o.user_id?`<button class="adminButton" data-message-order="${esc(o.user_id)}" type="button">Чат покупателя</button>`:"Гостевой заказ"}
         </div>
-        <details class="crmOrderCompose">
+        <details class="crmOrderCompose" ${o.user_id?"":"hidden"}>
           <summary>Написать клиенту первым</summary>
           <textarea class="adminTextarea" data-order-first-message rows="2" maxlength="2000"
             placeholder="Здравствуйте! Пишем по вашему заказу..." aria-label="Первое сообщение клиенту"></textarea>
@@ -117,8 +124,8 @@
     const trackingNumber=wrap.querySelector("[data-tracking]").value;
     button.disabled=true;
     try{
-      await api("order-status",{orderId,status,trackingNumber});
-      feedback("#crmOrderStatus","Статус заказа обновлён.");
+      const result=await api("order-status",{orderId,status,trackingNumber});
+      feedback("#crmOrderStatus",result.mailPending?"Статус сохранён. Письмо ожидает отправки. Нажмите «Сохранить статус», чтобы повторить.":"Статус заказа сохранён.");
       await loadOrders();
     }catch(error){feedback("#crmOrderStatus",error.message);}
     finally{button.disabled=false;}
@@ -223,7 +230,7 @@
       const msg=event.target.closest("[data-message-order]");
       if(msg){
         document.querySelector('[data-admin-tab="messages"]')?.click();
-        const th=threads.find(t=>t.order_id===msg.dataset.messageOrder);
+        const th=threads.find(t=>t.user_id===msg.dataset.messageOrder);
         if(th)openThread(th.id).catch(e=>feedback("#crmMessageStatus",e.message));
         else feedback("#crmMessageStatus","Для этого заказа ещё нет переписки.");
       }
@@ -244,6 +251,7 @@
     $("#crmReplyForm").addEventListener("submit",sendReply);
     $("#crmCouponForm").addEventListener("submit",saveCoupon);
     $("#crmRefreshMessages").addEventListener("click",()=>loadThreads().catch(e=>feedback("#crmMessageStatus",e.message)));
+    $("#crmOrderSearch").addEventListener("input",renderOrderList);
     $("#crmRefreshOrders").addEventListener("click",()=>loadOrders().catch(e=>feedback("#crmOrderStatus",e.message)));
     $("#crmRefreshReviews").addEventListener("click",()=>loadReviews().catch(e=>feedback("#crmReviewStatus",e.message)));
     $("#crmTestTelegram").addEventListener("click",async event=>{

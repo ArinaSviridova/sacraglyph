@@ -26,6 +26,7 @@
     <script src="/assets/js/supabase-cms.js" defer></script>
     <script src="/assets/data/seed-content.js" defer></script>
     <script src="/assets/js/admin.js" defer></script>
+    <script src="/assets/js/shop-history.js" defer></script>
     <script src="/assets/js/shop-admin-crm.js" defer></script>
   </head>
   <body class="adminBody">
@@ -163,6 +164,7 @@
           </section>
           <section class="adminPanel" data-admin-panel="orders">
             <h2>Заказы и отправления</h2>
+            <label>Найти заказ <input id="crmOrderSearch" type="search" placeholder="Email, номер заказа или телефон"></label>
             <p class="adminTiny">Статус оплаты проверяется PayPal Sandbox. Меняем только статус выполнения, не выдаём оплаченный заказ за неоплаченный.</p>
             <div class="adminActions"><button class="adminButton" id="crmRefreshOrders" type="button">Обновить заказы</button></div>
             <p class="adminStatus" id="crmOrderStatus" role="status"></p>

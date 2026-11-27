@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+      name="viewport"
+    />
+
+    <title>Account | Sacra Glyph</title>
+    <meta
+      name="description"
+      content="Shop original tattoo-inspired T-shirts and independent designer merch in Tbilisi, Georgia. Explore collections, check availability and sizing."
+    />
+    <meta
+      name="robots"
+      content="noindex,nofollow"
+    />
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <meta name="theme-color" content="#0b0b0d" />
+
+    <link rel="stylesheet" href="/assets/css/shop.css" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="/assets/css/shop-crm.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+
+  <script src="/assets/js/shop-test-config.js" defer></script>
+  <!-- Created on your computer by scripts/setup-shop-local.ps1; never committed. -->
+  <script src="/assets/js/shop-test-config.local.js" defer></script>
+  <script src="/assets/js/supabase-cms.js" defer></script>
+  <script src="/assets/js/cart-count.js" defer></script>
+  <script src="/assets/js/shop-history.js" defer></script>
+  <script src="/assets/js/shop.js" defer></script>
+  <script src="/assets/js/shop-crm-ui.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container headerRow">
+        <a class="brand" href="/en/" aria-label="Home">
+          <img
+            src="/favicon.png"
+            alt="bazookatattoo logo"
+            class="brandIcon"
+            width="30"
+            height="30"
+            decoding="async"
+          />
+          <span class="brandText">bazookatattoo</span>
+        </a>
+
+        <nav class="nav" aria-label="Navigation">
+          <a href="/en/">Home</a>
+          <a href="/en/#works">Works</a>
+          <a href="/en/#prices">Pricing</a>
+          <a href="/en/#contacts">Contact</a>
+          <a href="/en/#contact-form">Contact form</a>
+          <a href="/en/merch.html">Merch</a>
+          <a href="/en/cart.html">Cart (<span data-cart-count>0</span>)</a>
+          <a href="/en/account.html">Account</a>
+        </nav>
+
+        <div class="headerActions">
+          <a
+            class="langBtn"
+            href="/account.html"
+            hreflang="ru"
+            aria-label="Russian version"
+            >RU</a
+          >
+          <button class="burger" type="button" data-burger aria-label="Menu">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <nav class="mobileNav" data-mobile aria-label="Mobile navigation">
+        <a href="/en/">Home</a>
+        <a href="/en/#works">Works</a>
+        <a href="/en/#prices">Pricing</a>
+        <a href="/en/#contacts">Contact</a>
+        <a href="/en/#contact-form">Contact form</a>
+        <a href="/en/merch.html">Merch</a>
+          <a href="/en/cart.html">Cart (<span data-cart-count>0</span>)</a>
+          <a href="/en/account.html">Account</a>
+        <a class="langBtn" href="/account.html" hreflang="ru">RU</a>
+      </nav>
+    </header>
+
+    <main class="container merchCheckout shopPage"><section class="shopAccountPanel"><h1>Account</h1><div data-auth-options><button type="button" data-provider="google">Google</button> <button type="button" data-provider="apple">Apple</button></div>
+<form id="shopAuthForm" class="shopForm">
+        <label>Email <input id="shopEmail" type="email" autocomplete="email" required></label>
+        <label>Password (at least 8 characters) <input id="shopPassword" type="password" autocomplete="current-password" minlength="8" required></label>
+        <div class="shopButtons">
+          <button type="submit">Sign in</button>
+          <button type="button" id="shopSignup" class="shopSecondary">Create account</button>
+        </div>
+      </form>
+      <p id="shopAuthNotice" class="shopNotice" role="status"></p>
+<div id="shopAccountContent" hidden><div class="shopAccountTop"><strong id="shopUserEmail"></strong> <button id="shopLogout" class="shopSecondary" type="button">Sign out</button></div><h3>My orders</h3>
+        <div id="shopOrders">No orders yet.</div>
+        <section id="messages" class="shopInbox" aria-labelledby="inboxTitle">
+          <h3 id="inboxTitle">Messages with the artist</h3>
+          <p class="shopSmall">Ask about orders, sizing, production times and delivery. Replies will appear here.</p>
+          <div class="shopChatHistory">
+
+            <div>
+            <div id="shopChatMessages" class="shopChatMessages" aria-live="polite"></div>
+            <form id="shopChatForm" class="shopChatForm"><textarea id="shopChatInput" maxlength="2000" placeholder="Write a message..." rows="3" required></textarea>
+            <button type="submit">Send</button></form></div>
+          </div>
+          <p id="shopMessageNotice" class="shopNotice" role="status"></p>
+        </section>
+        <section id="shopReviewFormSection" class="shopReviewPanel">
+          <h3>Review your purchase</h3>
+          <p class="shopSmall">Reviews are available after a paid order is marked delivered. Photos are moderated before publishing.</p>
+          <form id="shopReviewForm" hidden class="shopForm">
+            <label>Product from delivered order
+              <select id="shopReviewProduct" required><option value="">Choose a product</option></select>
+            </label>
+            <label>Rating <select id="shopReviewRating" required>
+              <option value="5">★★★★★ (5)</option><option value="4">★★★★☆ (4)</option>
+              <option value="3">★★★☆☆ (3)</option><option value="2">★★☆☆☆ (2)</option><option value="1">★☆☆☆☆ (1)</option>
+            </select></label>
+            <label>Your review <textarea id="shopReviewBody" rows="4" maxlength="1500" placeholder="What did you think?"></textarea></label>
+            <label>Photo (optional, up to 5 MB)
+              <input id="shopReviewPhoto" type="file" accept="image/jpeg,image/png,image/webp"></label>
+            <button type="submit">Send review for approval</button>
+          </form>
+          <p id="shopReviewNotice" role="status" class="shopNotice"></p>
+        </section>
+      </div></section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footerRow">
+        <div>© <span id="year"></span> bazookatattoo</div>
+
+        <div class="footerCredit">
+          site by
+          <a
+            href="https://www.linkedin.com/in/arina-svirydava-221761172/"
+            target="_blank"
+            rel="noopener"
+          >
+            Arina Svirydava
+          </a>
+        </div>
+
+        <div class="footerLinks">
+          <a href="/en/">Home</a>
+          <a href="/en/merch.html">Merch</a>
+          <a href="/en/cart.html">Cart (<span data-cart-count>0</span>)</a>
+          <a href="/en/account.html">Account</a>
+          <a href="/privacy-policy.html">Privacy Policy</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script src="/assets/js/main.js" defer></script>
+  </body>
+</html>

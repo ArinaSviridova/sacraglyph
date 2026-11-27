@@ -73,6 +73,8 @@
   <!-- Created on your computer by scripts/setup-shop-local.ps1; never committed. -->
   <script src="/assets/js/shop-test-config.local.js" defer></script>
   <script src="/assets/js/supabase-cms.js" defer></script>
+  <script src="/assets/js/cart-count.js" defer></script>
+  <script src="/assets/js/shop-history.js" defer></script>
   <script src="/assets/js/shop.js" defer></script>
   <script src="/assets/js/shop-crm-ui.js" defer></script>
   </head>
@@ -98,8 +100,8 @@
           <a href="/en/#contacts">Contact</a>
           <a href="/en/#contact-form">Contact form</a>
           <a href="/en/merch.html">Merch</a>
-          <a href="#cart">Cart</a>
-          <a href="#account">Account</a>
+          <a href="/en/cart.html">Cart (<span data-cart-count>0</span>)</a>
+          <a href="/en/account.html">Account</a>
         </nav>
 
         <div class="headerActions">
@@ -136,8 +138,8 @@
         <a href="/en/#contacts">Contact</a>
         <a href="/en/#contact-form">Contact form</a>
         <a href="/en/merch.html">Merch</a>
-          <a href="#cart">Cart</a>
-          <a href="#account">Account</a>
+          <a href="/en/cart.html">Cart (<span data-cart-count>0</span>)</a>
+          <a href="/en/account.html">Account</a>
         <a class="langBtn" href="/merch.html" hreflang="ru">RU</a>
       </nav>
     </header>
@@ -178,85 +180,6 @@
         </div>
       </section>
 
-      <div class="container merchCheckout">
-      <aside id="cart" class="shopCartPanel" aria-labelledby="cartTitle">
-        <h2 id="cartTitle">Cart <span id="cartCount">0</span></h2>
-        <div id="shopCart"></div>
-        <div id="cartTotal"></div>
-        <p class="shopSmall">Worldwide shipping from Georgia. Postage is quoted individually and is excluded from this test.</p>
-        <label class="shopPromoLabel">Promo code <input id="shopPromoCode" maxlength="30" placeholder="e.g. HELLO10" autocomplete="off"></label>
-        <a class="shopJump" href="#account">Proceed to checkout</a>
-      </aside>
-    <section id="account" class="shopAccountPanel" aria-labelledby="accountTitle">
-      <h2 id="accountTitle">Your account & checkout</h2>
-      <p>Sign in to keep your test orders and shipping details together.</p>
-      <form id="shopAuthForm" class="shopForm">
-        <label>Email <input id="shopEmail" type="email" autocomplete="email" required></label>
-        <label>Password (at least 8 characters) <input id="shopPassword" type="password" autocomplete="current-password" minlength="8" required></label>
-        <div class="shopButtons">
-          <button type="submit">Sign in</button>
-          <button type="button" id="shopSignup" class="shopSecondary">Create account</button>
-        </div>
-      </form>
-      <p id="shopAuthNotice" class="shopNotice" role="status"></p>
-      <div id="shopAccountContent" hidden>
-        <div class="shopAccountTop"><strong id="shopUserEmail"></strong> <button id="shopLogout" class="shopSecondary" type="button">Sign out</button></div>
-        <h3>Worldwide shipping address</h3>
-        <form id="shopAddressForm" class="shopForm">
-          <div class="shopFormGrid">
-            <label>Full name <input name="name" autocomplete="name" maxlength="120" required></label>
-            <label>Phone <input name="phone" autocomplete="tel" maxlength="40" required></label>
-            <label>City <input name="city" autocomplete="address-level2" maxlength="100" required></label>
-            <label>Postal code <input name="postal" autocomplete="postal-code" maxlength="24"></label>
-          </div>
-          <label>Street, building, apartment <input name="street" autocomplete="street-address" maxlength="240" required></label>
-          <label>Country or territory <select name="country" autocomplete="country" required></select></label>
-          <button type="submit" class="shopSecondary">Save address</button>
-        </form>
-        <div class="shopCheckout">
-          <h3>Test checkout checkout</h3>
-          <p class="shopSmall">Use local test checkout to try your account, receipt and delivery status.</p>
-          <label class="shopConsent"><input type="checkbox" id="shopAcceptTerms"> I confirm the test checkout and my address details.</label>
-          <button type="button" id="shopDemoOrder" hidden>Place local test order</button>
-          <div id="shopPaypalButtons"></div>
-          <p id="shopCheckoutNotice" class="shopNotice" role="status"></p>
-        </div>
-        <h3>My orders</h3>
-        <div id="shopOrders">No orders yet.</div>
-        <section id="messages" class="shopInbox" aria-labelledby="inboxTitle">
-          <h3 id="inboxTitle">Messages with the artist</h3>
-          <p class="shopSmall">Ask about orders, sizing, production times and delivery. Replies will appear here.</p>
-          <div class="shopInboxGrid">
-            <div><button class="shopSecondary" id="shopNewThread" type="button">New conversation</button><div id="shopThreads" class="shopThreadList"></div></div>
-            <div><h4 id="shopThreadTitle">Select a conversation</h4>
-            <div id="shopChatMessages" class="shopChatMessages" aria-live="polite"></div>
-            <form id="shopChatForm" class="shopChatForm"><textarea id="shopChatInput" maxlength="2000" placeholder="Write a message..." rows="3" required></textarea>
-            <button type="submit">Send</button></form></div>
-          </div>
-          <p id="shopMessageNotice" class="shopNotice" role="status"></p>
-        </section>
-        <section id="shopReviewFormSection" class="shopReviewPanel">
-          <h3>Review your purchase</h3>
-          <p class="shopSmall">Reviews are available after a paid order is marked delivered. Photos are moderated before publishing.</p>
-          <form id="shopReviewForm" hidden class="shopForm">
-            <label>Product from delivered order
-              <select id="shopReviewProduct" required><option value="">Choose a product</option></select>
-            </label>
-            <label>Rating <select id="shopReviewRating" required>
-              <option value="5">★★★★★ (5)</option><option value="4">★★★★☆ (4)</option>
-              <option value="3">★★★☆☆ (3)</option><option value="2">★★☆☆☆ (2)</option><option value="1">★☆☆☆☆ (1)</option>
-            </select></label>
-            <label>Your review <textarea id="shopReviewBody" rows="4" maxlength="1500" placeholder="What did you think?"></textarea></label>
-            <label>Photo (optional, up to 5 MB)
-              <input id="shopReviewPhoto" type="file" accept="image/jpeg,image/png,image/webp"></label>
-            <button type="submit">Send review for approval</button>
-          </form>
-          <p id="shopReviewNotice" role="status" class="shopNotice"></p>
-        </section>
-      </div>
-    </section>
-    <section id="publicReviews" class="shopPublicReviews" aria-labelledby="publicReviewsTitle"><h2 id="publicReviewsTitle">Customer reviews</h2><div id="shopPublicReviews"></div></section>
-      </div>
     </main>
 
     <footer class="footer">
@@ -277,8 +200,8 @@
         <div class="footerLinks">
           <a href="/en/">Home</a>
           <a href="/en/merch.html">Merch</a>
-          <a href="#cart">Cart</a>
-          <a href="#account">Account</a>
+          <a href="/en/cart.html">Cart (<span data-cart-count>0</span>)</a>
+          <a href="/en/account.html">Account</a>
           <a href="/privacy-policy.html">Privacy Policy</a>
         </div>
       </div>

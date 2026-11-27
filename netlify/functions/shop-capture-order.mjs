@@ -1,18 +1,20 @@
+import {buyer} from '../lib/shop-buyer.mjs';
 import {tryReceipt} from '../lib/shop-receipt.mjs';
 import {telegram} from '../lib/shop-crm-server.mjs';
-import {db,fail,money,paypal,reply,requireUser,settings} from '../lib/shop-server.mjs';
+import {db,fail,money,paypal,reply,settings} from '../lib/shop-server.mjs';
 export async function handler(event) {
   if(event.httpMethod!=='POST') return reply(405,{error:'Method not allowed'});
   try {
     settings();
-    const user=await requireUser(event);
-    const {orderId,paypalOrderId}=JSON.parse(event.body||'{}');
+    const input=JSON.parse(event.body||'{}');
+    const user=await buyer(event,input);
+    const {orderId,paypalOrderId}=input;
     if(!/^[0-9a-f-]{36}$/i.test(String(orderId||''))||!/^[A-Z0-9-]{8,40}$/i.test(String(paypalOrderId||'')))
       return reply(400,{error:'Invalid order identifiers'});
-    const orders=await db('shop_orders?'+new URLSearchParams({id:'eq.'+orderId,user_id:'eq.'+user.id,select:'*'}));
+    const orders=await db('shop_orders?'+new URLSearchParams({id:'eq.'+orderId,...user.scope,select:'*'}));
     const local=orders?.[0];
     if(!local||local.paypal_order_id!==paypalOrderId) return reply(404,{error:'Order not found'});
-    if(local.status==='paid'){await tryReceipt(orderId);return reply(200,{paid:true,orderId});}
+    if(local.status==='paid'){await tryReceipt(orderId);return reply(200,{paid:true,orderId,orderNumber:local.order_number});}
     if(local.status!=='pending') return reply(409,{error:'Order cannot be paid'});
     const result=await paypal('/v2/checkout/orders/'+encodeURIComponent(paypalOrderId)+'/capture',{
       requestId:orderId,body:{}
@@ -28,6 +30,6 @@ export async function handler(event) {
       body:{status:'paid',paypal_capture_id:captures[0].id,paid_at:new Date().toISOString()}});
     await tryReceipt(orderId);
     if(updated?.length)await telegram('🛍 Новый оплаченный заказ (Sandbox)\nЗаказ: '+orderId+'\nСумма: '+money(local.total_usd_cents)+' USD\nОткрыть: /shop-admin.html#orders');
-    return reply(200,{paid:true,orderId});
+    return reply(200,{paid:true,orderId,orderNumber:local.order_number});
   } catch(error){return fail(error);}
 }

@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+      name="viewport"
+    />
+
+    <title>Cart | Sacra Glyph</title>
+    <meta
+      name="description"
+      content="Shop original tattoo-inspired T-shirts and independent designer merch in Tbilisi, Georgia. Explore collections, check availability and sizing."
+    />
+    <meta
+      name="robots"
+      content="noindex,nofollow"
+    />
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <meta name="theme-color" content="#0b0b0d" />
+
+    <link rel="stylesheet" href="/assets/css/shop.css" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="/assets/css/shop-crm.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+
+  <script src="/assets/js/shop-test-config.js" defer></script>
+  <!-- Created on your computer by scripts/setup-shop-local.ps1; never committed. -->
+  <script src="/assets/js/shop-test-config.local.js" defer></script>
+  <script src="/assets/js/supabase-cms.js" defer></script>
+  <script src="/assets/js/cart-count.js" defer></script>
+  <script src="/assets/js/shop-history.js" defer></script>
+  <script src="/assets/js/shop.js" defer></script>
+  <script src="/assets/js/shop-crm-ui.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container headerRow">
+        <a class="brand" href="/en/" aria-label="Home">
+          <img
+            src="/favicon.png"
+            alt="bazookatattoo logo"
+            class="brandIcon"
+            width="30"
+            height="30"
+            decoding="async"
+          />
+          <span class="brandText">bazookatattoo</span>
+        </a>
+
+        <nav class="nav" aria-label="Navigation">
+          <a href="/en/">Home</a>
+          <a href="/en/#works">Works</a>
+          <a href="/en/#prices">Pricing</a>
+          <a href="/en/#contacts">Contact</a>
+          <a href="/en/#contact-form">Contact form</a>
+          <a href="/en/merch.html">Merch</a>
+          <a href="/en/cart.html">Cart (<span data-cart-count>0</span>)</a>
+          <a href="/en/account.html">Account</a>
+        </nav>
+
+        <div class="headerActions">
+          <a
+            class="langBtn"
+            href="/cart.html"
+            hreflang="ru"
+            aria-label="Russian version"
+            >RU</a
+          >
+          <button class="burger" type="button" data-burger aria-label="Menu">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <nav class="mobileNav" data-mobile aria-label="Mobile navigation">
+        <a href="/en/">Home</a>
+        <a href="/en/#works">Works</a>
+        <a href="/en/#prices">Pricing</a>
+        <a href="/en/#contacts">Contact</a>
+        <a href="/en/#contact-form">Contact form</a>
+        <a href="/en/merch.html">Merch</a>
+          <a href="/en/cart.html">Cart (<span data-cart-count>0</span>)</a>
+          <a href="/en/account.html">Account</a>
+        <a class="langBtn" href="/cart.html" hreflang="ru">RU</a>
+      </nav>
+    </header>
+
+    <main class="container merchCheckout shopPage"><aside id="cart" class="shopCartPanel" aria-labelledby="cartTitle">
+        <h2 id="cartTitle">Cart <span id="cartCount">0</span></h2>
+        <div id="shopCart"></div>
+        <div id="cartTotal"></div>
+        <p class="shopSmall">Worldwide shipping from Georgia. Postage is quoted individually and is excluded from this test.</p>
+        <label class="shopPromoLabel">Promo code <input id="shopPromoCode" maxlength="30" placeholder="e.g. HELLO10" autocomplete="off"></label>
+
+      </aside><section id="checkout" class="shopAccountPanel"><h2>Checkout</h2><div id="guestInvite"><p>Check out as a guest, or sign in or register to keep this order and chat with the artist.</p><div data-auth-options><button type="button" data-provider="google">Google</button> <button type="button" data-provider="apple">Apple</button></div>
+<form id="shopAuthForm" class="shopForm">
+        <label>Email <input id="shopEmail" type="email" autocomplete="email" required></label>
+        <label>Password (at least 8 characters) <input id="shopPassword" type="password" autocomplete="current-password" minlength="8" required></label>
+        <div class="shopButtons">
+          <button type="submit">Sign in</button>
+          <button type="button" id="shopSignup" class="shopSecondary">Create account</button>
+        </div>
+      </form>
+      <p id="shopAuthNotice" class="shopNotice" role="status"></p>
+</div><div class="shopAccountTop"><strong id="shopUserEmail"></strong> <button id="shopLogout" class="shopSecondary" type="button">Sign out</button></div><form id="shopAddressForm" class="shopForm">
+          <div class="shopFormGrid"><label>Email <input required type="email" name="email" maxlength="254" autocomplete="email"></label>
+            <label>Full name <input name="name" autocomplete="name" maxlength="120" required></label>
+            <label>Phone <input type="tel" name="phone" autocomplete="tel" maxlength="40" required></label>
+            <label>City <input name="city" autocomplete="address-level2" maxlength="100" required></label>
+            <label>Postal code <input name="postal" autocomplete="postal-code" maxlength="24"></label>
+          </div>
+          <label>Street, building, apartment <input name="street" autocomplete="street-address" maxlength="240" required></label>
+          <label>Country or territory <select name="country" autocomplete="country" required></select></label>
+          <button id="saveProfile" type="submit" class="shopSecondary">Save address</button>
+        </form>
+<div class="shopCheckout">
+          <h3>Test checkout checkout</h3>
+          <p class="shopSmall">Use local test checkout to try your account, receipt and delivery status.</p>
+          <label class="shopConsent"><input type="checkbox" id="shopAcceptTerms"> I confirm the test checkout and my address details.</label>
+          <button type="button" id="shopDemoOrder" hidden>Place local test order</button>
+          <div id="shopPaypalButtons"></div>
+          <p id="shopCheckoutNotice" class="shopNotice" role="status"></p>
+        </div>
+</section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footerRow">
+        <div>© <span id="year"></span> bazookatattoo</div>
+
+        <div class="footerCredit">
+          site by
+          <a
+            href="https://www.linkedin.com/in/arina-svirydava-221761172/"
+            target="_blank"
+            rel="noopener"
+          >
+            Arina Svirydava
+          </a>
+        </div>
+
+        <div class="footerLinks">
+          <a href="/en/">Home</a>
+          <a href="/en/merch.html">Merch</a>
+          <a href="/en/cart.html">Cart (<span data-cart-count>0</span>)</a>
+          <a href="/en/account.html">Account</a>
+          <a href="/privacy-policy.html">Privacy Policy</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    <script src="/assets/js/main.js" defer></script>
+  </body>
+</html>

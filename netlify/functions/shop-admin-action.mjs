@@ -1,4 +1,4 @@
-import {sendReceipt} from '../lib/shop-receipt.mjs';
+import {sendReceipt,sendStatusUpdates} from '../lib/shop-receipt.mjs';
 import {cleaned,config,db,fail,now,problem,requireAdmin,respond,telegram,userFrom,uuid} from '../lib/shop-crm-server.mjs';
 const allowed=['new','accepted','making','packed','shipped','delivered','cancelled'];
 export async function handler(event){
@@ -18,13 +18,14 @@ export async function handler(event){
     }
     if(input.action==='new-order-thread'){
       const orderId=uuid(input.orderId),body=cleaned(input.body);
-      const orders=await db('shop_orders?'+new URLSearchParams({select:'id,user_id',id:'eq.'+orderId}));
+      const orders=await db('shop_orders?'+new URLSearchParams({select:'id,user_id,email',id:'eq.'+orderId}));
       const order=orders?.[0];
       if(!order)throw problem(404,'Order not found');
+      if(!order.user_id)throw problem(400,'Guest orders have no account chat');
       const subject=String(input.subject||'Вопрос по заказу '+orderId.slice(0,8)).trim().slice(0,160);
       if(!subject)throw problem(400,'Subject required');
-      const rows=await db('shop_threads',{method:'POST',body:{
-        user_id:order.user_id,order_id:orderId,subject,
+      const rows=await db('shop_threads?on_conflict=user_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=representation'},body:{
+        user_id:order.user_id,order_id:orderId,subject:order.email.slice(0,160),
         last_message_at:now(),staff_read_at:now()
       }});
       const threadId=rows?.[0]?.id;
@@ -69,8 +70,11 @@ export async function handler(event){
       if(tracking.length>120)throw problem(400,'Tracking number too long');
       const body={fulfillment_status:state,tracking_number:tracking||null};
       if(state==='delivered')body.delivered_at=now();
-      const updated=await db('shop_orders?'+new URLSearchParams({id:'eq.'+id}),{method:'PATCH',body});
-      return respond(200,{order:updated?.[0]});
+      const updated=await db('shop_orders?'+new URLSearchParams({id:'eq.'+id,fulfillment_status:'eq.'+old.fulfillment_status}),{method:'PATCH',body});
+      const order=updated?.[0];
+      if(!order)throw problem(409,'Order changed; refresh before saving');
+      try{await sendStatusUpdates(order);}catch{return respond(200,{mailPending:true});}
+      return respond(200,{ok:true});
     }
     if(input.action==='coupon'){
       const code=String(input.code||'').trim().toUpperCase();

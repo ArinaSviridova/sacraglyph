@@ -4,6 +4,12 @@
   const t = (ru, eng) => en ? eng : ru;
   const $ = (selector, root = document) => root.querySelector(selector);
   const cms = window.BazookaCMS;
+  if(location.pathname.endsWith('/merch.html')){
+    const legacy=location.hash.slice(1);
+    if(['cart','account','messages','shopOrders','shopReviewFormSection'].includes(legacy)){
+      location.replace((legacy==='cart'?'cart.html':'account.html')+location.search+'#'+legacy);return;
+    }
+  }
   const store = 'bazooka_shop_cart_v1';
   const esc = value => String(value ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;')
     .replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
@@ -17,7 +23,7 @@
       && Number.isInteger(i.qty) && i.qty>=1 && i.qty<=10 && typeof i.size==='string').slice(0,30);
   } catch { /* ignore stale cart */ }
   function notify(message, target='#shopNotice') { const el=$(target); if(el) el.textContent=message; }
-  function saveCart() {localStorage.setItem(store, JSON.stringify(cart));renderCart();}
+  function saveCart() {localStorage.setItem(store, JSON.stringify(cart));renderCart();window.dispatchEvent(new Event('shop:cart'));}
   function status(item) {
     const st = item.stockStatus || (item.inStock === false ? 'out' : 'in');
     return st === 'in' && item.inStock !== false ? 0 : 2;
@@ -103,11 +109,11 @@
   function delivery() {
     const f=$('#shopAddressForm');
     const get = name => String(f.elements.namedItem(name)?.value||'').trim();
-    return { name:get('name'),phone:get('phone'),city:get('city'),street:get('street'),
+    return { email:get('email'),name:get('name'),phone:get('phone'),city:get('city'),street:get('street'),
       postal:get('postal'),country:get('country')};
   }
   function validCheckout() {
-    if(!session) {notify(t('Сначала войди в аккаунт.','Please sign in first.'),'#shopCheckoutNotice');return false;}
+
     if(!cart.length) {notify(t('Корзина пуста.','Cart is empty.'),'#shopCheckoutNotice');return false;}
     if(!$('#shopAddressForm').reportValidity()) return false;
     if(!$('#shopAcceptTerms').checked) {notify(t('Подтверди тестовую покупку.','Confirm the test checkout.'),'#shopCheckoutNotice');return false;}
@@ -115,9 +121,15 @@
   }
   async function backend(name, body) {
     const {data,error}=await cms.client.auth.getSession();
-    if(error||!data.session?.access_token) throw new Error(t('Необходим вход в аккаунт.','Sign in required.'));
+    if(error)throw error;
+    const token=data.session?.access_token;
+    if(!token){
+      let key=sessionStorage.getItem('shopGuestKey');
+      if(!key){key=Array.from(crypto.getRandomValues(new Uint8Array(32)),v=>v.toString(16).padStart(2,'0')).join('');sessionStorage.setItem('shopGuestKey',key);}
+      body={...body,guestKey:key};
+    }
     const response=await fetch('/.netlify/functions/'+name,{
-      method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},
+      method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},
       body:JSON.stringify(body)
     });
     const result=await response.json().catch(()=>({}));
@@ -148,11 +160,11 @@
     })) {const field=f.elements.namedItem(key);if(field) field.value=value;}
   }
   async function loadOrders() {
-    if(!session) return;
     const target=$('#shopOrders');
-    const {data,error}=await cms.client.from('shop_orders')
-      .select('id,status,currency,total_usd_cents,items,created_at,fulfillment_status,tracking_number,promo_code,discount_usd_cents')
-      .eq('user_id',session.user.id).order('created_at',{ascending:false}).limit(30);
+    if(!session||!target)return;
+    const {data,error}=await window.shopHistory(()=>cms.client.from('shop_orders')
+      .select('id,order_number,shipping_address,email,status,currency,total_usd_cents,items,created_at,fulfillment_status,tracking_number,promo_code,discount_usd_cents')
+      .eq('user_id',session.user.id).order('created_at',{ascending:false}).order('id'));
     if(error) {target.textContent=error.message;return;}
     const deliveryLabels={
       new:t('Новый','New'),accepted:t('Принят','Accepted'),making:t('В изготовлении','In production'),
@@ -161,16 +173,20 @@
     };
     const paymentLabels={pending:t('Ожидает оплаты','Payment pending'),paid:t('Оплачено','Paid'),
       cancelled:t('Отменено','Cancelled'),refunded:t('Возврат','Refunded')};
+    const expanded=new Set([...target.querySelectorAll('details[open]')].map(el=>el.dataset.order));
     target.innerHTML=(data||[]).length?(data||[]).map(o=>`<div class="shopOrder">
-      <strong>${esc(o.id.slice(0,8))}</strong> · ${esc(new Date(o.created_at).toLocaleDateString(en?'en-US':'ru-RU'))}
+      <details data-order="${esc(o.id)}" ${expanded.has(o.id)?'open':''}><summary><strong>№${esc(o.order_number)} · ${esc(o.items.map(i=>i.name).join(', '))}</strong> · ${esc(new Date(o.created_at).toLocaleDateString(en?'en-US':'ru-RU'))}
+      </summary>
+      <p>${o.items.map(i=>esc(i.name)+(i.size?" · "+esc(i.size):"")+" × "+Number(i.quantity)+" · "+cash(i.quantity*i.unit_usd_cents/100)).join("<br>")}</p>
+      <p>${esc([o.email,...Object.values(o.shipping_address||{})].filter(Boolean).join(", "))}</p>
       <div class="shopLineMeta">${esc(paymentLabels[o.status]||o.status)} · ${cash(o.total_usd_cents/100)} · ${Array.isArray(o.items)?o.items.length:0} ${t('позиций','items')}</div>
       <div class="shopLineMeta">${t('Доставка: ','Delivery: ')}${esc(deliveryLabels[o.fulfillment_status]||deliveryLabels.new)} ${o.tracking_number?'· '+t('трек: ','tracking: ')+esc(o.tracking_number):''}</div>
       <button class="shopSecondary" data-contact-order="${esc(o.id)}" type="button">${t('Написать по заказу','Ask about this order')}</button>
-    </div>`).join(''):t('Заказов пока нет.','No orders yet.');
+    </details></div>`).join(''):t('Заказов пока нет.','No orders yet.');
     window.dispatchEvent(new CustomEvent('bazooka:orders',{detail:{orders:data||[]}}));
   }
   async function initPaypal() {
-    if(paypalInitialized||!session) return;
+    if(paypalInitialized||!$('#shopPaypalButtons')) return;
     try {
       const response=await fetch('/.netlify/functions/shop-config',{cache:'no-store'});
       if(!response.ok) throw new Error('Sandbox functions unavailable');
@@ -200,7 +216,7 @@
               if(!captured.paid) throw new Error('Payment not completed');
               cart=[];saveCart();await loadOrders();
               notify(t('Тестовая оплата успешна. Заказ сохранён!','Sandbox payment completed. Order saved!'),'#shopCheckoutNotice');
-              location.hash='#account';
+              notify(t('Заказ №','Order #')+captured.orderNumber,'#shopCheckoutNotice');
             },
             onCancel:()=>notify(t('Тестовая оплата отменена.','Test payment cancelled.'),'#shopCheckoutNotice'),
             onError:error=>notify(t('Ошибка PayPal Sandbox: ','PayPal Sandbox error: ')+error.message,'#shopCheckoutNotice')
@@ -231,17 +247,20 @@
   async function refreshSession() {
     const result=await cms.client.auth.getSession();
     session=result.data?.session||null;
-    $('#shopAuthForm').hidden=Boolean(session);
-    $('#shopAccountContent').hidden=!session;
-    $('#shopUserEmail').textContent=session?.user?.email||'';
-    if(session) {await Promise.all([loadProfile(),loadOrders()]);await initPaypal();}
-    else {paypalInitialized=false;$('#shopPaypalButtons').innerHTML='';}
+    for(const el of document.querySelectorAll('#shopAuthForm,[data-auth-options],#guestInvite'))el.hidden=Boolean(session);
+    for(const el of document.querySelectorAll('#shopAccountContent,.shopAccountTop,#saveProfile'))el.hidden=!session;
+    if($('#shopUserEmail'))$('#shopUserEmail').textContent=session?.user?.email||'';
+    const email=$('[name=email]');
+    if(email && session && !email.value)email.value=session.user.email||'';
+    if(session && $('#shopAddressForm'))await loadProfile();
+    if(session)await loadOrders();
+    await initPaypal();
     window.dispatchEvent(new CustomEvent('bazooka:session',{detail:{signedIn:Boolean(session)}}));
   }
   async function authenticate(signUp) {
     const f=$('#shopAuthForm');if(!f.reportValidity()) return;
     const email=$('#shopEmail').value.trim(),password=$('#shopPassword').value;
-    const result=signUp?await cms.client.auth.signUp({email,password})
+    const result=signUp?await cms.client.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}})
       :await cms.client.auth.signInWithPassword({email,password});
     if(result.error) throw result.error;
     notify(signUp?t('Проверь почту: Supabase может запросить подтверждение регистрации.','Check your email to confirm registration if required.')
@@ -280,32 +299,44 @@
       cart=cart.filter(i=>i.qty>0);saveCart();
     }
   });
+  document.querySelectorAll('[data-provider]').forEach(button=>button.addEventListener('click',async()=>{
+    try{
+      const {error}=await cms.client.auth.signInWithOAuth({provider:button.dataset.provider,options:{redirectTo:location.origin+location.pathname}});
+      if(error)throw error;
+    }catch(error){notify(error.message,'#shopAuthNotice');}
+  }));
+  window.addEventListener('storage',event=>{
+    if(event.key===store){try{cart=JSON.parse(event.newValue||'[]');renderCart();}catch{}}
+  });
   let demoAttempt=null;
-  $('#shopDemoOrder').addEventListener('click',async event=>{
+  $('#shopDemoOrder')?.addEventListener('click',async event=>{
     if(!validCheckout())return;
     const button=event.currentTarget;
     button.disabled=true;
     try {
       const payload={localDemo:true,items:cart,delivery:delivery(),language:en?'en':'ru',promoCode:$('#shopPromoCode').value};
-      const signature=JSON.stringify([session.user.id,payload]);
+      const signature=JSON.stringify([session?.user.id||"guest",payload]);
       if(demoAttempt?.signature!==signature)demoAttempt={signature,key:crypto.randomUUID()};
       const result=await backend('shop-create-order',{...payload,requestId:demoAttempt.key});
       demoAttempt=null;
       cart=[];saveCart();await loadOrders();
-      notify(t('Тестовый заказ создан.','Test order placed.')+' '+result.orderId,'#shopCheckoutNotice');
+      notify(t('Тестовый заказ создан.','Test order placed.')+' №'+result.orderNumber,'#shopCheckoutNotice');
     } catch(error){notify(error.message,'#shopCheckoutNotice');}
     finally{button.disabled=false;}
   });
-  $('#shopAuthForm').addEventListener('submit',event=>{event.preventDefault();
+  $('#shopAuthForm')?.addEventListener('submit',event=>{event.preventDefault();
     authenticate(false).catch(e=>notify(e.message,'#shopAuthNotice'));});
-  $('#shopSignup').addEventListener('click',()=>authenticate(true).catch(e=>notify(e.message,'#shopAuthNotice')));
-  $('#shopLogout').addEventListener('click',async()=>{
-    await cms.client.auth.signOut();await refreshSession();
+  $('#shopSignup')?.addEventListener('click',()=>authenticate(true).catch(e=>notify(e.message,'#shopAuthNotice')));
+  $('#shopLogout')?.addEventListener('click',async()=>{
+    await cms.client.auth.signOut();
+    $('#shopAddressForm')?.reset();
+    await refreshSession();
     notify(t('Вы вышли из аккаунта.','Signed out.'),'#shopAuthNotice');
   });
-  $('#shopAddressForm').addEventListener('submit',event=>saveProfile(event).catch(e=>notify(e.message,'#shopCheckoutNotice')));
+  $('#shopAddressForm')?.addEventListener('submit',event=>saveProfile(event).catch(e=>notify(e.message,'#shopCheckoutNotice')));
   async function init() {
-    if(!cms?.isReady()) {notify(t('Supabase не настроен.','Supabase not configured.'));return;}
+    if(!cms?.isReady()) {notify(t('Supabase не настроен.','Supabase not configured.'),$('#shopAuthNotice')?'#shopAuthNotice':'#shopNotice');return;}
+    if($('[name=country]')){
     const {countryCodes: codes}=await import('/assets/js/shop-countries.mjs');
     const regions=new Intl.DisplayNames([en?'en':'ru'],{type:'region'});
     const country=$('[name=country]');
@@ -313,7 +344,9 @@
       country.add(new Option(label,code));
     }
     country.value='GE';
-    await fetchProducts();await refreshSession();
+    }
+    if(!$('#shopOrders'))await fetchProducts();
+    await refreshSession();
   }
   init().catch(e=>notify(e.message));
 })();

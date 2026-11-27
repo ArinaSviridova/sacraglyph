@@ -1,12 +1,13 @@
+import {buyer} from '../lib/shop-buyer.mjs';
 import {countryCodes} from '../../assets/js/shop-countries.mjs';
 import {localDemoEnabled,tryReceipt} from '../lib/shop-receipt.mjs';
-import {db,telegram,userFrom,uuid} from '../lib/shop-crm-server.mjs';
+import {db,telegram,uuid} from '../lib/shop-crm-server.mjs';
 import {fail,money,paypal,reply,settings,usdCents} from '../lib/shop-server.mjs';
 export async function handler(event) {
   if(event.httpMethod!=='POST') return reply(405,{error:'Method not allowed'});
   try {
-    const user=await userFrom(event);
     const input=JSON.parse(event.body||'{}');
+    const user=await buyer(event,input);
     const demo=input.localDemo===true;
     if(demo&&!localDemoEnabled())return reply(403,{error:'Local checkout only'});
     const demoId=demo?uuid(input.requestId):null;
@@ -21,6 +22,9 @@ export async function handler(event) {
     const delivery=input.delivery||{};
     const name=String(delivery.name||'').trim().slice(0,120);
     const phone=String(delivery.phone||'').trim().slice(0,40);
+    const email=String(delivery.email||'').trim();
+    if(email.length>254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !/^[+0-9 ().-]+$/.test(phone) || !/^\d{7,15}$/.test(phone.replace(/\D/g,'')))
+      return reply(400,{error:'Enter a valid contact email and phone number'});
     const city=String(delivery.city||'').trim().slice(0,100);
     const street=String(delivery.street||'').trim().slice(0,240);
     const postal=String(delivery.postal||'').trim().slice(0,24);
@@ -67,22 +71,22 @@ export async function handler(event) {
     const order=await db('shop_orders',{method:'POST',
       headers:demo?{Prefer:'resolution=ignore-duplicates,return=representation'}:{},body:{
       ...(demo?{id:demoId}:{}),
-      user_id:user.id,email:user.email,status:demo?'paid':'pending',paid_at:demo?new Date().toISOString():null,checkout_language:input.language==='en'?'en':'ru',currency:'USD',subtotal_usd_cents:subtotal,
+      user_id:user.id,email,guest_key_hash:user.hash||null,status:demo?'paid':'pending',paid_at:demo?new Date().toISOString():null,checkout_language:input.language==='en'?'en':'ru',currency:'USD',subtotal_usd_cents:subtotal,
       shipping_usd_cents:shipping,discount_usd_cents:discount,promo_code:promo||null,total_usd_cents:subtotal+shipping-discount,items:snapshots,
       shipping_address:{name,phone,city,street,postal,country}
     }});
     const local=order?.[0];
     if(demo&&!local){
-      const previous=await db('shop_orders?'+new URLSearchParams({id:'eq.'+demoId,user_id:'eq.'+user.id,status:'eq.paid',select:'id'}));
+      const previous=await db('shop_orders?'+new URLSearchParams({id:'eq.'+demoId,...user.scope,status:'eq.paid',select:'order_number'}));
       if(!previous?.length)return reply(409,{error:'Test order identifier already used'});
       await tryReceipt(demoId);
-      return reply(200,{orderId:demoId,paid:true});
+      return reply(200,{orderId:demoId,orderNumber:previous[0].order_number,paid:true});
     }
     if(!local?.id) throw new Error('Could not create order');
     if(demo){
       await tryReceipt(local.id);
       await telegram('🧪 Локальный тестовый заказ '+local.id+' · USD '+money(local.total_usd_cents));
-      return reply(200,{orderId:local.id,paid:true});
+      return reply(200,{orderId:local.id,orderNumber:local.order_number,paid:true});
     }
     const result=await paypal('/v2/checkout/orders',{requestId:local.id,body:{
       intent:'CAPTURE',
@@ -100,6 +104,6 @@ export async function handler(event) {
     await db('shop_orders?id=eq.'+encodeURIComponent(local.id),{method:'PATCH',
       body:{paypal_order_id:result.id}});
     await telegram('🧾 Новый заказ (PayPal Sandbox, ожидает оплату)\nЗаказ: '+local.id+'\nПозиций: '+snapshots.length+'\nСумма: '+money(subtotal+shipping-discount)+' USD'+(promo?'\nПромокод: '+promo:''));
-    return reply(200,{orderId:local.id,paypalOrderId:result.id});
+    return reply(200,{orderId:local.id,orderNumber:local.order_number,paypalOrderId:result.id});
   } catch(error){return fail(error);}
 }
